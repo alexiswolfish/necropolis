@@ -1,0 +1,486 @@
+@font-face {
+  font-family: "Spinosa BTW01 Regular";
+  src: url("/fonts/SpinosaBTW01-Regular.ttf") format("truetype");
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Lohengrin";
+  src: url("/fonts/Lohengrin.ttf") format("truetype");
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Darksame Regular";
+  src: url("/fonts/DarksameRegular-1GBWZ.ttf") format("truetype");
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Bistream Amerigo";
+  src: url("/fonts/Bistream-Amerigo.otf") format("opentype");
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Trade Gothic LT Std";
+  src: url("/fonts/TradeGothicLTStd-BoldExtended.otf") format("opentype");
+  font-display: block;
+  font-weight: 700;
+}
+
+:root {
+  --color-bg: #0a0d10;
+  --color-bg-soft: #101419;
+  --color-text-primary: #f0efec;
+  --color-text-caps: #d9d9d9;
+  --color-before: #d4ece3;
+  --color-border-subtle: #252a30;
+
+  --font-logo: "Spinosa BTW01 Regular", "Times New Roman", serif;
+  --font-display: "Lohengrin", "Old English Text MT", "Times New Roman", serif;
+  --font-body: "Bistream Amerigo", "Georgia", serif;
+  --font-caps: "Trade Gothic LT Std", "Arial Narrow", sans-serif;
+
+  --theme-nav-font: var(--font-caps);
+  --theme-nav-color: var(--color-text-caps);
+  --theme-heading-color: var(--color-before);
+  --theme-body-color: var(--color-text-primary);
+  --theme-brand-color: var(--color-text-primary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: radial-gradient(circle at 85% 10%, var(--color-bg-soft), var(--color-bg));
+  color: var(--color-text-primary);
+}
+
+#app {
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+}
+
+html.fonts-ready #app {
+  opacity: 1;
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 2.5rem 2.6rem 4rem;
+  transition: color 320ms ease, background-color 320ms ease;
+}
+
+.page-shell[data-page="home"] {
+  --theme-nav-font: var(--font-caps);
+  --theme-nav-color: var(--color-text-caps);
+  --theme-heading-color: var(--color-before);
+  --theme-body-color: var(--color-text-primary);
+  --theme-brand-color: var(--color-text-primary);
+}
+
+.page-shell[data-page="concords"] {
+  --theme-nav-font: "Lohengrin", serif;
+  --theme-nav-color: #d8a1ae;
+  --theme-heading-color: #35122e;
+  --theme-body-color: #210f18;
+  --theme-brand-color: #d8a1ae;
+  background: #ddd;
+}
+
+.page-shell[data-page="concord-detail"] {
+  --theme-nav-font: var(--font-caps);
+  --theme-nav-color: var(--concord-nav);
+  --theme-heading-color: var(--concord-secondary);
+  --theme-body-color: var(--concord-tertiary);
+  --theme-brand-color: var(--concord-nav);
+  background: linear-gradient(90deg, var(--concord-primary), #1f3521 46%, #172a1a);
+}
+
+.page-shell[data-concord="pleasure-treasure"] {
+  --concord-primary: #253122;
+  --concord-secondary: #f3a257;
+  --concord-tertiary: #986f2d;
+  --concord-nav: #b59392;
+}
+
+.page-shell[data-concord="desire-conspire"] {
+  --concord-primary: #253122;
+  --concord-secondary: #cb2f43;
+  --concord-tertiary: #f58e84;
+  --concord-nav: #004f46;
+}
+
+.page-shell[data-concord="mercy-malice"] {
+  --concord-primary: #004f46;
+  --concord-secondary: #fcb315;
+  --concord-tertiary: #c0a9b3;
+  --concord-nav: #a62c37;
+}
+
+.page-shell[data-concord="glory-grief"] {
+  --concord-primary: #253122;
+  --concord-secondary: #f3a257;
+  --concord-tertiary: #b6bfc1;
+  --concord-nav: #f3a257;
+}
+
+.page-shell[data-concord="oath-ruin"] {
+  --concord-primary: #253122;
+  --concord-secondary: #f5ecc2;
+  --concord-tertiary: #eeb480;
+  --concord-nav: #837e31;
+}
+
+.page-shell[data-concord="grace-disgrace"] {
+  --concord-primary: #253122;
+  --concord-secondary: #f48067;
+  --concord-tertiary: #a5c8d1;
+  --concord-nav: #437742;
+}
+
+.page-shell[data-concord="throne-thorns"] {
+  --concord-primary: #253122;
+  --concord-secondary: #c1c494;
+  --concord-tertiary: #437742;
+  --concord-nav: #501345;
+}
+
+.page-shell[data-concord="forge-frost"] {
+  --concord-primary: #253122;
+  --concord-secondary: #bb7125;
+  --concord-tertiary: #b59392;
+  --concord-nav: #bce4e5;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.2rem;
+}
+
+.brand {
+  text-decoration: none;
+  color: var(--theme-brand-color);
+  transition: color 260ms ease;
+}
+
+.top-nav {
+  display: flex;
+  gap: 1.65rem;
+}
+
+.top-nav-link {
+  text-decoration: none;
+  color: var(--theme-nav-color);
+  font-family: var(--theme-nav-font);
+  transition: color 260ms ease;
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: minmax(130px, 170px) minmax(300px, 680px);
+  gap: 3.25rem;
+}
+
+.event-meta {
+  margin-top: 4.8rem;
+}
+
+.event-meta p {
+  margin: 0;
+}
+
+.story-block {
+  max-width: 680px;
+}
+
+.before-mark {
+  margin: 0 0 1.35rem;
+  padding-top: 16px;
+}
+
+.story-paragraph {
+  margin: 0 0 1.7rem;
+}
+
+.concords-layout {
+  max-width: 1800px;
+}
+
+.concord-grid {
+  display: grid;
+  gap: 0.62rem;
+}
+
+.concord-grid-exact {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.concord-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: 0;
+  border-radius: 0;
+  background: var(--card-bg);
+  color: var(--card-title);
+  padding: 0.76rem 0.8rem;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 180ms ease;
+}
+
+.concord-card:hover {
+  transform: translateY(-2px);
+}
+
+.concord-card-symbol {
+  position: absolute;
+  top: 0.72rem;
+  right: 0.72rem;
+  margin: 0;
+  color: var(--card-secondary);
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  font-size: clamp(2rem, 1.78rem + 0.8vw, 2.5rem);
+  line-height: 1;
+}
+
+.concord-card-element {
+  position: absolute;
+  top: 0.95rem;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: var(--card-secondary);
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  font-size: clamp(0.74rem, 0.72rem + 0.08vw, 0.84rem);
+  letter-spacing: 0;
+}
+
+.concord-card-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 85%;
+  transform: translate(-50%, -52%);
+  margin: 0;
+  color: var(--card-title);
+  font-family: "Lohengrin", serif;
+  font-weight: 400;
+  font-size: clamp(2.6rem, 2.2rem + 1.4vw, 3.8rem);
+  line-height: 0.9;
+  text-align: center;
+}
+
+.concord-card-desire {
+  position: absolute;
+  bottom: 0.52rem;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: var(--card-secondary);
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  font-size: clamp(0.8rem, 0.74rem + 0.13vw, 0.92rem);
+}
+
+.concord-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(420px, 880px);
+  gap: 4rem;
+  align-items: start;
+  max-width: 1320px;
+}
+
+.concord-detail-left {
+  padding-top: 0.9rem;
+}
+
+.concord-back {
+  border: 1px solid var(--concord-nav);
+  background: transparent;
+  color: var(--concord-nav);
+  padding: 0.32rem 0.72rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+}
+
+.concord-detail-name {
+  margin: 0 0 2rem;
+  color: var(--concord-secondary);
+  line-height: 0.92;
+  font-size: clamp(3.6rem, 3rem + 2vw, 5.6rem);
+}
+
+.concord-meta {
+  margin: 0;
+}
+
+.concord-meta-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.concord-meta-row dt,
+.concord-meta-row dd {
+  margin: 0;
+  color: var(--concord-tertiary);
+}
+
+.concord-detail-right {
+  max-width: 860px;
+}
+
+.not-found-layout {
+  min-height: calc(100vh - 180px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.not-found-code {
+  margin: 0;
+  font-family: "Lohengrin", serif;
+  font-size: 124px;
+  line-height: 0.86;
+  font-weight: 400;
+  color: var(--theme-heading-color);
+}
+
+.not-found-message {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--theme-body-color);
+}
+
+.not-found-link {
+  color: #78cdd0;
+  font-family: "Lohengrin", serif;
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.not-found-link:hover {
+  text-decoration: underline;
+}
+
+.concord-lede,
+.concord-body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--concord-tertiary);
+  letter-spacing: 0.01em;
+}
+
+.concord-lede {
+  margin-bottom: 2.4rem;
+  font-size: clamp(2.4rem, 2.05rem + 1.2vw, 3.5rem);
+  line-height: 1.15;
+}
+
+.concord-body {
+  font-size: clamp(2.15rem, 1.9rem + 0.7vw, 2.85rem);
+  line-height: 1.18;
+}
+
+.type-logo {
+  font-family: var(--font-logo);
+  font-size: clamp(2rem, 1.85rem + 0.6vw, 2.45rem);
+  line-height: 1;
+}
+
+.type-before {
+  font-family: var(--font-display);
+  font-size: 124px;
+  line-height: 0.86;
+  font-weight: 400;
+  color: var(--theme-heading-color);
+}
+
+.type-body {
+  font-family: var(--font-body);
+  font-size: 36px;
+  line-height: 1.14;
+  letter-spacing: 0.01em;
+  color: var(--theme-body-color);
+}
+
+.type-caps {
+  font-family: var(--font-caps);
+  font-size: clamp(0.92rem, 0.87rem + 0.18vw, 1.02rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.65;
+  text-transform: uppercase;
+  color: var(--theme-nav-color);
+}
+
+.page-shell[data-page="home"] .story-block {
+  padding-left: 40px;
+}
+
+@media (max-width: 1200px) {
+  .concord-grid-exact {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .page-shell {
+    padding: 1.75rem 1rem 2.8rem;
+  }
+
+  .top-bar {
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .event-meta {
+    margin-top: 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .story-block {
+    max-width: 100%;
+  }
+
+  .concord-detail-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .concord-grid-exact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .concord-grid-exact {
+    grid-template-columns: 1fr;
+  }
+
+  .concord-lede {
+    margin-bottom: 1.4rem;
+  }
+}
