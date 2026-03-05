@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { GOING_GUEST_NAMES } from "./guestAllowlist";
+import { HomeRoute } from "./routes/HomeRoute";
+import { BeginGate, OnboardingWizard } from "./routes/OnboardingRoute";
+import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
+import { CharacterPage, PlayersPage } from "./routes/PlayersRoute";
+import { createCharacter, fetchAllCharacters, findCharacterByNormalizedName, replaceAllCharacters } from "./data/charactersApi";
 
 const CONCORDS = [
   {
@@ -370,8 +375,6 @@ const CONCORD_NOTES_BY_ID = {
   "wit-spit": 220.0 // A3
 };
 const STORAGE_CHARACTER_KEY = "necropolis.character";
-const STORAGE_CLAIMED_NAMES_KEY = "necropolis.claimed_names";
-const STORAGE_CHARACTERS_KEY = "necropolis.characters";
 const TEAM_MAX_SIZE = 9;
 const CONCORD_TEAMS = Object.keys(TEAM_BLUEPRINT);
 const DIRECT_SIGN_TO_TEAM = Object.fromEntries(Object.values(TEAM_BLUEPRINT).map((team) => [team.directSign, team.id]));
@@ -390,12 +393,20 @@ const ZODIAC_ELEMENT = {
   Pisces: "water"
 };
 const TEAM_ELEMENT = Object.fromEntries(Object.values(TEAM_BLUEPRINT).map((team) => [team.id, team.element]));
-const CLASS_BY_STAT = {
-  might: "Dread Knight",
-  guile: "Nightblade",
-  wit: "Hex Scholar",
-  spirit: "Grave Oracle"
-};
+const ONBOARDING_STATS = [
+  { key: "pulchritude", label: "Pulchritude", className: "Velvet Oracle" },
+  { key: "grit", label: "Grit", className: "Crypt Warden" },
+  { key: "brawn", label: "Brawn", className: "Iron Revenant" },
+  { key: "shenanigans", label: "Shenanigans", className: "Moon Trickster" },
+  { key: "vigilance", label: "Vigilance", className: "Ash Sentinel" },
+  { key: "mystery", label: "Mystery", className: "Veil Seer" },
+  { key: "dumbLuck", label: "Dumb Luck", className: "Fortune Ghoul" }
+];
+const CLASS_BY_STAT = Object.fromEntries(ONBOARDING_STATS.map((stat) => [stat.key, stat.className]));
+const STAT_LABELS = Object.fromEntries(ONBOARDING_STATS.map((stat) => [stat.key, stat.label]));
+const STAT_KEYS = ONBOARDING_STATS.map((stat) => stat.key);
+const STAT_POINT_POOL = 16;
+const INITIAL_STATS = Object.fromEntries(STAT_KEYS.map((key) => [key, 0]));
 
 function normalizeName(name) {
   return name.trim().toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ");
@@ -403,6 +414,14 @@ function normalizeName(name) {
 
 function tokenizeName(name) {
   return normalizeName(name).split(" ").filter(Boolean);
+}
+
+function tokensLikelyMatch(inputToken, guestToken, minPrefixLength = 3) {
+  if (!inputToken || !guestToken) return false;
+  if (inputToken === guestToken) return true;
+  if (inputToken.length >= minPrefixLength && guestToken.startsWith(inputToken)) return true;
+  if (guestToken.length >= minPrefixLength && inputToken.startsWith(guestToken)) return true;
+  return false;
 }
 
 function namesLikelyMatch(inputName, guestName) {
@@ -414,12 +433,14 @@ function namesLikelyMatch(inputName, guestName) {
   const normalizedGuest = guestTokens.join(" ");
   if (normalizedInput === normalizedGuest) return true;
 
-  // First name must match for heuristic/initial matching.
-  if (inputTokens[0] !== guestTokens[0]) return false;
+  // First name can match exactly or by strong prefix (alex <-> alexandra).
+  if (!tokensLikelyMatch(inputTokens[0], guestTokens[0])) return false;
 
   const inputLast = inputTokens[inputTokens.length - 1];
   const guestLast = guestTokens[guestTokens.length - 1];
   if (!inputLast || !guestLast) return false;
+
+  if (tokensLikelyMatch(inputLast, guestLast, 2)) return true;
 
   // "Jeff H" matches "Jeff Henderson" (and vice versa).
   if (inputLast.length === 1 && guestLast.startsWith(inputLast)) return true;
@@ -428,9 +449,49 @@ function namesLikelyMatch(inputName, guestName) {
   return false;
 }
 
-function isOnGuestList(realName) {
-  if (GOING_GUEST_NAMES.length === 0) return true;
-  return GOING_GUEST_NAMES.some((guestName) => namesLikelyMatch(realName, guestName));
+function findGuestNameMatch(realName) {
+  if (GOING_GUEST_NAMES.length === 0) return realName.trim();
+  return GOING_GUEST_NAMES.find((guestName) => namesLikelyMatch(realName, guestName)) ?? null;
+}
+
+function parseMonthDayInput(input) {
+  const trimmed = String(input ?? "").trim();
+  if (!trimmed) return null;
+
+  const monthDayMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})$/);
+  if (monthDayMatch) {
+    const month = Number(monthDayMatch[1]);
+    const day = Number(monthDayMatch[2]);
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      return { month, day };
+    }
+    return null;
+  }
+
+  const isoMatch = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) {
+    const month = Number(isoMatch[2]);
+    const day = Number(isoMatch[3]);
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      return { month, day };
+    }
+  }
+
+  return null;
+}
+
+function normalizeMonthDayInput(raw) {
+  const digits = String(raw ?? "").replace(/\D/g, "").slice(0, 4);
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+}
+
+function monthDayToStorageDate(monthDayInput) {
+  const parsed = parseMonthDayInput(monthDayInput);
+  if (!parsed) return monthDayInput;
+  const month = String(parsed.month).padStart(2, "0");
+  const day = String(parsed.day).padStart(2, "0");
+  return `2000-${month}-${day}`;
 }
 
 function getStoredCharacter() {
@@ -442,34 +503,12 @@ function getStoredCharacter() {
   }
 }
 
-function getStoredCharacters() {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_CHARACTERS_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
+function setStoredCharacter(character) {
+  window.localStorage.setItem(STORAGE_CHARACTER_KEY, JSON.stringify(character));
 }
 
-function getClaimedNames() {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_CLAIMED_NAMES_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function persistAllCharacters(characters) {
-  window.localStorage.setItem(STORAGE_CHARACTERS_KEY, JSON.stringify(characters));
-  const claimed = Array.from(
-    new Set(
-      characters
-        .map((entry) => normalizeName(entry.realName || ""))
-        .filter(Boolean)
-    )
-  );
-  window.localStorage.setItem(STORAGE_CLAIMED_NAMES_KEY, JSON.stringify(claimed));
+function clearStoredCharacter() {
+  window.localStorage.removeItem(STORAGE_CHARACTER_KEY);
 }
 
 function getTeamCounts(characters) {
@@ -505,19 +544,10 @@ function assignTeamForSign(sign, counts) {
   return getLeastFilledTeam(CONCORD_TEAMS, counts, TEAM_MAX_SIZE) ?? getLeastFilledTeam(CONCORD_TEAMS, counts, Number.POSITIVE_INFINITY);
 }
 
-function persistCharacter(character) {
-  window.localStorage.setItem(STORAGE_CHARACTER_KEY, JSON.stringify(character));
-  const existing = getStoredCharacters().filter((entry) => normalizeName(entry.realName) !== normalizeName(character.realName));
-  existing.push(character);
-  persistAllCharacters(existing);
-  return existing;
-}
-
 function getZodiacSign(dateString) {
-  const date = new Date(dateString);
-  if (Number.isNaN(date.getTime())) return null;
-  const month = date.getUTCMonth() + 1;
-  const day = date.getUTCDate();
+  const parsed = parseMonthDayInput(dateString);
+  if (!parsed) return null;
+  const { month, day } = parsed;
 
   if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "Aries";
   if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "Taurus";
@@ -537,7 +567,7 @@ function getAssignedClass(stats) {
   const entries = Object.entries(stats);
   entries.sort((a, b) => b[1] - a[1]);
   if (entries.length < 2 || entries[0][1] !== entries[1][1]) {
-    return CLASS_BY_STAT[entries[0][0]];
+    return CLASS_BY_STAT[entries[0][0]] ?? "Doom Herald";
   }
   return "Doom Herald";
 }
@@ -595,21 +625,6 @@ function playGongTone(audioContext, frequency) {
   }, 3600);
 }
 
-function toFirstWordCapital(text) {
-  const lower = text.toLowerCase();
-  return lower.replace(/^([a-z])/, (m) => m.toUpperCase());
-}
-
-function renderConcordWord(text) {
-  const parts = text.split(/\b(CONCORD)\b/g);
-  return parts.map((part, index) => {
-    if (part === "CONCORD") {
-      return <span key={`concord-word-${index}`} className="concord-logo-word">{part}</span>;
-    }
-    return <React.Fragment key={`concord-text-${index}`}>{part}</React.Fragment>;
-  });
-}
-
 function getRouteFromPath(pathname) {
   const appPath = stripBase(pathname);
   if (appPath === "/") return { page: "home" };
@@ -639,323 +654,6 @@ function getPathFromRoute(route) {
   return withBase("/");
 }
 
-function StoryPage({ onHoverOmenStart, onHoverOmenEnd }) {
-  return (
-    <main className="hero-layout">
-      <aside className="event-meta type-caps">
-        <p>March 14th 2026</p>
-        <p>Piedmont</p>
-        <p>Community</p>
-        <p>Center</p>
-      </aside>
-
-      <article className="story-block">
-        <h1 className="type-before before-mark">Before...</h1>
-        <p className="type-body story-paragraph">the dead were put to rest, and before the end of Wonders or the withering of Mystery, there loomed in the dusk of all things, the city of Necropolis.</p>
-        <p className="type-body story-paragraph">There, eight <span className="story-concord-word">Concords</span>, may they be both cursed and blessed, return to the sparring fields to compete in another cycle of the eternal tournament.</p>
-        <p className="type-body story-paragraph">Victory promises eternal renewal, dominion, or release, each Concord tells the tale it prefers, but all agree on this: <strong>the Tournament must be held, and you must attend.</strong></p>
-        <p className="type-body story-paragraph">Death has no hold on those bound by grim accord. Yet even here, beneath rite and rivalry, its shadow gathers and its patience thins.</p>
-        <p className="type-body story-paragraph story-omen-paragraph">
-          <span
-            className="story-concord-word story-omen-word"
-            onMouseEnter={onHoverOmenStart}
-            onMouseLeave={onHoverOmenEnd}
-          >
-            but death must claim us all
-          </span>
-          .
-        </p>
-      </article>
-      <div className="home-death-wrap" aria-hidden="true">
-        <img src={withAssetBase("/death.png")} alt="" className="home-death-bg" />
-        <span className="home-death-overlay" />
-      </div>
-    </main>
-  );
-}
-
-function ConcordsPage({ onOpenConcord, onHoverConcord, cards }) {
-  return (
-    <main className="concords-layout">
-      <section className="concord-grid concord-grid-exact" aria-label="Concord squares">
-        {cards.map((card) => (
-          <button
-            key={card.id}
-            type="button"
-            className="concord-card"
-            onClick={onOpenConcord(card.routeId)}
-            onMouseEnter={() => onHoverConcord(card.routeId)}
-            style={{
-              "--card-bg": card.colorBg,
-              "--card-secondary": card.colorTop,
-              "--card-title": card.colorTitle
-            }}
-          >
-            <p className="concord-card-symbol">{card.symbol}</p>
-            <p className="concord-card-element">{card.element.toLowerCase()}</p>
-            <h3 className="concord-card-title">
-              {card.title.split("\n").map((line, index, allLines) => (
-                <span key={`${card.id}-${line}-${index}`}>
-                  {toFirstWordCapital(line)}
-                  {index < allLines.length - 1 ? <br /> : null}
-                </span>
-              ))}
-            </h3>
-            <p className="concord-card-desire">{card.desire.toLowerCase()}</p>
-          </button>
-        ))}
-      </section>
-    </main>
-  );
-}
-
-function ConcordDetailPage({ concord, detailTab, onOpenTab, onStartDetailHum, onStopDetailHum }) {
-  const [leftLabel, rightLabel] = concord.label.split(" & ");
-  const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
-  const displayLabel = rightLabel
-    ? (
-      <>
-        {leftLabel}
-        <br />
-        &
-        <br />
-        {rightLabel}
-      </>
-    )
-    : concord.label;
-  const costumeImages = COSTUME_IMAGES_BY_CONCORD[concord.id] ?? [];
-  const teamData = TEAM_BLUEPRINT[concord.id] ?? null;
-
-  return (
-    <main className="concord-detail-layout">
-      <aside className="concord-detail-left">
-        <h1
-          className="concord-detail-name"
-          onMouseEnter={() => onStartDetailHum(concord.id)}
-          onMouseLeave={onStopDetailHum}
-        >
-          {displayLabel}
-        </h1>
-
-        <dl className="concord-meta">
-          <div className="concord-meta-row">
-            <dt className="type-caps">Element:</dt>
-            <dd className="type-caps concord-meta-value">{concord.element}</dd>
-          </div>
-          <div className="concord-meta-row">
-            <dt className="type-caps">Earthly Desire:</dt>
-            <dd className="type-caps concord-meta-value">{teamData?.earthlyDesire ?? concord.earthlyDesire}</dd>
-          </div>
-          <div className="concord-meta-row">
-            <dt className="type-caps">Palette:</dt>
-            <dd className="type-caps concord-meta-value">Wada #{teamData?.palette.id ?? concord.paletteId}</dd>
-          </div>
-        </dl>
-      </aside>
-
-      <article className="concord-detail-right">
-        <nav className="concord-subnav" aria-label={`${concord.label} detail sections`}>
-          <a
-            href={getPathFromRoute({ page: "concord-detail", concordId: concord.id, detailTab: "backstory" })}
-            onClick={onOpenTab("backstory")}
-            className="type-caps concord-subnav-link"
-            aria-current={detailTab !== "costumes" ? "page" : undefined}
-          >
-            Backstory
-          </a>
-          <a
-            href={getPathFromRoute({ page: "concord-detail", concordId: concord.id, detailTab: "costumes" })}
-            onClick={onOpenTab("costumes")}
-            className="type-caps concord-subnav-link"
-            aria-current={detailTab === "costumes" ? "page" : undefined}
-          >
-            Costumes
-          </a>
-        </nav>
-
-        {detailTab === "costumes" ? (
-          <section className="costume-grid" aria-label={`${concord.label} costumes`}>
-            {costumeImages.map((src, index) => (
-              <img
-                key={`${concord.id}-costume-${index + 1}`}
-                src={src}
-                alt={`${concord.label} costume ${index + 1}`}
-                className={`costume-image${loadedCostumeImages[src] ? " is-loaded" : ""}`}
-                loading="lazy"
-                decoding="async"
-                onLoad={() => {
-                  setLoadedCostumeImages((prev) => {
-                    if (prev[src]) return prev;
-                    return { ...prev, [src]: true };
-                  });
-                }}
-              />
-            ))}
-          </section>
-        ) : (
-          <>
-            <p className="concord-lede">{typeof concord.lede === "string" ? renderConcordWord(concord.lede) : concord.lede}</p>
-            {(concord.bodyParagraphs ?? [concord.body]).map((paragraph, index) => (
-              <p key={`${concord.id}-body-${index}`} className="concord-body">{typeof paragraph === "string" ? renderConcordWord(paragraph) : paragraph}</p>
-            ))}
-          </>
-        )}
-      </article>
-    </main>
-  );
-}
-
-function BeginGate({ onBegin }) {
-  return (
-    <main className="onboarding-gate">
-      <button type="button" className="begin-button type-before" onClick={onBegin}>Begin</button>
-    </main>
-  );
-}
-
-function OnboardingWizard({
-  step,
-  form,
-  remainingPoints,
-  assignedClass,
-  zodiacSign,
-  assignedConcordLabel,
-  error,
-  onNameChange,
-  onBotTrapChange,
-  onBirthDateChange,
-  onAdjustStat,
-  onBack,
-  onNext
-}) {
-  return (
-    <main className="onboarding-layout">
-      <section className="onboarding-panel">
-        <h1 className="onboarding-title type-before">Begin</h1>
-        {step === 1 ? (
-          <>
-            <p className="type-body onboarding-lede">Speak your true name.</p>
-            <label className="onboarding-label type-caps" htmlFor="real-name">Real Name</label>
-            <input id="real-name" className="onboarding-input" value={form.realName} onChange={(event) => onNameChange(event.target.value)} autoComplete="name" />
-            <input className="bot-trap-input" tabIndex="-1" autoComplete="off" value={form.botTrap} onChange={(event) => onBotTrapChange(event.target.value)} />
-          </>
-        ) : null}
-
-        {step === 2 ? (
-          <>
-            <p className="type-body onboarding-lede">Mark the day of your birth.</p>
-            <label className="onboarding-label type-caps" htmlFor="birth-date">Birth Date</label>
-            <input id="birth-date" type="date" className="onboarding-input" value={form.birthDate} onChange={(event) => onBirthDateChange(event.target.value)} />
-            {zodiacSign ? <p className="onboarding-meta type-caps">Sign: {zodiacSign}</p> : null}
-            {assignedConcordLabel ? <p className="onboarding-meta type-caps">Concord: {assignedConcordLabel}</p> : null}
-          </>
-        ) : null}
-
-        {step === 3 ? (
-          <>
-            <p className="type-body onboarding-lede">Distribute your power.</p>
-            <p className="onboarding-meta type-caps">Points Remaining: {remainingPoints}</p>
-            {["might", "guile", "wit", "spirit"].map((statKey) => (
-              <div key={statKey} className="stat-row">
-                <span className="type-caps stat-label">{statKey}</span>
-                <button type="button" className="stat-btn" onClick={() => onAdjustStat(statKey, -1)}>-</button>
-                <span className="type-caps stat-value">{form.stats[statKey]}</span>
-                <button type="button" className="stat-btn" onClick={() => onAdjustStat(statKey, 1)}>+</button>
-              </div>
-            ))}
-            <p className="onboarding-meta type-caps">Class: {assignedClass}</p>
-          </>
-        ) : null}
-
-        {error ? <p className="onboarding-error">{error}</p> : null}
-
-        <div className="onboarding-actions">
-          {step > 1 ? <button type="button" className="onboarding-btn" onClick={onBack}>Back</button> : null}
-          <button type="button" className="onboarding-btn" onClick={onNext}>{step === 3 ? "Create Character" : "Continue"}</button>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function PlayersPage({ characters }) {
-  return (
-    <main className="players-layout">
-      <h1 className="type-before players-title">Players</h1>
-      <p className="type-caps players-subtitle">{characters.length} registered</p>
-      <section className="players-list" aria-label="Registered players">
-        {characters.map((player) => {
-          const team = TEAM_BLUEPRINT[player.concordId];
-          return (
-            <article key={`${player.realName}-${player.completedAt}`} className="player-card">
-              <p className="player-name">{player.realName}</p>
-              <p className="player-meta type-caps">{player.zodiacSign} • {team?.concordName ?? player.concordId}</p>
-              <p className="player-meta type-caps">{player.className}</p>
-            </article>
-          );
-        })}
-      </section>
-    </main>
-  );
-}
-
-function CharacterPage({ character, allCharacters, onSaveRoster }) {
-  const [draft, setDraft] = useState(() => allCharacters);
-
-  useEffect(() => {
-    setDraft(allCharacters);
-  }, [allCharacters]);
-
-  const updateEntry = (index, key, value) => {
-    setDraft((current) => {
-      const next = [...current];
-      next[index] = { ...next[index], [key]: value };
-      return next;
-    });
-  };
-
-  const removeEntry = (index) => {
-    setDraft((current) => current.filter((_, i) => i !== index));
-  };
-
-  return (
-    <main className="character-layout">
-      <section className="character-summary">
-        <h1 className="type-before character-title">Character</h1>
-        {character ? (
-          <>
-            <p className="type-body">{character.realName}</p>
-            <p className="type-caps">{character.zodiacSign} • {TEAM_BLUEPRINT[character.concordId]?.concordName ?? character.concordId}</p>
-            <p className="type-caps">{character.className}</p>
-          </>
-        ) : (
-          <p className="type-caps">No character completed yet.</p>
-        )}
-      </section>
-
-      <section className="roster-editor" aria-label="Roster editor">
-        <h2 className="type-caps">Roster Editor</h2>
-        {draft.map((entry, index) => (
-          <div key={`${entry.realName}-${index}`} className="roster-row">
-            <input className="onboarding-input" value={entry.realName ?? ""} onChange={(event) => updateEntry(index, "realName", event.target.value)} />
-            <input className="onboarding-input" value={entry.zodiacSign ?? ""} onChange={(event) => updateEntry(index, "zodiacSign", event.target.value)} />
-            <select className="onboarding-input" value={entry.concordId ?? ""} onChange={(event) => updateEntry(index, "concordId", event.target.value)}>
-              {CONCORD_TEAMS.map((teamId) => (
-                <option key={teamId} value={teamId}>{TEAM_BLUEPRINT[teamId].concordName}</option>
-              ))}
-            </select>
-            <input className="onboarding-input" value={entry.className ?? ""} onChange={(event) => updateEntry(index, "className", event.target.value)} />
-            <button type="button" className="onboarding-btn" onClick={() => removeEntry(index)}>Remove</button>
-          </div>
-        ))}
-        <div className="onboarding-actions">
-          <button type="button" className="onboarding-btn" onClick={() => onSaveRoster(draft)}>Save Roster</button>
-        </div>
-      </section>
-    </main>
-  );
-}
-
 function NotFoundPage({ onReturnHome }) {
   return (
     <main className="not-found-layout" aria-labelledby="not-found-title">
@@ -970,19 +668,14 @@ export default function App() {
   const storedCharacter = getStoredCharacter();
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
   const [character, setCharacter] = useState(() => storedCharacter);
-  const [allCharacters, setAllCharacters] = useState(() => getStoredCharacters());
+  const [allCharacters, setAllCharacters] = useState([]);
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [onboardingError, setOnboardingError] = useState("");
   const [onboardingForm, setOnboardingForm] = useState({
     realName: "",
     birthDate: "",
     botTrap: "",
-    stats: {
-      might: 5,
-      guile: 5,
-      wit: 5,
-      spirit: 5
-    }
+    stats: INITIAL_STATS
   });
   const audioContextRef = useRef(null);
   const lastHoverRef = useRef({ concordId: "", time: 0 });
@@ -993,6 +686,26 @@ export default function App() {
     const onPopState = () => setRoute(getRouteFromPath(window.location.pathname));
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function hydrateRoster() {
+      try {
+        const roster = await fetchAllCharacters();
+        if (!cancelled) {
+          setAllCharacters(roster);
+        }
+      } catch (error) {
+        console.error("Failed to load characters from Supabase.", error);
+      }
+    }
+
+    void hydrateRoster();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => () => {
@@ -1006,11 +719,16 @@ export default function App() {
     return CONCORDS_BY_ID.get(route.concordId) ?? null;
   }, [route]);
   const zodiacSign = useMemo(() => getZodiacSign(onboardingForm.birthDate), [onboardingForm.birthDate]);
+  const matchedGuestName = useMemo(() => findGuestNameMatch(onboardingForm.realName), [onboardingForm.realName]);
   const teamCounts = useMemo(() => getTeamCounts(allCharacters), [allCharacters]);
   const assignedConcordId = zodiacSign ? assignTeamForSign(zodiacSign, teamCounts) : null;
   const assignedConcordLabel = assignedConcordId ? (TEAM_BLUEPRINT[assignedConcordId]?.concordName ?? CONCORDS_BY_ID.get(assignedConcordId)?.label ?? null) : null;
+  const assignedConcordCard = useMemo(() => {
+    if (!assignedConcordId) return null;
+    return ALL_CONCORD_CARDS.find((card) => card.routeId === assignedConcordId) ?? null;
+  }, [assignedConcordId]);
   const assignedClass = useMemo(() => getAssignedClass(onboardingForm.stats), [onboardingForm.stats]);
-  const remainingStatPoints = 24 - Object.values(onboardingForm.stats).reduce((total, value) => total + value, 0);
+  const remainingStatPoints = STAT_POINT_POOL - Object.values(onboardingForm.stats).reduce((total, value) => total + value, 0);
   const canAccessStory = Boolean(character);
 
   const navigate = (nextRoute) => (event) => {
@@ -1031,9 +749,9 @@ export default function App() {
     setOnboardingForm((current) => {
       const currentValue = current.stats[statKey];
       const nextValue = currentValue + direction;
-      if (nextValue < 1 || nextValue > 10) return current;
+      if (nextValue < 0 || nextValue > 10) return current;
       const total = Object.values(current.stats).reduce((sum, value) => sum + value, 0);
-      if (direction > 0 && total >= 24) return current;
+      if (direction > 0 && total >= STAT_POINT_POOL) return current;
 
       return {
         ...current,
@@ -1045,11 +763,12 @@ export default function App() {
     });
   };
 
-  const handleOnboardingNext = () => {
+  const handleOnboardingNext = async () => {
     setOnboardingError("");
 
     if (onboardingStep === 1) {
-      const normalized = normalizeName(onboardingForm.realName);
+      const matchedName = findGuestNameMatch(onboardingForm.realName);
+      const normalized = normalizeName(matchedName ?? onboardingForm.realName);
       if (onboardingForm.botTrap.trim()) {
         setOnboardingError("Unable to proceed.");
         return;
@@ -1058,14 +777,16 @@ export default function App() {
         setOnboardingError("Please enter your real name.");
         return;
       }
-      if (!isOnGuestList(onboardingForm.realName)) {
+      if (!matchedName) {
         setOnboardingError("Name not recognized in RSVP list.");
         return;
       }
-      if (getClaimedNames().includes(normalized)) {
+      const localDuplicate = allCharacters.some((entry) => normalizeName(entry.realName) === normalized);
+      if (localDuplicate) {
         setOnboardingError("A character already exists for that name.");
         return;
       }
+      setOnboardingForm((current) => ({ ...current, realName: matchedName }));
       setOnboardingStep(2);
       return;
     }
@@ -1080,6 +801,11 @@ export default function App() {
     }
 
     if (onboardingStep === 3) {
+      setOnboardingStep(4);
+      return;
+    }
+
+    if (onboardingStep === 4) {
       if (remainingStatPoints > 0) {
         setOnboardingError("Spend all stat points before continuing.");
         return;
@@ -1089,7 +815,20 @@ export default function App() {
         return;
       }
 
-      const latestCharacters = getStoredCharacters();
+      let latestCharacters;
+      try {
+        latestCharacters = await fetchAllCharacters();
+      } catch {
+        setOnboardingError("Unable to reach the roster. Please try again.");
+        return;
+      }
+
+      const claimed = latestCharacters.some((entry) => normalizeName(entry.realName) === normalizeName(onboardingForm.realName));
+      if (claimed) {
+        setOnboardingError("A character already exists for that name.");
+        return;
+      }
+
       const latestCounts = getTeamCounts(latestCharacters);
       const allocatedConcordId = assignTeamForSign(zodiacSign, latestCounts);
       if (!allocatedConcordId) {
@@ -1098,8 +837,8 @@ export default function App() {
       }
 
       const nextCharacter = {
-        realName: onboardingForm.realName.trim(),
-        birthDate: onboardingForm.birthDate,
+        realName: (matchedGuestName ?? onboardingForm.realName).trim(),
+        birthDate: monthDayToStorageDate(onboardingForm.birthDate),
         zodiacSign,
         concordId: allocatedConcordId,
         className: assignedClass,
@@ -1107,8 +846,22 @@ export default function App() {
         completedAt: new Date().toISOString()
       };
 
-      const updatedCharacters = persistCharacter(nextCharacter);
-      setCharacter(nextCharacter);
+      try {
+        await createCharacter(nextCharacter);
+      } catch (error) {
+        const duplicateCheck = await findCharacterByNormalizedName(normalizeName(onboardingForm.realName)).catch(() => null);
+        if (duplicateCheck) {
+          setOnboardingError("A character already exists for that name.");
+          return;
+        }
+        setOnboardingError("Unable to save your character. Please try again.");
+        return;
+      }
+
+      const updatedCharacters = await fetchAllCharacters().catch(() => latestCharacters);
+      const createdCharacter = updatedCharacters.find((entry) => normalizeName(entry.realName) === normalizeName(nextCharacter.realName)) ?? nextCharacter;
+      setCharacter(createdCharacter);
+      setStoredCharacter(createdCharacter);
       setAllCharacters(updatedCharacters);
       setOnboardingStep(0);
       const nextPath = getPathFromRoute({ page: "home" });
@@ -1303,9 +1056,9 @@ export default function App() {
   const shouldShowOnboardingGate = !canAccessStory && !concordsVisible;
   const canSeeCharacterPage = canAccessStory;
 
-  let pageContent = <StoryPage onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
+  let pageContent = <HomeRoute onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} deathImageSrc={withAssetBase("/death.png")} />;
   if (shouldShowOnboardingGate && onboardingStep === 0) {
-    pageContent = <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} />;
+    pageContent = <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
   }
   if (shouldShowOnboardingGate && onboardingStep > 0) {
     pageContent = (
@@ -1316,13 +1069,20 @@ export default function App() {
         assignedClass={assignedClass}
         zodiacSign={zodiacSign}
         assignedConcordLabel={assignedConcordLabel}
+        assignedConcordCard={assignedConcordCard}
+        welcomeName={matchedGuestName ?? onboardingForm.realName}
         error={onboardingError}
+        statKeys={STAT_KEYS}
+        statLabels={STAT_LABELS}
         onNameChange={(realName) => setOnboardingForm((current) => ({ ...current, realName }))}
         onBotTrapChange={(botTrap) => setOnboardingForm((current) => ({ ...current, botTrap }))}
-        onBirthDateChange={(birthDate) => setOnboardingForm((current) => ({ ...current, birthDate }))}
+        onBirthDateChange={(birthDate) => setOnboardingForm((current) => ({ ...current, birthDate: normalizeMonthDayInput(birthDate) }))}
         onAdjustStat={handleAdjustStat}
+        onResetStats={() => setOnboardingForm((current) => ({ ...current, stats: INITIAL_STATS }))}
         onBack={handleOnboardingBack}
         onNext={handleOnboardingNext}
+        onHoverOmenStart={startOminousHum}
+        onHoverOmenEnd={stopOminousHum}
       />
     );
   }
@@ -1340,13 +1100,16 @@ export default function App() {
         onOpenTab={(detailTab) => navigate({ page: "concord-detail", concordId: selectedConcord.id, detailTab })}
         onStartDetailHum={startDetailConcordHum}
         onStopDetailHum={stopDetailConcordHum}
+        getPathFromRoute={getPathFromRoute}
+        costumeImagesByConcord={COSTUME_IMAGES_BY_CONCORD}
+        teamBlueprint={TEAM_BLUEPRINT}
       />
     );
   }
   if (route.page === "players") {
     pageContent = canAccessStory
-      ? <PlayersPage characters={allCharacters} />
-      : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} />;
+      ? <PlayersPage characters={allCharacters} teamBlueprint={TEAM_BLUEPRINT} />
+      : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
   }
   if (route.page === "character") {
     pageContent = canSeeCharacterPage
@@ -1354,23 +1117,32 @@ export default function App() {
         <CharacterPage
           character={character}
           allCharacters={allCharacters}
+          concordTeams={CONCORD_TEAMS}
+          teamBlueprint={TEAM_BLUEPRINT}
           onSaveRoster={(nextRoster) => {
-            persistAllCharacters(nextRoster);
-            setAllCharacters(nextRoster);
-            if (character) {
-              const updatedSelf = nextRoster.find((entry) => normalizeName(entry.realName) === normalizeName(character.realName));
-              if (updatedSelf) {
-                setCharacter(updatedSelf);
-                window.localStorage.setItem(STORAGE_CHARACTER_KEY, JSON.stringify(updatedSelf));
-              } else {
-                setCharacter(null);
-                window.localStorage.removeItem(STORAGE_CHARACTER_KEY);
+            void (async () => {
+              try {
+                const savedRoster = await replaceAllCharacters(nextRoster);
+                setAllCharacters(savedRoster);
+                if (character) {
+                  const updatedSelf = savedRoster.find((entry) => normalizeName(entry.realName) === normalizeName(character.realName));
+                  if (updatedSelf) {
+                    setCharacter(updatedSelf);
+                    setStoredCharacter(updatedSelf);
+                  } else {
+                    setCharacter(null);
+                    clearStoredCharacter();
+                  }
+                }
+              } catch (error) {
+                console.error("Failed to save roster.", error);
+                window.alert("Unable to save roster right now.");
               }
-            }
+            })();
           }}
         />
       )
-      : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} />;
+      : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
   }
   if (route.page === "not-found") {
     pageContent = <NotFoundPage onReturnHome={navigate({ page: "home" })} />;
