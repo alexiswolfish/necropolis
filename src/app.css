@@ -117,7 +117,7 @@ html.fonts-ready #root {
   --concord-primary: #b32200;
   --concord-title: #f5dc74;
   --concord-secondary: #f58e84;
-  --concord-tertiary: #253122;
+  --concord-tertiary: #f58e84;
   --concord-nav: #004f46;
 }
 
@@ -287,6 +287,20 @@ html.fonts-ready #root {
 
 .story-paragraph {
   margin: 0 0 1.7rem;
+}
+
+.story-concord-word {
+  font-family: var(--font-logo);
+  color: var(--color-before);
+  text-transform: uppercase;
+}
+
+.story-omen-paragraph {
+  margin-top: 3.4rem;
+}
+
+.story-omen-word {
+  cursor: default;
 }
 
 .concords-layout {
@@ -524,9 +538,9 @@ html.fonts-ready #root {
 }
 
 .concord-lede {
-  margin-bottom: 2.4rem;
-  font-size: clamp(2.4rem, 2.05rem + 1.2vw, 3.5rem);
-  line-height: 1.15;
+  margin: 0 0 1.35rem;
+  font-size: 28px;
+  line-height: 1.18;
 }
 
 .concord-body {

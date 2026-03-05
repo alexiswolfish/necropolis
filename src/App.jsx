@@ -239,6 +239,27 @@ const MAIN_CONCORD_CARDS = ALL_CONCORD_CARDS.filter((card) => MAIN_CARD_IDS.has(
 const SPARE_CONCORD_CARDS = ALL_CONCORD_CARDS.filter((card) => !MAIN_CARD_IDS.has(card.id));
 const PARTY_DATE = "March 14th 2026";
 const PARTY_ADDRESS = "Piedmont Community Center";
+const APP_BASE = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+
+function withBase(pathname) {
+  const normalized = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  if (!APP_BASE) return normalized;
+  if (normalized === "/") return `${APP_BASE}/`;
+  return `${APP_BASE}${normalized}`;
+}
+
+function stripBase(pathname) {
+  if (!APP_BASE) return pathname;
+  if (pathname === APP_BASE || pathname === `${APP_BASE}/`) return "/";
+  if (pathname.startsWith(`${APP_BASE}/`)) return pathname.slice(APP_BASE.length);
+  return pathname;
+}
+
+function withAssetBase(pathname) {
+  const clean = pathname.replace(/^\//, "");
+  return `${import.meta.env.BASE_URL}${clean}`;
+}
+
 const COSTUME_IMAGE_COUNTS = {
   "brood-feud": 13,
   "desire-conspire": 12,
@@ -253,7 +274,7 @@ const COSTUME_IMAGE_COUNTS = {
 const COSTUME_IMAGES_BY_CONCORD = Object.fromEntries(
   Object.entries(COSTUME_IMAGE_COUNTS).map(([concordId, count]) => [
     concordId,
-    Array.from({ length: count }, (_, index) => `/costumes/${concordId}/img-${String(index + 1).padStart(2, "0")}.png`)
+    Array.from({ length: count }, (_, index) => withAssetBase(`/costumes/${concordId}/img-${String(index + 1).padStart(2, "0")}.png`))
   ])
 );
 const CONCORD_NOTES_BY_ID = {
@@ -332,11 +353,12 @@ function toFirstWordCapital(text) {
 }
 
 function getRouteFromPath(pathname) {
-  if (pathname === "/") return { page: "home" };
-  if (pathname === "/concords") return { page: "concords" };
-  if (pathname === "/concords/spare") return { page: "concords-spare" };
+  const appPath = stripBase(pathname);
+  if (appPath === "/") return { page: "home" };
+  if (appPath === "/concords") return { page: "concords" };
+  if (appPath === "/concords/spare") return { page: "concords-spare" };
 
-  const detailMatch = pathname.match(/^\/concords\/([a-z0-9-]+)(?:\/(backstory|costumes))?$/);
+  const detailMatch = appPath.match(/^\/concords\/([a-z0-9-]+)(?:\/(backstory|costumes))?$/);
   if (detailMatch && CONCORDS_BY_ID.has(detailMatch[1])) {
     return { page: "concord-detail", concordId: detailMatch[1], detailTab: detailMatch[2] ?? "backstory" };
   }
@@ -345,17 +367,17 @@ function getRouteFromPath(pathname) {
 }
 
 function getPathFromRoute(route) {
-  if (route.page === "home") return "/";
-  if (route.page === "concords") return "/concords";
-  if (route.page === "concords-spare") return "/concords/spare";
+  if (route.page === "home") return withBase("/");
+  if (route.page === "concords") return withBase("/concords");
+  if (route.page === "concords-spare") return withBase("/concords/spare");
   if (route.page === "concord-detail" && route.concordId) {
-    if (route.detailTab === "costumes") return `/concords/${route.concordId}/costumes`;
-    return `/concords/${route.concordId}`;
+    if (route.detailTab === "costumes") return withBase(`/concords/${route.concordId}/costumes`);
+    return withBase(`/concords/${route.concordId}`);
   }
-  return "/";
+  return withBase("/");
 }
 
-function StoryPage() {
+function StoryPage({ onHoverOmenStart, onHoverOmenEnd }) {
   return (
     <main className="hero-layout">
       <aside className="event-meta type-caps">
@@ -368,10 +390,19 @@ function StoryPage() {
       <article className="story-block">
         <h1 className="type-before before-mark">Before...</h1>
         <p className="type-body story-paragraph">the dead were put to rest, and before the end of Wonders or the withering of Mystery, there loomed in the dusk of all things, the city of Necropolis.</p>
-        <p className="type-body story-paragraph">There, eight CONCORDS, may they be both cursed and blessed, return to the sparring fields to compete in another cycle of the eternal tournament.</p>
+        <p className="type-body story-paragraph">There, eight <span className="story-concord-word">Concords</span>, may they be both cursed and blessed, return to the sparring fields to compete in another cycle of the eternal tournament.</p>
         <p className="type-body story-paragraph">Victory promises eternal renewal, dominion, or release, each Concord tells the tale it prefers, but all agree on this: <strong>the Tournament must be held, and you must attend.</strong></p>
         <p className="type-body story-paragraph">Death has no hold on those bound by grim accord. Yet even here, beneath rite and rivalry, its shadow gathers and its patience thins.</p>
-        <p className="type-body story-paragraph">But Death but claim us all.</p>
+        <p className="type-body story-paragraph story-omen-paragraph">
+          <span
+            className="story-concord-word story-omen-word"
+            onMouseEnter={onHoverOmenStart}
+            onMouseLeave={onHoverOmenEnd}
+          >
+            but death must claim us all
+          </span>
+          .
+        </p>
       </article>
     </main>
   );
@@ -506,7 +537,7 @@ function NotFoundPage({ onReturnHome }) {
     <main className="not-found-layout" aria-labelledby="not-found-title">
       <h1 id="not-found-title" className="not-found-code">404</h1>
       <p className="not-found-message">It's pitch back. You are likely to be eaten by a grue.</p>
-      <a href="/" onClick={onReturnHome} className="not-found-link">return home</a>
+      <a href={getPathFromRoute({ page: "home" })} onClick={onReturnHome} className="not-found-link">return home</a>
     </main>
   );
 }
@@ -515,6 +546,7 @@ export default function App() {
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
   const audioContextRef = useRef(null);
   const lastHoverRef = useRef({ concordId: "", time: 0 });
+  const ominousHumRef = useRef(null);
 
   useEffect(() => {
     const onPopState = () => setRoute(getRouteFromPath(window.location.pathname));
@@ -567,7 +599,71 @@ export default function App() {
     playGongTone(audioContext, frequency);
   };
 
-  let pageContent = <StoryPage />;
+  const startOminousHum = () => {
+    if (typeof window === "undefined") return;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextClass();
+    }
+    const audioContext = audioContextRef.current;
+    if (audioContext.state === "suspended") {
+      audioContext.resume().catch(() => {});
+    }
+    if (ominousHumRef.current) return;
+
+    const now = audioContext.currentTime;
+    const gain = audioContext.createGain();
+    const lowpass = audioContext.createBiquadFilter();
+    const oscA = audioContext.createOscillator();
+    const oscB = audioContext.createOscillator();
+
+    lowpass.type = "lowpass";
+    lowpass.frequency.setValueAtTime(520, now);
+    lowpass.Q.value = 0.9;
+
+    oscA.type = "triangle";
+    oscA.frequency.setValueAtTime(73.42, now);
+    oscB.type = "sine";
+    oscB.frequency.setValueAtTime(77.78, now);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.045, now + 0.65);
+
+    oscA.connect(lowpass);
+    oscB.connect(lowpass);
+    lowpass.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscA.start(now);
+    oscB.start(now);
+
+    ominousHumRef.current = { gain, lowpass, oscA, oscB };
+  };
+
+  const stopOminousHum = () => {
+    const hum = ominousHumRef.current;
+    if (!hum || !audioContextRef.current) return;
+
+    const now = audioContextRef.current.currentTime;
+    hum.gain.gain.cancelScheduledValues(now);
+    hum.gain.gain.setValueAtTime(Math.max(hum.gain.gain.value, 0.0001), now);
+    hum.gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+
+    hum.oscA.stop(now + 0.48);
+    hum.oscB.stop(now + 0.48);
+    setTimeout(() => {
+      hum.oscA.disconnect();
+      hum.oscB.disconnect();
+      hum.lowpass.disconnect();
+      hum.gain.disconnect();
+    }, 550);
+
+    ominousHumRef.current = null;
+  };
+
+  let pageContent = <StoryPage onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
   if (route.page === "concords") {
     pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id })} onHoverConcord={handleConcordHover} />;
   }
@@ -592,9 +688,9 @@ export default function App() {
   return (
     <div className="page-shell" data-page={route.page} data-concord={selectedConcord ? selectedConcord.id : undefined}>
       <header className="top-bar">
-        <a href="/" onClick={navigate({ page: "home" })} className="type-logo brand" aria-label="Necropolis home">Necropolis</a>
+        <a href={getPathFromRoute({ page: "home" })} onClick={navigate({ page: "home" })} className="type-logo brand" aria-label="Necropolis home">Necropolis</a>
         <nav className="top-nav" aria-label="Primary">
-          <a href="/concords" onClick={navigate({ page: "concords" })} className="type-caps top-nav-link" aria-current={inConcordsSection ? "page" : undefined}>Concords</a>
+          <a href={getPathFromRoute({ page: "concords" })} onClick={navigate({ page: "concords" })} className="type-caps top-nav-link" aria-current={inConcordsSection ? "page" : undefined}>Concords</a>
           <a href="#" className="type-caps top-nav-link">Sign In</a>
         </nav>
       </header>
