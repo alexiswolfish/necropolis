@@ -85,7 +85,7 @@ html.fonts-ready #root {
   --theme-nav-color: var(--color-text-caps);
   --theme-heading-color: var(--color-before);
   --theme-body-color: var(--color-text-primary);
-  --theme-brand-color: var(--color-text-primary);
+  --theme-brand-color: var(--color-before);
 }
 
 .page-shell[data-page="concords"] {
@@ -223,15 +223,15 @@ html.fonts-ready #root {
 }
 
 .concord-grid-exact {
-  grid-template-columns: repeat(auto-fit, 450px);
+  grid-template-columns: repeat(auto-fit, 400px);
   gap: 20px;
   justify-content: center;
 }
 
 .concord-card {
   position: relative;
-  width: 450px;
-  height: 450px;
+  width: 400px;
+  height: 400px;
   border: 0;
   border-radius: 0;
   background: var(--card-bg);
@@ -239,11 +239,13 @@ html.fonts-ready #root {
   padding: 0.76rem 0.8rem;
   text-align: left;
   cursor: pointer;
-  transition: transform 180ms ease;
+  transform-origin: center;
+  transition: transform 220ms ease, box-shadow 220ms ease;
 }
 
 .concord-card:hover {
-  transform: translateY(-2px);
+  transform: scale(1.035);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.3);
 }
 
 .concord-card-symbol {
@@ -307,20 +309,16 @@ html.fonts-ready #root {
   padding-top: 0.9rem;
 }
 
-.concord-back {
-  border: 1px solid var(--concord-nav);
-  background: transparent;
-  color: var(--concord-nav);
-  padding: 0.32rem 0.72rem;
-  margin-bottom: 2rem;
-  cursor: pointer;
-}
-
 .concord-detail-name {
   margin: 0 0 2rem;
+  padding-right: 40px;
   color: var(--concord-secondary);
-  line-height: 0.92;
+  font-family: "Lohengrin", serif;
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
   font-size: clamp(3.6rem, 3rem + 2vw, 5.6rem);
+  text-align: center;
 }
 
 .concord-meta {
@@ -338,6 +336,15 @@ html.fonts-ready #root {
 .concord-meta-row dd {
   margin: 0;
   color: var(--concord-tertiary);
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  text-transform: lowercase;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.concord-meta-value {
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  text-transform: lowercase;
 }
 
 .concord-detail-right {
@@ -397,8 +404,13 @@ html.fonts-ready #root {
 }
 
 .concord-body {
-  font-size: clamp(2.15rem, 1.9rem + 0.7vw, 2.85rem);
+  margin: 0 0 1.35rem;
+  font-size: 28px;
   line-height: 1.18;
+}
+
+.concord-detail-right .concord-body:last-child {
+  margin-bottom: 0;
 }
 
 .type-logo {
@@ -431,6 +443,12 @@ html.fonts-ready #root {
   line-height: 1.65;
   text-transform: uppercase;
   color: var(--theme-nav-color);
+}
+
+.type-caps.concord-meta-value {
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  text-transform: lowercase;
+  letter-spacing: 0;
 }
 
 .page-shell[data-page="home"] .story-block {
@@ -473,13 +491,20 @@ html.fonts-ready #root {
   }
 
   .concord-grid-exact {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, 300px);
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .concord-card {
+    width: 300px;
+    height: 300px;
   }
 }
 
 @media (max-width: 620px) {
   .concord-grid-exact {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, 300px);
   }
 
   .concord-lede {

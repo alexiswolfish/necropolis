@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 const CONCORDS = [
   {
@@ -7,8 +7,15 @@ const CONCORDS = [
     paletteId: 342,
     element: "Warded Earth",
     earthlyDesire: "Hedonism",
-    lede: "Those pledged to the CONCORD of Pleasure & Treasure are insatiable.",
-    body: "They learned early that glory burns bright and dies young. Gold does not. They pursue power because power hardens into possession. Land can be held. Ships can be anchored. Mines can be dug deeper. Coin can be stacked until it outlives its owner. Influence drifts; wealth settles. The Concord prefers what settles.",
+    lede: "The Concord of Pleasure & Treasure approaches life with admirable focus: if something is beautiful, comfortable, delicious, or made of gold, it is probably worth having.",
+    bodyParagraphs: [
+      "Members favor velvet, brocade, sashes, open collars, and enough jewelry to suggest they recently discovered a treasure chest and decided not to share the news. Coins, pearls, rings, and brightly colored fabrics are common. Texture is important. So is weight.",
+      <>They value <strong>pleasure, possession, and excellent company</strong>. Good wine should be finished, fine food should be appreciated slowly, and gold should ideally be counted several times just to enjoy the sound.</>,
+      "In contest they fight with the stubborn patience of earth itself. They advance slowly, refuse to be hurried, and prove extremely difficult to dislodge once they have decided they would like something, whether that something is a chair, a jewel, or victory.",
+      "At a gathering they are usually found reclining somewhere comfortable, enjoying themselves immensely while quietly accumulating small valuables and allies.",
+      "After all, pleasure is wonderful.",
+      "But treasure lasts."
+    ],
     preview: { start: "#0d2b0f", end: "#102f12", border: "#b89342", text: "#f0a925" }
   },
   {
@@ -111,20 +118,83 @@ const BASE_CONCORD_CARDS = CONCORDS.map((concord, index) => {
   };
 });
 
-const SPARE_IDS = new Set([
-  "oath-ruin",
-  "glory-grief",
-  "mercy-malice",
-  "forge-frost",
-  "throne-thorns",
-  "grace-disgrace"
+const ALL_CONCORD_CARDS = [...BASE_CONCORD_CARDS, ...EXTRA_CONCORD_CARDS];
+const MAIN_CARD_IDS = new Set([
+  "desire-conspire-base",
+  "pleasure-treasure-base",
+  "brood-feud",
+  "zeal-steel",
+  "tears-spears",
+  "veils-sails",
+  "laurels-quarrels",
+  "wit-spit"
 ]);
 
-const MAIN_CONCORD_CARDS = BASE_CONCORD_CARDS.filter((card) => !SPARE_IDS.has(card.routeId));
-const SPARE_CONCORD_CARDS = [
-  ...BASE_CONCORD_CARDS.filter((card) => SPARE_IDS.has(card.routeId)),
-  ...EXTRA_CONCORD_CARDS
-];
+const MAIN_CONCORD_CARDS = ALL_CONCORD_CARDS.filter((card) => MAIN_CARD_IDS.has(card.id));
+const SPARE_CONCORD_CARDS = ALL_CONCORD_CARDS.filter((card) => !MAIN_CARD_IDS.has(card.id));
+const CONCORD_NOTES_BY_ID = {
+  "desire-conspire": 146.83, // D3
+  "forge-frost": 155.56, // D#3
+  "glory-grief": 174.61, // F3
+  "grace-disgrace": 196.0, // G3
+  "mercy-malice": 220.0, // A3
+  "oath-ruin": 233.08, // A#3
+  "pleasure-treasure": 261.63, // C4
+  "throne-thorns": 293.66 // D4
+};
+
+function playGongTone(audioContext, frequency) {
+  const now = audioContext.currentTime;
+  const endTime = now + 3.4;
+
+  const master = audioContext.createGain();
+  const lowpass = audioContext.createBiquadFilter();
+
+  lowpass.type = "lowpass";
+  lowpass.frequency.setValueAtTime(2200, now);
+  lowpass.frequency.exponentialRampToValueAtTime(500, endTime);
+  lowpass.Q.value = 0.7;
+
+  master.gain.setValueAtTime(0.0001, now);
+  master.gain.exponentialRampToValueAtTime(0.24, now + 0.03);
+  master.gain.exponentialRampToValueAtTime(0.0001, endTime);
+
+  lowpass.connect(master);
+  master.connect(audioContext.destination);
+
+  const partials = [
+    { ratio: 1, type: "triangle", gain: 0.95 },
+    { ratio: 2.15, type: "sine", gain: 0.24 },
+    { ratio: 2.92, type: "sine", gain: 0.14 }
+  ];
+
+  partials.forEach((partial) => {
+    const osc = audioContext.createOscillator();
+    const oscGain = audioContext.createGain();
+
+    osc.type = partial.type;
+    osc.frequency.setValueAtTime(frequency * partial.ratio, now);
+    osc.detune.setValueAtTime((Math.random() - 0.5) * 8, now);
+
+    oscGain.gain.setValueAtTime(partial.gain, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.0001, endTime);
+
+    osc.connect(oscGain);
+    oscGain.connect(lowpass);
+
+    osc.start(now);
+    osc.stop(endTime);
+    osc.onended = () => {
+      osc.disconnect();
+      oscGain.disconnect();
+    };
+  });
+
+  setTimeout(() => {
+    lowpass.disconnect();
+    master.disconnect();
+  }, 3600);
+}
 
 function toFirstWordCapital(text) {
   const lower = text.toLowerCase();
@@ -174,7 +244,7 @@ function StoryPage() {
   );
 }
 
-function ConcordsPage({ onOpenConcord, cards }) {
+function ConcordsPage({ onOpenConcord, onHoverConcord, cards }) {
   return (
     <main className="concords-layout">
       <section className="concord-grid concord-grid-exact" aria-label="Concord squares">
@@ -184,6 +254,7 @@ function ConcordsPage({ onOpenConcord, cards }) {
             type="button"
             className="concord-card"
             onClick={onOpenConcord(card.routeId)}
+            onMouseEnter={() => onHoverConcord(card.routeId)}
             style={{
               "--card-bg": card.colorBg,
               "--card-secondary": card.colorTop,
@@ -208,33 +279,33 @@ function ConcordsPage({ onOpenConcord, cards }) {
   );
 }
 
-function ConcordDetailPage({ concord, onBackToConcords }) {
+function ConcordDetailPage({ concord }) {
   return (
     <main className="concord-detail-layout">
       <aside className="concord-detail-left">
-        <button type="button" className="type-caps concord-back" onClick={onBackToConcords}>Back to Concords</button>
-
-        <h1 className="type-before concord-detail-name">{concord.label}</h1>
+        <h1 className="concord-detail-name">{concord.label}</h1>
 
         <dl className="concord-meta">
           <div className="concord-meta-row">
             <dt className="type-caps">Element:</dt>
-            <dd className="type-caps">{concord.element}</dd>
+            <dd className="type-caps concord-meta-value">{concord.element}</dd>
           </div>
           <div className="concord-meta-row">
             <dt className="type-caps">Earthly Desire:</dt>
-            <dd className="type-caps">{concord.earthlyDesire}</dd>
+            <dd className="type-caps concord-meta-value">{concord.earthlyDesire}</dd>
           </div>
           <div className="concord-meta-row">
             <dt className="type-caps">Palette:</dt>
-            <dd className="type-caps">Wada #{concord.paletteId}</dd>
+            <dd className="type-caps concord-meta-value">Wada #{concord.paletteId}</dd>
           </div>
         </dl>
       </aside>
 
       <article className="concord-detail-right">
         <p className="concord-lede">{concord.lede}</p>
-        <p className="concord-body">{concord.body}</p>
+        {(concord.bodyParagraphs ?? [concord.body]).map((paragraph, index) => (
+          <p key={`${concord.id}-body-${index}`} className="concord-body">{paragraph}</p>
+        ))}
       </article>
     </main>
   );
@@ -252,11 +323,19 @@ function NotFoundPage({ onReturnHome }) {
 
 export default function App() {
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
+  const audioContextRef = useRef(null);
+  const lastHoverRef = useRef({ concordId: "", time: 0 });
 
   useEffect(() => {
     const onPopState = () => setRoute(getRouteFromPath(window.location.pathname));
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  useEffect(() => () => {
+    if (audioContextRef.current) {
+      audioContextRef.current.close().catch(() => {});
+    }
   }, []);
 
   const selectedConcord = useMemo(() => {
@@ -273,15 +352,40 @@ export default function App() {
     setRoute(nextRoute);
   };
 
+  const handleConcordHover = (concordId) => {
+    if (typeof window === "undefined") return;
+
+    const now = window.performance.now();
+    if (lastHoverRef.current.concordId === concordId && now - lastHoverRef.current.time < 220) {
+      return;
+    }
+    lastHoverRef.current = { concordId, time: now };
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextClass();
+    }
+
+    const audioContext = audioContextRef.current;
+    if (audioContext.state === "suspended") {
+      audioContext.resume().catch(() => {});
+    }
+
+    const frequency = CONCORD_NOTES_BY_ID[concordId] ?? 196.0;
+    playGongTone(audioContext, frequency);
+  };
+
   let pageContent = <StoryPage />;
   if (route.page === "concords") {
-    pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id })} />;
+    pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id })} onHoverConcord={handleConcordHover} />;
   }
   if (route.page === "concords-spare") {
-    pageContent = <ConcordsPage cards={SPARE_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id })} />;
+    pageContent = <ConcordsPage cards={SPARE_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id })} onHoverConcord={handleConcordHover} />;
   }
   if (route.page === "concord-detail" && selectedConcord) {
-    pageContent = <ConcordDetailPage concord={selectedConcord} onBackToConcords={navigate({ page: "concords" })} />;
+    pageContent = <ConcordDetailPage concord={selectedConcord} />;
   }
   if (route.page === "not-found") {
     pageContent = <NotFoundPage onReturnHome={navigate({ page: "home" })} />;
