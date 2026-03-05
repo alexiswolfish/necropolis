@@ -218,6 +218,8 @@ html.fonts-ready #root {
 }
 
 .top-bar {
+  position: relative;
+  z-index: 3;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -263,13 +265,40 @@ html.fonts-ready #root {
 }
 
 .hero-layout {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(130px, 170px) minmax(300px, 680px);
   gap: 3.25rem;
 }
 
+.home-death-wrap {
+  position: absolute;
+  right: -5rem;
+  top: -18vh;
+  pointer-events: none;
+  z-index: 0;
+  height: 150vh;
+}
+
+.home-death-bg {
+  width: auto;
+  height: 100%;
+  opacity: 0.48;
+  object-fit: contain;
+}
+
+.home-death-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, var(--color-bg) 0%, transparent 33%),
+    linear-gradient(to right, var(--color-bg) 0%, transparent 33%);
+}
+
 .event-meta {
   margin-top: 4.8rem;
+  position: relative;
+  z-index: 1;
 }
 
 .event-meta p {
@@ -277,7 +306,9 @@ html.fonts-ready #root {
 }
 
 .story-block {
-  max-width: 680px;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
 }
 
 .before-mark {
@@ -287,6 +318,7 @@ html.fonts-ready #root {
 
 .story-paragraph {
   margin: 0 0 1.7rem;
+  line-height: 1.4em;
 }
 
 .story-concord-word {
@@ -529,24 +561,109 @@ html.fonts-ready #root {
   text-decoration: underline;
 }
 
+.onboarding-gate {
+  min-height: calc(100vh - 220px);
+  display: grid;
+  place-items: center;
+}
+
+.begin-button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.onboarding-layout {
+  min-height: calc(100vh - 220px);
+  display: grid;
+  place-items: center;
+}
+
+.onboarding-panel {
+  width: min(760px, 100%);
+  border: 1px solid var(--color-border-subtle);
+  background: color-mix(in srgb, var(--color-bg) 86%, transparent);
+  padding: 1.6rem 1.2rem;
+}
+
+.onboarding-title {
+  margin: 0 0 1rem;
+}
+
+.onboarding-lede {
+  margin: 0 0 1rem;
+}
+
+.onboarding-label {
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.onboarding-input {
+  width: 100%;
+  background: #0b0f12;
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+  font-size: 20px;
+  padding: 0.6rem 0.7rem;
+  margin-bottom: 0.8rem;
+}
+
+.onboarding-meta {
+  margin: 0.4rem 0;
+}
+
+.onboarding-error {
+  margin: 0.8rem 0 0;
+  color: #f58e84;
+}
+
+.onboarding-actions {
+  margin-top: 1.1rem;
+  display: flex;
+  gap: 0.7rem;
+}
+
+.onboarding-btn {
+  border: 1px solid var(--color-border-subtle);
+  background: #131920;
+  color: var(--color-text-primary);
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 120px 36px 48px 36px;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.45rem;
+}
+
+.stat-btn {
+  border: 1px solid var(--color-border-subtle);
+  background: #131920;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  height: 28px;
+}
+
+.bot-trap-input {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .concord-lede,
 .concord-body {
-  margin: 0;
+  margin: 0 0 1.35rem;
   font-family: var(--font-body);
+  font-size: 28px;
+  line-height: 1.18;
   color: var(--concord-tertiary);
   letter-spacing: 0.01em;
-}
-
-.concord-lede {
-  margin: 0 0 1.35rem;
-  font-size: 28px;
-  line-height: 1.18;
-}
-
-.concord-body {
-  margin: 0 0 1.35rem;
-  font-size: 28px;
-  line-height: 1.18;
 }
 
 .concord-detail-right .concord-body:last-child {
@@ -570,7 +687,7 @@ html.fonts-ready #root {
 .type-body {
   font-family: var(--font-body);
   font-size: 36px;
-  line-height: 1.14;
+  line-height: 1.2;
   letter-spacing: 0.01em;
   color: var(--theme-body-color);
 }
@@ -602,6 +719,16 @@ html.fonts-ready #root {
 }
 
 @media (max-width: 980px) {
+  .home-death-wrap {
+    right: -3rem;
+    top: -16vh;
+    height: 130vh;
+  }
+
+  .home-death-bg {
+    opacity: 0.32;
+  }
+
   .costume-grid {
     column-count: 2;
   }
@@ -656,6 +783,22 @@ html.fonts-ready #root {
 }
 
 @media (max-width: 620px) {
+  .home-death-wrap {
+    position: relative;
+    top: auto;
+    right: auto;
+    z-index: 1;
+    height: auto;
+    width: min(92vw, 440px);
+    margin: -5rem 0 0 auto;
+  }
+
+  .home-death-bg {
+    height: auto;
+    width: 100%;
+    opacity: 0.42;
+  }
+
   .costume-grid {
     column-count: 1;
   }

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { GOING_GUEST_NAMES } from "./guestAllowlist";
 
 const CONCORDS = [
   {
@@ -207,6 +208,80 @@ const EXTRA_CONCORD_DETAILS = [
 ];
 
 const CONCORDS_BY_ID = new Map([...CONCORDS, ...EXTRA_CONCORD_DETAILS].map((concord) => [concord.id, concord]));
+const TEAM_BLUEPRINT = {
+  "desire-conspire": {
+    id: "desire-conspire",
+    concordName: "Desire & Conspire",
+    element: "fire",
+    directSign: "Sagittarius",
+    ambition: "Influence",
+    earthlyDesire: "Ambition",
+    palette: { id: 332, background: "#b32200", accent: "#f5dc74", title: "#f5dc74" }
+  },
+  "pleasure-treasure": {
+    id: "pleasure-treasure",
+    concordName: "Pleasure & Treasure",
+    element: "earth",
+    directSign: "Taurus",
+    ambition: "Prosperity",
+    earthlyDesire: "Hedonism",
+    palette: { id: 342, background: "#0d2b0f", accent: "#b89342", title: "#f0a925" }
+  },
+  "brood-feud": {
+    id: "brood-feud",
+    concordName: "Brood & Feud",
+    element: "fire",
+    directSign: "Aries",
+    ambition: "Dominance",
+    earthlyDesire: "Conquest",
+    palette: { id: 51, background: "#9e001f", accent: "#c1c494", title: "#0b25e4" }
+  },
+  "zeal-steel": {
+    id: "zeal-steel",
+    concordName: "Zeal & Steel",
+    element: "earth",
+    directSign: "Capricorn",
+    ambition: "Order",
+    earthlyDesire: "Legacy",
+    palette: { id: 273, background: "#e596c9", accent: "#cc5920", title: "#7d1532" }
+  },
+  "tears-spears": {
+    id: "tears-spears",
+    concordName: "Tears & Spears",
+    element: "water",
+    directSign: "Cancer",
+    ambition: "Sanctity",
+    earthlyDesire: "Devotion",
+    palette: { id: 277, background: "#3b1138", accent: "#96a8ba", title: "#df7a91" }
+  },
+  "veils-sails": {
+    id: "veils-sails",
+    concordName: "Veils & Sails",
+    element: "water",
+    directSign: "Pisces",
+    ambition: "Transcendence",
+    earthlyDesire: "Rapture",
+    palette: { id: 27, background: "#1d4255", accent: "#cc8c37", title: "#e6a4dc" }
+  },
+  "laurels-quarrels": {
+    id: "laurels-quarrels",
+    concordName: "Laurels & Quarrels",
+    element: "air",
+    directSign: "Leo",
+    ambition: "Renown",
+    earthlyDesire: "Glory",
+    palette: { id: 339, background: "#cc5918", accent: "#df7a91", title: "#4a1e8d" }
+  },
+  "wit-spit": {
+    id: "wit-spit",
+    concordName: "Wit & Spit",
+    element: "air",
+    directSign: "Gemini",
+    ambition: "Leverage",
+    earthlyDesire: "Cunning",
+    palette: { id: 329, background: "#f7f7f7", accent: "#f3b1bc", title: "#4a1e8d" }
+  }
+};
 
 const BASE_CONCORD_CARDS = CONCORDS.map((concord, index) => {
   const symbols = ["♃", "♂", "☉", "♄", "♆", "☽", "⚶", "♀"];
@@ -278,21 +353,185 @@ const COSTUME_IMAGES_BY_CONCORD = Object.fromEntries(
   ])
 );
 const CONCORD_NOTES_BY_ID = {
-  "brood-feud": 138.59, // C#3
+  // D harmonic minor: D, E, F, G, A, Bb, C#
   "desire-conspire": 146.83, // D3
-  "forge-frost": 155.56, // D#3
-  "glory-grief": 174.61, // F3
-  "grace-disgrace": 196.0, // G3
-  "laurels-quarrels": 207.65, // G#3
-  "mercy-malice": 220.0, // A3
-  "oath-ruin": 233.08, // A#3
-  "pleasure-treasure": 261.63, // C4
-  "throne-thorns": 293.66, // D4
-  "tears-spears": 349.23, // F4
-  "veils-sails": 311.13, // D#4
-  "wit-spit": 329.63, // E4
-  "zeal-steel": 246.94 // B3
+  "pleasure-treasure": 164.81, // E3
+  "brood-feud": 174.61, // F3
+  "zeal-steel": 196.0, // G3
+  "tears-spears": 220.0, // A3
+  "veils-sails": 233.08, // Bb3
+  "laurels-quarrels": 277.18, // C#4
+  "mercy-malice": 293.66, // D4
+  "glory-grief": 329.63, // E4
+  "oath-ruin": 349.23, // F4
+  "grace-disgrace": 392.0, // G4
+  "throne-thorns": 440.0, // A4
+  "forge-frost": 466.16, // Bb4
+  "wit-spit": 220.0 // A3
 };
+const STORAGE_CHARACTER_KEY = "necropolis.character";
+const STORAGE_CLAIMED_NAMES_KEY = "necropolis.claimed_names";
+const STORAGE_CHARACTERS_KEY = "necropolis.characters";
+const TEAM_MAX_SIZE = 9;
+const CONCORD_TEAMS = Object.keys(TEAM_BLUEPRINT);
+const DIRECT_SIGN_TO_TEAM = Object.fromEntries(Object.values(TEAM_BLUEPRINT).map((team) => [team.directSign, team.id]));
+const ZODIAC_ELEMENT = {
+  Aries: "fire",
+  Taurus: "earth",
+  Gemini: "air",
+  Cancer: "water",
+  Leo: "fire",
+  Virgo: "earth",
+  Libra: "air",
+  Scorpio: "water",
+  Sagittarius: "fire",
+  Capricorn: "earth",
+  Aquarius: "air",
+  Pisces: "water"
+};
+const TEAM_ELEMENT = Object.fromEntries(Object.values(TEAM_BLUEPRINT).map((team) => [team.id, team.element]));
+const CLASS_BY_STAT = {
+  might: "Dread Knight",
+  guile: "Nightblade",
+  wit: "Hex Scholar",
+  spirit: "Grave Oracle"
+};
+
+function normalizeName(name) {
+  return name.trim().toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ");
+}
+
+function tokenizeName(name) {
+  return normalizeName(name).split(" ").filter(Boolean);
+}
+
+function namesLikelyMatch(inputName, guestName) {
+  const inputTokens = tokenizeName(inputName);
+  const guestTokens = tokenizeName(guestName);
+  if (inputTokens.length === 0 || guestTokens.length === 0) return false;
+
+  const normalizedInput = inputTokens.join(" ");
+  const normalizedGuest = guestTokens.join(" ");
+  if (normalizedInput === normalizedGuest) return true;
+
+  // First name must match for heuristic/initial matching.
+  if (inputTokens[0] !== guestTokens[0]) return false;
+
+  const inputLast = inputTokens[inputTokens.length - 1];
+  const guestLast = guestTokens[guestTokens.length - 1];
+  if (!inputLast || !guestLast) return false;
+
+  // "Jeff H" matches "Jeff Henderson" (and vice versa).
+  if (inputLast.length === 1 && guestLast.startsWith(inputLast)) return true;
+  if (guestLast.length === 1 && inputLast.startsWith(guestLast)) return true;
+
+  return false;
+}
+
+function isOnGuestList(realName) {
+  if (GOING_GUEST_NAMES.length === 0) return true;
+  return GOING_GUEST_NAMES.some((guestName) => namesLikelyMatch(realName, guestName));
+}
+
+function getStoredCharacter() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_CHARACTER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function getStoredCharacters() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_CHARACTERS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function getClaimedNames() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_CLAIMED_NAMES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function getTeamCounts(characters) {
+  const counts = Object.fromEntries(CONCORD_TEAMS.map((teamId) => [teamId, 0]));
+  for (const character of characters) {
+    if (character?.concordId && counts[character.concordId] !== undefined) {
+      counts[character.concordId] += 1;
+    }
+  }
+  return counts;
+}
+
+function getLeastFilledTeam(teamIds, counts, maxSize = TEAM_MAX_SIZE) {
+  const candidates = teamIds.filter((teamId) => (counts[teamId] ?? 0) < maxSize);
+  if (candidates.length === 0) return null;
+  return candidates.sort((a, b) => (counts[a] - counts[b]) || CONCORD_TEAMS.indexOf(a) - CONCORD_TEAMS.indexOf(b))[0];
+}
+
+function assignTeamForSign(sign, counts) {
+  const signElement = ZODIAC_ELEMENT[sign] ?? null;
+  const directTeam = DIRECT_SIGN_TO_TEAM[sign] ?? null;
+
+  if (directTeam && (counts[directTeam] ?? 0) < TEAM_MAX_SIZE) {
+    return directTeam;
+  }
+
+  if (signElement) {
+    const sameElementTeams = CONCORD_TEAMS.filter((teamId) => TEAM_ELEMENT[teamId] === signElement);
+    const sameElementCandidate = getLeastFilledTeam(sameElementTeams, counts, TEAM_MAX_SIZE);
+    if (sameElementCandidate) return sameElementCandidate;
+  }
+
+  return getLeastFilledTeam(CONCORD_TEAMS, counts, TEAM_MAX_SIZE) ?? getLeastFilledTeam(CONCORD_TEAMS, counts, Number.POSITIVE_INFINITY);
+}
+
+function persistCharacter(character) {
+  const claimed = new Set(getClaimedNames());
+  claimed.add(normalizeName(character.realName));
+  window.localStorage.setItem(STORAGE_CLAIMED_NAMES_KEY, JSON.stringify(Array.from(claimed)));
+  window.localStorage.setItem(STORAGE_CHARACTER_KEY, JSON.stringify(character));
+  const existing = getStoredCharacters().filter((entry) => normalizeName(entry.realName) !== normalizeName(character.realName));
+  existing.push(character);
+  window.localStorage.setItem(STORAGE_CHARACTERS_KEY, JSON.stringify(existing));
+  return existing;
+}
+
+function getZodiacSign(dateString) {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return null;
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
+
+  if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "Aries";
+  if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "Taurus";
+  if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return "Gemini";
+  if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return "Cancer";
+  if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "Leo";
+  if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "Virgo";
+  if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return "Libra";
+  if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return "Scorpio";
+  if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return "Sagittarius";
+  if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return "Capricorn";
+  if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return "Aquarius";
+  return "Pisces";
+}
+
+function getAssignedClass(stats) {
+  const entries = Object.entries(stats);
+  entries.sort((a, b) => b[1] - a[1]);
+  if (entries.length < 2 || entries[0][1] !== entries[1][1]) {
+    return CLASS_BY_STAT[entries[0][0]];
+  }
+  return "Doom Herald";
+}
 
 function playGongTone(audioContext, frequency) {
   const now = audioContext.currentTime;
@@ -404,6 +643,10 @@ function StoryPage({ onHoverOmenStart, onHoverOmenEnd }) {
           .
         </p>
       </article>
+      <div className="home-death-wrap" aria-hidden="true">
+        <img src={withAssetBase("/death.png")} alt="" className="home-death-bg" />
+        <span className="home-death-overlay" />
+      </div>
     </main>
   );
 }
@@ -443,7 +686,7 @@ function ConcordsPage({ onOpenConcord, onHoverConcord, cards }) {
   );
 }
 
-function ConcordDetailPage({ concord, detailTab, onOpenTab }) {
+function ConcordDetailPage({ concord, detailTab, onOpenTab, onStartDetailHum, onStopDetailHum }) {
   const [leftLabel, rightLabel] = concord.label.split(" & ");
   const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
   const displayLabel = rightLabel
@@ -458,11 +701,18 @@ function ConcordDetailPage({ concord, detailTab, onOpenTab }) {
     )
     : concord.label;
   const costumeImages = COSTUME_IMAGES_BY_CONCORD[concord.id] ?? [];
+  const teamData = TEAM_BLUEPRINT[concord.id] ?? null;
 
   return (
     <main className="concord-detail-layout">
       <aside className="concord-detail-left">
-        <h1 className="concord-detail-name">{displayLabel}</h1>
+        <h1
+          className="concord-detail-name"
+          onMouseEnter={() => onStartDetailHum(concord.id)}
+          onMouseLeave={onStopDetailHum}
+        >
+          {displayLabel}
+        </h1>
 
         <dl className="concord-meta">
           <div className="concord-meta-row">
@@ -471,11 +721,11 @@ function ConcordDetailPage({ concord, detailTab, onOpenTab }) {
           </div>
           <div className="concord-meta-row">
             <dt className="type-caps">Earthly Desire:</dt>
-            <dd className="type-caps concord-meta-value">{concord.earthlyDesire}</dd>
+            <dd className="type-caps concord-meta-value">{teamData?.earthlyDesire ?? concord.earthlyDesire}</dd>
           </div>
           <div className="concord-meta-row">
             <dt className="type-caps">Palette:</dt>
-            <dd className="type-caps concord-meta-value">Wada #{concord.paletteId}</dd>
+            <dd className="type-caps concord-meta-value">Wada #{teamData?.palette.id ?? concord.paletteId}</dd>
           </div>
         </dl>
       </aside>
@@ -532,6 +782,79 @@ function ConcordDetailPage({ concord, detailTab, onOpenTab }) {
   );
 }
 
+function BeginGate({ onBegin }) {
+  return (
+    <main className="onboarding-gate">
+      <button type="button" className="begin-button type-before" onClick={onBegin}>Begin</button>
+    </main>
+  );
+}
+
+function OnboardingWizard({
+  step,
+  form,
+  remainingPoints,
+  assignedClass,
+  zodiacSign,
+  assignedConcordLabel,
+  error,
+  onNameChange,
+  onBotTrapChange,
+  onBirthDateChange,
+  onAdjustStat,
+  onBack,
+  onNext
+}) {
+  return (
+    <main className="onboarding-layout">
+      <section className="onboarding-panel">
+        <h1 className="onboarding-title type-before">Begin</h1>
+        {step === 1 ? (
+          <>
+            <p className="type-body onboarding-lede">Speak your true name.</p>
+            <label className="onboarding-label type-caps" htmlFor="real-name">Real Name</label>
+            <input id="real-name" className="onboarding-input" value={form.realName} onChange={(event) => onNameChange(event.target.value)} autoComplete="name" />
+            <input className="bot-trap-input" tabIndex="-1" autoComplete="off" value={form.botTrap} onChange={(event) => onBotTrapChange(event.target.value)} />
+          </>
+        ) : null}
+
+        {step === 2 ? (
+          <>
+            <p className="type-body onboarding-lede">Mark the day of your birth.</p>
+            <label className="onboarding-label type-caps" htmlFor="birth-date">Birth Date</label>
+            <input id="birth-date" type="date" className="onboarding-input" value={form.birthDate} onChange={(event) => onBirthDateChange(event.target.value)} />
+            {zodiacSign ? <p className="onboarding-meta type-caps">Sign: {zodiacSign}</p> : null}
+            {assignedConcordLabel ? <p className="onboarding-meta type-caps">Concord: {assignedConcordLabel}</p> : null}
+          </>
+        ) : null}
+
+        {step === 3 ? (
+          <>
+            <p className="type-body onboarding-lede">Distribute your power.</p>
+            <p className="onboarding-meta type-caps">Points Remaining: {remainingPoints}</p>
+            {["might", "guile", "wit", "spirit"].map((statKey) => (
+              <div key={statKey} className="stat-row">
+                <span className="type-caps stat-label">{statKey}</span>
+                <button type="button" className="stat-btn" onClick={() => onAdjustStat(statKey, -1)}>-</button>
+                <span className="type-caps stat-value">{form.stats[statKey]}</span>
+                <button type="button" className="stat-btn" onClick={() => onAdjustStat(statKey, 1)}>+</button>
+              </div>
+            ))}
+            <p className="onboarding-meta type-caps">Class: {assignedClass}</p>
+          </>
+        ) : null}
+
+        {error ? <p className="onboarding-error">{error}</p> : null}
+
+        <div className="onboarding-actions">
+          {step > 1 ? <button type="button" className="onboarding-btn" onClick={onBack}>Back</button> : null}
+          <button type="button" className="onboarding-btn" onClick={onNext}>{step === 3 ? "Create Character" : "Continue"}</button>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 function NotFoundPage({ onReturnHome }) {
   return (
     <main className="not-found-layout" aria-labelledby="not-found-title">
@@ -544,9 +867,25 @@ function NotFoundPage({ onReturnHome }) {
 
 export default function App() {
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
+  const [character, setCharacter] = useState(() => getStoredCharacter());
+  const [allCharacters, setAllCharacters] = useState(() => getStoredCharacters());
+  const [onboardingStep, setOnboardingStep] = useState(0);
+  const [onboardingError, setOnboardingError] = useState("");
+  const [onboardingForm, setOnboardingForm] = useState({
+    realName: "",
+    birthDate: "",
+    botTrap: "",
+    stats: {
+      might: 5,
+      guile: 5,
+      wit: 5,
+      spirit: 5
+    }
+  });
   const audioContextRef = useRef(null);
   const lastHoverRef = useRef({ concordId: "", time: 0 });
   const ominousHumRef = useRef(null);
+  const detailHumRef = useRef(null);
 
   useEffect(() => {
     const onPopState = () => setRoute(getRouteFromPath(window.location.pathname));
@@ -564,6 +903,13 @@ export default function App() {
     if (route.page !== "concord-detail") return null;
     return CONCORDS_BY_ID.get(route.concordId) ?? null;
   }, [route]);
+  const zodiacSign = useMemo(() => getZodiacSign(onboardingForm.birthDate), [onboardingForm.birthDate]);
+  const teamCounts = useMemo(() => getTeamCounts(allCharacters), [allCharacters]);
+  const assignedConcordId = zodiacSign ? assignTeamForSign(zodiacSign, teamCounts) : null;
+  const assignedConcordLabel = assignedConcordId ? (TEAM_BLUEPRINT[assignedConcordId]?.concordName ?? CONCORDS_BY_ID.get(assignedConcordId)?.label ?? null) : null;
+  const assignedClass = useMemo(() => getAssignedClass(onboardingForm.stats), [onboardingForm.stats]);
+  const remainingStatPoints = 24 - Object.values(onboardingForm.stats).reduce((total, value) => total + value, 0);
+  const canAccessStory = Boolean(character);
 
   const navigate = (nextRoute) => (event) => {
     event.preventDefault();
@@ -572,6 +918,103 @@ export default function App() {
       window.history.pushState({}, "", nextPath);
     }
     setRoute(nextRoute);
+  };
+
+  const handleOnboardingBack = () => {
+    setOnboardingError("");
+    setOnboardingStep((step) => Math.max(1, step - 1));
+  };
+
+  const handleAdjustStat = (statKey, direction) => {
+    setOnboardingForm((current) => {
+      const currentValue = current.stats[statKey];
+      const nextValue = currentValue + direction;
+      if (nextValue < 1 || nextValue > 10) return current;
+      const total = Object.values(current.stats).reduce((sum, value) => sum + value, 0);
+      if (direction > 0 && total >= 24) return current;
+
+      return {
+        ...current,
+        stats: {
+          ...current.stats,
+          [statKey]: nextValue
+        }
+      };
+    });
+  };
+
+  const handleOnboardingNext = () => {
+    setOnboardingError("");
+
+    if (onboardingStep === 1) {
+      const normalized = normalizeName(onboardingForm.realName);
+      if (onboardingForm.botTrap.trim()) {
+        setOnboardingError("Unable to proceed.");
+        return;
+      }
+      if (normalized.length < 3) {
+        setOnboardingError("Please enter your real name.");
+        return;
+      }
+      if (!isOnGuestList(onboardingForm.realName)) {
+        setOnboardingError("Name not recognized in RSVP list.");
+        return;
+      }
+      if (getClaimedNames().includes(normalized)) {
+        setOnboardingError("A character already exists for that name.");
+        return;
+      }
+      setOnboardingStep(2);
+      return;
+    }
+
+    if (onboardingStep === 2) {
+      if (!zodiacSign || !assignedConcordId) {
+        setOnboardingError("Please enter a valid birth date.");
+        return;
+      }
+      setOnboardingStep(3);
+      return;
+    }
+
+    if (onboardingStep === 3) {
+      if (remainingStatPoints > 0) {
+        setOnboardingError("Spend all stat points before continuing.");
+        return;
+      }
+      if (!zodiacSign) {
+        setOnboardingError("Missing zodiac sign.");
+        return;
+      }
+
+      const latestCharacters = getStoredCharacters();
+      const latestCounts = getTeamCounts(latestCharacters);
+      const allocatedConcordId = assignTeamForSign(zodiacSign, latestCounts);
+      if (!allocatedConcordId) {
+        setOnboardingError("No teams available.");
+        return;
+      }
+
+      const nextCharacter = {
+        realName: onboardingForm.realName.trim(),
+        birthDate: onboardingForm.birthDate,
+        zodiacSign,
+        concordId: allocatedConcordId,
+        className: assignedClass,
+        stats: onboardingForm.stats,
+        completedAt: new Date().toISOString()
+      };
+
+      const updatedCharacters = persistCharacter(nextCharacter);
+      setCharacter(nextCharacter);
+      setAllCharacters(updatedCharacters);
+      setOnboardingStep(0);
+      const nextPath = getPathFromRoute({ page: "home" });
+      if (window.location.pathname !== nextPath) {
+        window.history.pushState({}, "", nextPath);
+      }
+      setRoute({ page: "home" });
+    }
   };
 
   const handleConcordHover = (concordId) => {
@@ -663,7 +1106,123 @@ export default function App() {
     ominousHumRef.current = null;
   };
 
+  const startDetailConcordHum = (concordId) => {
+    if (typeof window === "undefined") return;
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextClass();
+    }
+    const audioContext = audioContextRef.current;
+    if (audioContext.state === "suspended") {
+      audioContext.resume().catch(() => {});
+    }
+
+    const frequency = CONCORD_NOTES_BY_ID[concordId] ?? 196.0;
+    const active = detailHumRef.current;
+    if (active && active.concordId === concordId) return;
+
+    if (active) {
+      const now = audioContext.currentTime;
+      active.gain.gain.cancelScheduledValues(now);
+      active.gain.gain.setValueAtTime(Math.max(active.gain.gain.value, 0.0001), now);
+      active.gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+      active.oscA.stop(now + 0.52);
+      active.oscB.stop(now + 0.52);
+      active.oscC.stop(now + 0.52);
+      setTimeout(() => {
+        active.oscA.disconnect();
+        active.oscB.disconnect();
+        active.oscC.disconnect();
+        active.lowpass.disconnect();
+        active.gain.disconnect();
+      }, 600);
+    }
+
+    const now = audioContext.currentTime;
+    const gain = audioContext.createGain();
+    const lowpass = audioContext.createBiquadFilter();
+    const oscA = audioContext.createOscillator();
+    const oscB = audioContext.createOscillator();
+    const oscC = audioContext.createOscillator();
+
+    lowpass.type = "lowpass";
+    lowpass.frequency.setValueAtTime(620, now);
+    lowpass.Q.value = 1.1;
+
+    oscA.type = "triangle";
+    oscB.type = "sine";
+    oscC.type = "sine";
+    oscA.frequency.setValueAtTime(frequency, now);
+    oscB.frequency.setValueAtTime(frequency * 0.5, now);
+    oscC.frequency.setValueAtTime(frequency * 1.5, now);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.055, now + 0.8);
+
+    oscA.connect(lowpass);
+    oscB.connect(lowpass);
+    oscC.connect(lowpass);
+    lowpass.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscA.start(now);
+    oscB.start(now);
+    oscC.start(now);
+
+    detailHumRef.current = { concordId, gain, lowpass, oscA, oscB, oscC };
+  };
+
+  const stopDetailConcordHum = () => {
+    const active = detailHumRef.current;
+    if (!active || !audioContextRef.current) return;
+
+    const now = audioContextRef.current.currentTime;
+    active.gain.gain.cancelScheduledValues(now);
+    active.gain.gain.setValueAtTime(Math.max(active.gain.gain.value, 0.0001), now);
+    active.gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.0);
+
+    active.oscA.stop(now + 1.05);
+    active.oscB.stop(now + 1.05);
+    active.oscC.stop(now + 1.05);
+    setTimeout(() => {
+      active.oscA.disconnect();
+      active.oscB.disconnect();
+      active.oscC.disconnect();
+      active.lowpass.disconnect();
+      active.gain.disconnect();
+    }, 1150);
+
+    detailHumRef.current = null;
+  };
+
+  const concordsVisible = route.page === "concords" || route.page === "concords-spare" || route.page === "concord-detail";
+  const shouldShowOnboardingGate = !canAccessStory && !concordsVisible;
+
   let pageContent = <StoryPage onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
+  if (shouldShowOnboardingGate && onboardingStep === 0) {
+    pageContent = <BeginGate onBegin={() => setOnboardingStep(1)} />;
+  }
+  if (shouldShowOnboardingGate && onboardingStep > 0) {
+    pageContent = (
+      <OnboardingWizard
+        step={onboardingStep}
+        form={onboardingForm}
+        remainingPoints={remainingStatPoints}
+        assignedClass={assignedClass}
+        zodiacSign={zodiacSign}
+        assignedConcordLabel={assignedConcordLabel}
+        error={onboardingError}
+        onNameChange={(realName) => setOnboardingForm((current) => ({ ...current, realName }))}
+        onBotTrapChange={(botTrap) => setOnboardingForm((current) => ({ ...current, botTrap }))}
+        onBirthDateChange={(birthDate) => setOnboardingForm((current) => ({ ...current, birthDate }))}
+        onAdjustStat={handleAdjustStat}
+        onBack={handleOnboardingBack}
+        onNext={handleOnboardingNext}
+      />
+    );
+  }
   if (route.page === "concords") {
     pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id })} onHoverConcord={handleConcordHover} />;
   }
@@ -676,6 +1235,8 @@ export default function App() {
         concord={selectedConcord}
         detailTab={route.detailTab ?? "backstory"}
         onOpenTab={(detailTab) => navigate({ page: "concord-detail", concordId: selectedConcord.id, detailTab })}
+        onStartDetailHum={startDetailConcordHum}
+        onStopDetailHum={stopDetailConcordHum}
       />
     );
   }
@@ -683,7 +1244,7 @@ export default function App() {
     pageContent = <NotFoundPage onReturnHome={navigate({ page: "home" })} />;
   }
 
-  const inConcordsSection = route.page === "concords" || route.page === "concords-spare" || route.page === "concord-detail";
+  const inConcordsSection = concordsVisible;
 
   return (
     <div className="page-shell" data-page={route.page} data-concord={selectedConcord ? selectedConcord.id : undefined}>
@@ -691,7 +1252,7 @@ export default function App() {
         <a href={getPathFromRoute({ page: "home" })} onClick={navigate({ page: "home" })} className="type-logo brand" aria-label="Necropolis home">Necropolis</a>
         <nav className="top-nav" aria-label="Primary">
           <a href={getPathFromRoute({ page: "concords" })} onClick={navigate({ page: "concords" })} className="type-caps top-nav-link" aria-current={inConcordsSection ? "page" : undefined}>Concords</a>
-          <a href="#" className="type-caps top-nav-link">Sign In</a>
+          <a href={getPathFromRoute({ page: "home" })} onClick={navigate({ page: "home" })} className="type-caps top-nav-link">{canAccessStory ? "Profile" : "Sign In"}</a>
         </nav>
       </header>
 
