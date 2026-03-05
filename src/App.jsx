@@ -460,6 +460,18 @@ function getClaimedNames() {
   }
 }
 
+function persistAllCharacters(characters) {
+  window.localStorage.setItem(STORAGE_CHARACTERS_KEY, JSON.stringify(characters));
+  const claimed = Array.from(
+    new Set(
+      characters
+        .map((entry) => normalizeName(entry.realName || ""))
+        .filter(Boolean)
+    )
+  );
+  window.localStorage.setItem(STORAGE_CLAIMED_NAMES_KEY, JSON.stringify(claimed));
+}
+
 function getTeamCounts(characters) {
   const counts = Object.fromEntries(CONCORD_TEAMS.map((teamId) => [teamId, 0]));
   for (const character of characters) {
@@ -494,13 +506,10 @@ function assignTeamForSign(sign, counts) {
 }
 
 function persistCharacter(character) {
-  const claimed = new Set(getClaimedNames());
-  claimed.add(normalizeName(character.realName));
-  window.localStorage.setItem(STORAGE_CLAIMED_NAMES_KEY, JSON.stringify(Array.from(claimed)));
   window.localStorage.setItem(STORAGE_CHARACTER_KEY, JSON.stringify(character));
   const existing = getStoredCharacters().filter((entry) => normalizeName(entry.realName) !== normalizeName(character.realName));
   existing.push(character);
-  window.localStorage.setItem(STORAGE_CHARACTERS_KEY, JSON.stringify(existing));
+  persistAllCharacters(existing);
   return existing;
 }
 
@@ -591,11 +600,23 @@ function toFirstWordCapital(text) {
   return lower.replace(/^([a-z])/, (m) => m.toUpperCase());
 }
 
+function renderConcordWord(text) {
+  const parts = text.split(/\b(CONCORD)\b/g);
+  return parts.map((part, index) => {
+    if (part === "CONCORD") {
+      return <span key={`concord-word-${index}`} className="concord-logo-word">{part}</span>;
+    }
+    return <React.Fragment key={`concord-text-${index}`}>{part}</React.Fragment>;
+  });
+}
+
 function getRouteFromPath(pathname) {
   const appPath = stripBase(pathname);
   if (appPath === "/") return { page: "home" };
   if (appPath === "/concords") return { page: "concords" };
   if (appPath === "/concords/spare") return { page: "concords-spare" };
+  if (appPath === "/players") return { page: "players" };
+  if (appPath === "/character") return { page: "character" };
 
   const detailMatch = appPath.match(/^\/concords\/([a-z0-9-]+)(?:\/(backstory|costumes))?$/);
   if (detailMatch && CONCORDS_BY_ID.has(detailMatch[1])) {
@@ -609,6 +630,8 @@ function getPathFromRoute(route) {
   if (route.page === "home") return withBase("/");
   if (route.page === "concords") return withBase("/concords");
   if (route.page === "concords-spare") return withBase("/concords/spare");
+  if (route.page === "players") return withBase("/players");
+  if (route.page === "character") return withBase("/character");
   if (route.page === "concord-detail" && route.concordId) {
     if (route.detailTab === "costumes") return withBase(`/concords/${route.concordId}/costumes`);
     return withBase(`/concords/${route.concordId}`);
@@ -771,9 +794,9 @@ function ConcordDetailPage({ concord, detailTab, onOpenTab, onStartDetailHum, on
           </section>
         ) : (
           <>
-            <p className="concord-lede">{concord.lede}</p>
+            <p className="concord-lede">{typeof concord.lede === "string" ? renderConcordWord(concord.lede) : concord.lede}</p>
             {(concord.bodyParagraphs ?? [concord.body]).map((paragraph, index) => (
-              <p key={`${concord.id}-body-${index}`} className="concord-body">{paragraph}</p>
+              <p key={`${concord.id}-body-${index}`} className="concord-body">{typeof paragraph === "string" ? renderConcordWord(paragraph) : paragraph}</p>
             ))}
           </>
         )}
@@ -855,6 +878,84 @@ function OnboardingWizard({
   );
 }
 
+function PlayersPage({ characters }) {
+  return (
+    <main className="players-layout">
+      <h1 className="type-before players-title">Players</h1>
+      <p className="type-caps players-subtitle">{characters.length} registered</p>
+      <section className="players-list" aria-label="Registered players">
+        {characters.map((player) => {
+          const team = TEAM_BLUEPRINT[player.concordId];
+          return (
+            <article key={`${player.realName}-${player.completedAt}`} className="player-card">
+              <p className="player-name">{player.realName}</p>
+              <p className="player-meta type-caps">{player.zodiacSign} • {team?.concordName ?? player.concordId}</p>
+              <p className="player-meta type-caps">{player.className}</p>
+            </article>
+          );
+        })}
+      </section>
+    </main>
+  );
+}
+
+function CharacterPage({ character, allCharacters, onSaveRoster }) {
+  const [draft, setDraft] = useState(() => allCharacters);
+
+  useEffect(() => {
+    setDraft(allCharacters);
+  }, [allCharacters]);
+
+  const updateEntry = (index, key, value) => {
+    setDraft((current) => {
+      const next = [...current];
+      next[index] = { ...next[index], [key]: value };
+      return next;
+    });
+  };
+
+  const removeEntry = (index) => {
+    setDraft((current) => current.filter((_, i) => i !== index));
+  };
+
+  return (
+    <main className="character-layout">
+      <section className="character-summary">
+        <h1 className="type-before character-title">Character</h1>
+        {character ? (
+          <>
+            <p className="type-body">{character.realName}</p>
+            <p className="type-caps">{character.zodiacSign} • {TEAM_BLUEPRINT[character.concordId]?.concordName ?? character.concordId}</p>
+            <p className="type-caps">{character.className}</p>
+          </>
+        ) : (
+          <p className="type-caps">No character completed yet.</p>
+        )}
+      </section>
+
+      <section className="roster-editor" aria-label="Roster editor">
+        <h2 className="type-caps">Roster Editor</h2>
+        {draft.map((entry, index) => (
+          <div key={`${entry.realName}-${index}`} className="roster-row">
+            <input className="onboarding-input" value={entry.realName ?? ""} onChange={(event) => updateEntry(index, "realName", event.target.value)} />
+            <input className="onboarding-input" value={entry.zodiacSign ?? ""} onChange={(event) => updateEntry(index, "zodiacSign", event.target.value)} />
+            <select className="onboarding-input" value={entry.concordId ?? ""} onChange={(event) => updateEntry(index, "concordId", event.target.value)}>
+              {CONCORD_TEAMS.map((teamId) => (
+                <option key={teamId} value={teamId}>{TEAM_BLUEPRINT[teamId].concordName}</option>
+              ))}
+            </select>
+            <input className="onboarding-input" value={entry.className ?? ""} onChange={(event) => updateEntry(index, "className", event.target.value)} />
+            <button type="button" className="onboarding-btn" onClick={() => removeEntry(index)}>Remove</button>
+          </div>
+        ))}
+        <div className="onboarding-actions">
+          <button type="button" className="onboarding-btn" onClick={() => onSaveRoster(draft)}>Save Roster</button>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 function NotFoundPage({ onReturnHome }) {
   return (
     <main className="not-found-layout" aria-labelledby="not-found-title">
@@ -866,8 +967,9 @@ function NotFoundPage({ onReturnHome }) {
 }
 
 export default function App() {
+  const storedCharacter = getStoredCharacter();
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
-  const [character, setCharacter] = useState(() => getStoredCharacter());
+  const [character, setCharacter] = useState(() => storedCharacter);
   const [allCharacters, setAllCharacters] = useState(() => getStoredCharacters());
   const [onboardingStep, setOnboardingStep] = useState(0);
   const [onboardingError, setOnboardingError] = useState("");
@@ -1199,10 +1301,11 @@ export default function App() {
 
   const concordsVisible = route.page === "concords" || route.page === "concords-spare" || route.page === "concord-detail";
   const shouldShowOnboardingGate = !canAccessStory && !concordsVisible;
+  const canSeeCharacterPage = canAccessStory;
 
   let pageContent = <StoryPage onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
   if (shouldShowOnboardingGate && onboardingStep === 0) {
-    pageContent = <BeginGate onBegin={() => setOnboardingStep(1)} />;
+    pageContent = <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} />;
   }
   if (shouldShowOnboardingGate && onboardingStep > 0) {
     pageContent = (
@@ -1240,11 +1343,42 @@ export default function App() {
       />
     );
   }
+  if (route.page === "players") {
+    pageContent = canAccessStory
+      ? <PlayersPage characters={allCharacters} />
+      : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} />;
+  }
+  if (route.page === "character") {
+    pageContent = canSeeCharacterPage
+      ? (
+        <CharacterPage
+          character={character}
+          allCharacters={allCharacters}
+          onSaveRoster={(nextRoster) => {
+            persistAllCharacters(nextRoster);
+            setAllCharacters(nextRoster);
+            if (character) {
+              const updatedSelf = nextRoster.find((entry) => normalizeName(entry.realName) === normalizeName(character.realName));
+              if (updatedSelf) {
+                setCharacter(updatedSelf);
+                window.localStorage.setItem(STORAGE_CHARACTER_KEY, JSON.stringify(updatedSelf));
+              } else {
+                setCharacter(null);
+                window.localStorage.removeItem(STORAGE_CHARACTER_KEY);
+              }
+            }
+          }}
+        />
+      )
+      : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} />;
+  }
   if (route.page === "not-found") {
     pageContent = <NotFoundPage onReturnHome={navigate({ page: "home" })} />;
   }
 
   const inConcordsSection = concordsVisible;
+  const inPlayersSection = route.page === "players";
+  const inCharacterSection = route.page === "character";
 
   return (
     <div className="page-shell" data-page={route.page} data-concord={selectedConcord ? selectedConcord.id : undefined}>
@@ -1252,7 +1386,8 @@ export default function App() {
         <a href={getPathFromRoute({ page: "home" })} onClick={navigate({ page: "home" })} className="type-logo brand" aria-label="Necropolis home">Necropolis</a>
         <nav className="top-nav" aria-label="Primary">
           <a href={getPathFromRoute({ page: "concords" })} onClick={navigate({ page: "concords" })} className="type-caps top-nav-link" aria-current={inConcordsSection ? "page" : undefined}>Concords</a>
-          <a href={getPathFromRoute({ page: "home" })} onClick={navigate({ page: "home" })} className="type-caps top-nav-link">{canAccessStory ? "Profile" : "Sign In"}</a>
+          <a href={getPathFromRoute({ page: "players" })} onClick={navigate({ page: "players" })} className="type-caps top-nav-link" aria-current={inPlayersSection ? "page" : undefined}>Players</a>
+          <a href={getPathFromRoute({ page: canAccessStory ? "character" : "home" })} onClick={navigate({ page: canAccessStory ? "character" : "home" })} className="type-caps top-nav-link" aria-current={inCharacterSection ? "page" : undefined}>{canAccessStory ? "Character" : "Sign In"}</a>
         </nav>
       </header>
 
