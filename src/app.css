@@ -99,66 +99,122 @@ html.fonts-ready #root {
 .page-shell[data-page="concord-detail"] {
   --theme-nav-font: var(--font-caps);
   --theme-nav-color: var(--concord-nav);
-  --theme-heading-color: var(--concord-secondary);
+  --theme-heading-color: var(--concord-title);
   --theme-body-color: var(--concord-tertiary);
   --theme-brand-color: var(--concord-nav);
-  background: linear-gradient(90deg, var(--concord-primary), #1f3521 46%, #172a1a);
+  background-color: var(--concord-primary);
 }
 
 .page-shell[data-concord="pleasure-treasure"] {
-  --concord-primary: #253122;
-  --concord-secondary: #f3a257;
-  --concord-tertiary: #986f2d;
-  --concord-nav: #b59392;
+  --concord-primary: #0d2b0f;
+  --concord-title: #f0a925;
+  --concord-secondary: #fdbf68;
+  --concord-tertiary: #f8b6ba;
+  --concord-nav: #986f2d;
 }
 
 .page-shell[data-concord="desire-conspire"] {
-  --concord-primary: #253122;
-  --concord-secondary: #cb2f43;
-  --concord-tertiary: #f58e84;
+  --concord-primary: #b32200;
+  --concord-title: #f5dc74;
+  --concord-secondary: #f58e84;
+  --concord-tertiary: #253122;
   --concord-nav: #004f46;
 }
 
+.page-shell[data-concord="brood-feud"] {
+  --concord-primary: #9e001f;
+  --concord-title: #0b25e4;
+  --concord-secondary: #a62c37;
+  --concord-tertiary: #006eb8;
+  --concord-nav: #006eb8;
+}
+
+.page-shell[data-concord="zeal-steel"] {
+  --concord-primary: #e596c9;
+  --concord-title: #7d1532;
+  --concord-secondary: #b6bfc1;
+  --concord-tertiary: #7d133a;
+  --concord-nav: #a36752;
+}
+
+.page-shell[data-concord="tears-spears"] {
+  --concord-primary: #3b1138;
+  --concord-title: #df7a91;
+  --concord-secondary: #f27291;
+  --concord-tertiary: #837e31;
+  --concord-nav: #b73f74;
+}
+
 .page-shell[data-concord="mercy-malice"] {
-  --concord-primary: #004f46;
-  --concord-secondary: #fcb315;
-  --concord-tertiary: #c0a9b3;
-  --concord-nav: #a62c37;
+  --concord-primary: #cc5918;
+  --concord-title: #4a1e8d;
+  --concord-secondary: #d8a37b;
+  --concord-tertiary: #a5c8d1;
+  --concord-nav: #40456a;
 }
 
 .page-shell[data-concord="glory-grief"] {
-  --concord-primary: #253122;
-  --concord-secondary: #f3a257;
-  --concord-tertiary: #b6bfc1;
-  --concord-nav: #f3a257;
+  --concord-primary: #f39b29;
+  --concord-title: #e4220f;
+  --concord-secondary: #fcb315;
+  --concord-tertiary: #a36aa5;
+  --concord-nav: #006eb8;
 }
 
 .page-shell[data-concord="oath-ruin"] {
-  --concord-primary: #253122;
-  --concord-secondary: #f5ecc2;
-  --concord-tertiary: #eeb480;
-  --concord-nav: #837e31;
+  --concord-primary: #e596c9;
+  --concord-title: #7d1532;
+  --concord-secondary: #b6bfc1;
+  --concord-tertiary: #7d133a;
+  --concord-nav: #a36752;
 }
 
 .page-shell[data-concord="grace-disgrace"] {
-  --concord-primary: #253122;
-  --concord-secondary: #f48067;
-  --concord-tertiary: #a5c8d1;
-  --concord-nav: #437742;
+  --concord-primary: #1d4255;
+  --concord-title: #e6a4dc;
+  --concord-secondary: #f8b6ba;
+  --concord-tertiary: #f8b6ba;
+  --concord-nav: #f8b6ba;
 }
 
-.page-shell[data-concord="throne-thorns"] {
-  --concord-primary: #253122;
-  --concord-secondary: #c1c494;
-  --concord-tertiary: #437742;
+.page-shell[data-concord="veils-sails"] {
+  --concord-primary: #1d4255;
+  --concord-title: #e6a4dc;
+  --concord-secondary: #f8b6ba;
+  --concord-tertiary: #f8b6ba;
+  --concord-nav: #f8b6ba;
+}
+
+.page-shell[data-concord="laurels-quarrels"] {
+  --concord-primary: #cc5918;
+  --concord-title: #4a1e8d;
+  --concord-secondary: #d8a37b;
+  --concord-tertiary: #a5c8d1;
+  --concord-nav: #40456a;
+}
+
+.page-shell[data-concord="wit-spit"] {
+  --concord-primary: #f7f7f7;
+  --concord-title: #4a1e8d;
+  --concord-secondary: #c0a9b3;
+  --concord-tertiary: #34454c;
   --concord-nav: #501345;
 }
 
+.page-shell[data-concord="throne-thorns"] {
+  --concord-primary: #9e001f;
+  --concord-title: #0b25e4;
+  --concord-secondary: #a62c37;
+  --concord-tertiary: #006eb8;
+  --concord-nav: #006eb8;
+}
+
 .page-shell[data-concord="forge-frost"] {
-  --concord-primary: #253122;
-  --concord-secondary: #bb7125;
-  --concord-tertiary: #b59392;
-  --concord-nav: #bce4e5;
+  --concord-primary: #3b1138;
+  --concord-title: #df7a91;
+  --concord-secondary: #f27291;
+  --concord-tertiary: #837e31;
+  --concord-nav: #b73f74;
 }
 
 .top-bar {
@@ -184,6 +240,26 @@ html.fonts-ready #root {
   color: var(--theme-nav-color);
   font-family: var(--theme-nav-font);
   transition: color 260ms ease;
+}
+
+.site-footer {
+  margin-top: 2.2rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in srgb, var(--theme-nav-color) 35%, transparent);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.site-footer-date,
+.site-footer-address {
+  margin: 0;
+  color: var(--theme-nav-color);
+}
+
+.site-footer-address {
+  text-align: right;
 }
 
 .hero-layout {
@@ -255,7 +331,7 @@ html.fonts-ready #root {
   margin: 0;
   color: var(--card-secondary);
   font-family: "Darksame Regular", "Lohengrin", serif;
-  font-size: 14px;
+  font-size: 18px;
   line-height: 1;
 }
 
@@ -312,7 +388,7 @@ html.fonts-ready #root {
 .concord-detail-name {
   margin: 0 0 2rem;
   padding-right: 40px;
-  color: var(--concord-secondary);
+  color: var(--concord-title);
   font-family: "Lohengrin", serif;
   font-weight: 400;
   line-height: 0.9;
@@ -349,6 +425,56 @@ html.fonts-ready #root {
 
 .concord-detail-right {
   max-width: 860px;
+}
+
+.concord-subnav {
+  display: flex;
+  gap: 1.1rem;
+  margin: 0 0 1.4rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--concord-tertiary) 45%, transparent);
+}
+
+.concord-subnav-link {
+  text-decoration: none;
+  color: color-mix(in srgb, var(--concord-tertiary) 70%, var(--concord-primary) 30%);
+  transition: color 180ms ease;
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  text-transform: lowercase;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.concord-subnav-link[aria-current="page"] {
+  color: var(--concord-title);
+}
+
+.concord-subnav-link:hover {
+  color: var(--concord-title);
+}
+
+.costume-grid {
+  column-count: 3;
+  column-gap: 0.85rem;
+}
+
+.costume-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 0 0.85rem;
+  break-inside: avoid;
+  object-fit: cover;
+  opacity: 0.01;
+  filter: blur(12px);
+  transform: scale(1.012);
+  transition: opacity 320ms ease-out, filter 420ms ease-out, transform 420ms ease-out;
+}
+
+.costume-image.is-loaded {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
 }
 
 .not-found-layout {
@@ -462,6 +588,19 @@ html.fonts-ready #root {
 }
 
 @media (max-width: 980px) {
+  .costume-grid {
+    column-count: 2;
+  }
+
+  .site-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .site-footer-address {
+    text-align: left;
+  }
+
   .page-shell {
     padding: 1.75rem 1rem 2.8rem;
   }
@@ -503,6 +642,10 @@ html.fonts-ready #root {
 }
 
 @media (max-width: 620px) {
+  .costume-grid {
+    column-count: 1;
+  }
+
   .concord-grid-exact {
     grid-template-columns: repeat(auto-fit, 300px);
   }
