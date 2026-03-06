@@ -5,11 +5,11 @@ function toFirstWordCapital(text) {
   return lower.replace(/^([a-z])/, (m) => m.toUpperCase());
 }
 
-function renderConcordWord(text) {
-  const parts = text.split(/\b(CONCORD)\b/g);
+export function renderConcordWord(text) {
+  const parts = text.split(/\b(concord|fire|water|air|earth)\b/gi);
   return parts.map((part, index) => {
-    if (part === "CONCORD") {
-      return <span key={`concord-word-${index}`} className="concord-logo-word">{part}</span>;
+    if (/^(concord|fire|water|air|earth)$/i.test(part)) {
+      return <span key={`concord-word-${index}`} className="concord-logo-word">{part.toUpperCase()}</span>;
     }
     return <React.Fragment key={`concord-text-${index}`}>{part}</React.Fragment>;
   });

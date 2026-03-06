@@ -78,6 +78,12 @@ html.fonts-ready #root {
   min-height: 100vh;
   padding: 2.5rem 2.6rem 4rem;
   transition: color 320ms ease, background-color 320ms ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-shell > main {
+  flex: 1;
 }
 
 .page-shell[data-page="home"] {
@@ -295,17 +301,19 @@ html.fonts-ready #root {
   top: auto;
   pointer-events: none;
   z-index: 0;
-  height: auto;
   width: min(92vw, 440px);
+  max-height: calc(100vh - 12rem);
+  overflow: hidden;
   margin: -5rem 0 0 auto;
   transform: none;
 }
 
 .home-death-bg {
   width: 100%;
-  height: auto;
+  height: 100%;
   opacity: 0.48;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: top center;
 }
 
 .home-death-overlay {
@@ -351,7 +359,7 @@ html.fonts-ready #root {
 .concord-logo-word {
   font-family: var(--font-logo);
   text-transform: uppercase;
-  color: inherit;
+  color: #ffffff;
 }
 
 .story-omen-paragraph {

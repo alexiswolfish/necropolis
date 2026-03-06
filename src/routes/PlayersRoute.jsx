@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { renderConcordWord } from "./ConcordsRoute";
 
 const STAT_LABELS = {
   pulchritude: "Pulchritude",
@@ -265,14 +266,14 @@ export function CharacterPage({ character, teamBlueprint, concord, shortConcordL
         ) : (
           <section className="character-concord-copy" aria-label="Concord backstory">
             {(shortConcordLore ?? []).map((paragraph, index) => (
-              <p key={`${character.concordId}-short-${index}`} className="character-concord-paragraph">{paragraph}</p>
+              <p key={`${character.concordId}-short-${index}`} className="character-concord-paragraph">{renderConcordWord(paragraph)}</p>
             ))}
             <a
               href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "backstory" })}
               onClick={onOpenConcord(character.concordId)}
               className="type-caps character-more-lore-btn"
             >
-              More Lore
+              More
             </a>
           </section>
         )}
