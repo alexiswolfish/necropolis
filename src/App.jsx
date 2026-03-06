@@ -376,7 +376,7 @@ const CONCORD_NOTES_BY_ID = {
 };
 const STORAGE_CHARACTER_KEY = "necropolis.character";
 const STORAGE_ONBOARDING_DRAFT_KEY = "necropolis.onboarding_draft";
-const TEAM_MAX_SIZE = 9;
+const TEAM_MAX_SIZE = 7;
 const CONCORD_TEAMS = Object.keys(TEAM_BLUEPRINT);
 const DIRECT_SIGN_TO_TEAM = Object.fromEntries(Object.values(TEAM_BLUEPRINT).map((team) => [team.directSign, team.id]));
 const ZODIAC_ELEMENT = {
@@ -590,6 +590,7 @@ function getLeastFilledTeam(teamIds, counts, maxSize = TEAM_MAX_SIZE) {
 function assignTeamForSign(sign, counts) {
   const signElement = ZODIAC_ELEMENT[sign] ?? null;
   const directTeam = DIRECT_SIGN_TO_TEAM[sign] ?? null;
+  const anyTeamUnderCap = CONCORD_TEAMS.some((teamId) => (counts[teamId] ?? 0) < TEAM_MAX_SIZE);
 
   if (directTeam && (counts[directTeam] ?? 0) < TEAM_MAX_SIZE) {
     return directTeam;
@@ -599,6 +600,14 @@ function assignTeamForSign(sign, counts) {
     const sameElementTeams = CONCORD_TEAMS.filter((teamId) => TEAM_ELEMENT[teamId] === signElement);
     const sameElementCandidate = getLeastFilledTeam(sameElementTeams, counts, TEAM_MAX_SIZE);
     if (sameElementCandidate) return sameElementCandidate;
+  }
+
+  if (!anyTeamUnderCap) {
+    if (directTeam) return directTeam;
+    if (signElement) {
+      const sameElementTeams = CONCORD_TEAMS.filter((teamId) => TEAM_ELEMENT[teamId] === signElement);
+      return getLeastFilledTeam(sameElementTeams, counts, Number.POSITIVE_INFINITY) ?? getLeastFilledTeam(CONCORD_TEAMS, counts, Number.POSITIVE_INFINITY);
+    }
   }
 
   return getLeastFilledTeam(CONCORD_TEAMS, counts, TEAM_MAX_SIZE) ?? getLeastFilledTeam(CONCORD_TEAMS, counts, Number.POSITIVE_INFINITY);
