@@ -685,7 +685,7 @@ html.fonts-ready #root {
 .onboarding-header {
   margin: 0 0 1.2rem;
   font-family: var(--font-logo);
-  font-size: clamp(2rem, 1.7rem + 1.3vw, 3rem);
+  font-size: 50px !important;
   line-height: 1;
   letter-spacing: 0;
   cursor: default;
@@ -693,7 +693,7 @@ html.fonts-ready #root {
 
 .onboarding-lede {
   font-family: var(--font-logo);
-  font-size: clamp(2rem, 1.7rem + 1.3vw, 3rem);
+  font-size: 28px !important;
   line-height: 1;
   letter-spacing: 0;
 }
@@ -788,7 +788,7 @@ html.fonts-ready #root {
 
 .onboarding-back-anchor {
   position: absolute;
-  top: 0.9rem;
+  top: -20px;
   left: 0.9rem;
   z-index: 2;
 }
