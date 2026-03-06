@@ -32,17 +32,27 @@ const PLAYERS_CONCORD_MEMBER_COLORS = {
   "wit-spit": "#c0a9b3"
 };
 
-export function PlayersPage({ characters, teamBlueprint }) {
+const ADMIN_REAL_NAMES = ["alexandra k wolfe", "jordan f morris"];
+
+function isAdmin(character) {
+  return ADMIN_REAL_NAMES.includes((character?.realName ?? "").trim().toLowerCase());
+}
+
+export function PlayersPage({ characters, teamBlueprint, currentCharacter, onToggleExcluded }) {
+  const adminMode = isAdmin(currentCharacter);
+
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {
     const members = characters
       .filter((player) => player.concordId === concordId)
       .sort((a, b) => (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? ""));
+    const officialCount = members.filter((m) => !m.excludedFromCount).length;
     return {
       concordId,
       concordName: teamBlueprint[concordId]?.concordName ?? concordId,
       backgroundColor: PLAYERS_CONCORD_HEADING_COLORS[concordId] ?? "#000000",
       memberColor: PLAYERS_CONCORD_MEMBER_COLORS[concordId] ?? "#000000",
-      members
+      members,
+      officialCount
     };
   }).filter((group) => group.members.length > 0);
 
@@ -51,12 +61,23 @@ export function PlayersPage({ characters, teamBlueprint }) {
       <section className="players-concord-groups" aria-label="Players by concord">
         {groupedByConcord.map((group) => (
           <article key={group.concordId} className="players-concord-group">
-            <h2 className="type-caps players-concord-name" style={{ color: group.backgroundColor }}>{group.concordName}</h2>
+            <h2 className="type-caps players-concord-name" style={{ color: group.backgroundColor }}>
+              {group.concordName}
+              {adminMode ? <span className="type-caps players-admin-count"> ({group.officialCount}/7)</span> : null}
+            </h2>
             <div className="concord-players-list">
               {group.members.map((member) => (
                 <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: group.memberColor }}>
                   {member.characterName ?? member.realName}
                   {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
+                  {adminMode ? (
+                    <button
+                      className="type-caps players-admin-toggle"
+                      onClick={() => onToggleExcluded(member.id, !member.excludedFromCount)}
+                    >
+                      {member.excludedFromCount ? "include" : "exclude"}
+                    </button>
+                  ) : null}
                 </p>
               ))}
             </div>

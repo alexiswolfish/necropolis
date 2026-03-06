@@ -34,6 +34,7 @@ function fromDbCharacter(row) {
     realName: row.real_name,
     characterName: row.character_name ?? null,
     rsvpMatched: row.rsvp_matched ?? true,
+    excludedFromCount: row.excluded_from_count ?? false,
     birthDate: row.birth_date,
     zodiacSign: row.zodiac_sign,
     concordId: row.concord_id,
@@ -43,7 +44,7 @@ function fromDbCharacter(row) {
   };
 }
 
-const CHARACTER_SELECT = "id,real_name,character_name,rsvp_matched,birth_date,zodiac_sign,concord_id,class_name,stats,completed_at";
+const CHARACTER_SELECT = "id,real_name,character_name,rsvp_matched,excluded_from_count,birth_date,zodiac_sign,concord_id,class_name,stats,completed_at";
 
 export async function fetchAllCharacters() {
   const rows = await supabaseRequest("characters", {
@@ -102,6 +103,9 @@ export async function updateCharacterById(id, patch) {
   }
   if (Object.prototype.hasOwnProperty.call(patch, "stats")) {
     payload.stats = patch.stats ?? null;
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, "excludedFromCount")) {
+    payload.excluded_from_count = patch.excludedFromCount ?? false;
   }
 
   const rows = await supabaseRequest("characters", {

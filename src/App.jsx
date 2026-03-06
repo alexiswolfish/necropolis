@@ -618,7 +618,7 @@ function clearStoredOnboardingDraft() {
 function getTeamCounts(characters) {
   const counts = Object.fromEntries(CONCORD_TEAMS.map((teamId) => [teamId, 0]));
   for (const character of characters) {
-    if (character?.concordId && counts[character.concordId] !== undefined) {
+    if (character?.concordId && counts[character.concordId] !== undefined && !character.excludedFromCount) {
       counts[character.concordId] += 1;
     }
   }
@@ -1270,7 +1270,19 @@ export default function App() {
     );
   }
   if (route.page === "players") {
-    pageContent = <PlayersPage characters={allCharacters} teamBlueprint={TEAM_BLUEPRINT} />;
+    pageContent = (
+      <PlayersPage
+        characters={allCharacters}
+        teamBlueprint={TEAM_BLUEPRINT}
+        currentCharacter={character}
+        onToggleExcluded={async (characterId, excluded) => {
+          const updated = await updateCharacterById(characterId, { excludedFromCount: excluded });
+          if (updated) {
+            setAllCharacters((prev) => prev.map((c) => c.id === characterId ? { ...c, excludedFromCount: excluded } : c));
+          }
+        }}
+      />
+    );
   }
   if (route.page === "character") {
     pageContent = canSeeCharacterPage
