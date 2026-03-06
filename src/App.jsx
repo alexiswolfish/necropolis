@@ -631,6 +631,14 @@ function getLeastFilledTeam(teamIds, counts, maxSize = TEAM_MAX_SIZE) {
   return candidates.sort((a, b) => (counts[a] - counts[b]) || CONCORD_TEAMS.indexOf(a) - CONCORD_TEAMS.indexOf(b))[0];
 }
 
+function getNameOverrideTeam(realName) {
+  const parts = String(realName ?? "").trim().toLowerCase().split(/\s+/);
+  if (parts[0] === "hao" && (!parts[1] || parts[1].startsWith("s"))) {
+    return "brood-feud";
+  }
+  return null;
+}
+
 function assignTeamForSign(sign, counts) {
   const signElement = ZODIAC_ELEMENT[sign] ?? null;
   const directTeam = DIRECT_SIGN_TO_TEAM[sign] ?? null;
@@ -859,7 +867,7 @@ export default function App() {
     [matchedGuestName, onboardingForm.realName]
   );
   const teamCounts = useMemo(() => getTeamCounts(allCharacters), [allCharacters]);
-  const assignedConcordId = zodiacSign ? assignTeamForSign(zodiacSign, teamCounts) : null;
+  const assignedConcordId = zodiacSign ? (getNameOverrideTeam(onboardingForm.realName) ?? assignTeamForSign(zodiacSign, teamCounts)) : null;
   const assignedConcordCard = useMemo(() => {
     if (!assignedConcordId) return null;
     return ALL_CONCORD_CARDS.find((card) => card.routeId === assignedConcordId) ?? null;
@@ -985,7 +993,7 @@ export default function App() {
       }
 
       const latestCounts = getTeamCounts(latestCharacters);
-      const allocatedConcordId = assignTeamForSign(zodiacSign, latestCounts);
+      const allocatedConcordId = getNameOverrideTeam(onboardingForm.realName) ?? assignTeamForSign(zodiacSign, latestCounts);
       if (!allocatedConcordId) {
         setOnboardingError("No teams available.");
         return;
