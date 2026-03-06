@@ -468,6 +468,7 @@ html.fonts-ready #root {
   letter-spacing: 0;
   font-size: clamp(3.6rem, 3rem + 2vw, 5.6rem);
   text-align: center;
+  display: inline-block;
 }
 
 .concord-meta {
@@ -868,6 +869,27 @@ html.fonts-ready #root {
   margin-bottom: 1rem;
 }
 
+.onboarding-concord-copy {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-body);
+  font-size: 24px;
+  line-height: 1.18;
+  color: var(--theme-body-color);
+}
+
+.onboarding-character-name-label {
+  display: block;
+  margin: 0 0 0.3rem;
+  padding-top: 20px;
+}
+
+.onboarding-input-character {
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
 
 .stat-row {
   display: grid;
@@ -925,6 +947,12 @@ html.fonts-ready #root {
   max-width: 1320px;
 }
 
+.character-concord-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
 .character-detail-right {
   display: flex;
   flex-direction: column;
@@ -943,6 +971,29 @@ html.fonts-ready #root {
 .character-hero-meta {
   margin: 0.9rem 0 0;
   color: var(--concord-tertiary);
+}
+
+.character-name-save-msg {
+  margin: 0.35rem 0 0;
+  color: var(--concord-tertiary);
+}
+
+.character-player-label {
+  margin: 0 0 0.4rem;
+  color: var(--concord-nav);
+}
+
+.character-name-hero-input {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--concord-tertiary);
+  font-family: "Lohengrin", serif;
+  font-size: clamp(4rem, 3.2rem + 3vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: 0;
+  outline: none;
 }
 
 .character-subnav {

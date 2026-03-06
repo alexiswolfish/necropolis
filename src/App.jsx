@@ -4,7 +4,7 @@ import { HomeRoute } from "./routes/HomeRoute";
 import { BeginGate, OnboardingWizard } from "./routes/OnboardingRoute";
 import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
 import { CharacterPage, PlayersPage } from "./routes/PlayersRoute";
-import { createCharacter, fetchAllCharacters, findCharacterByNormalizedName } from "./data/charactersApi";
+import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterById } from "./data/charactersApi";
 
 const CONCORDS = [
   {
@@ -410,6 +410,7 @@ const STAT_POINT_POOL = 16;
 const INITIAL_STATS = Object.fromEntries(STAT_KEYS.map((key) => [key, 0]));
 const INITIAL_ONBOARDING_FORM = {
   realName: "",
+  characterName: "",
   birthDate: "",
   botTrap: "",
   stats: INITIAL_STATS
@@ -507,6 +508,12 @@ function monthDaySignature(value) {
   return `${String(parsed.month).padStart(2, "0")}-${String(parsed.day).padStart(2, "0")}`;
 }
 
+function sameBirthdayMonthDay(left, right) {
+  const leftSignature = monthDaySignature(left);
+  const rightSignature = monthDaySignature(right);
+  return Boolean(leftSignature && rightSignature && leftSignature === rightSignature);
+}
+
 function getStoredCharacter() {
   try {
     const raw = window.localStorage.getItem(STORAGE_CHARACTER_KEY);
@@ -547,6 +554,7 @@ function getStoredOnboardingDraft() {
       step,
       form: {
         realName: String(form.realName ?? ""),
+        characterName: String(form.characterName ?? ""),
         birthDate: normalizeMonthDayInput(String(form.birthDate ?? "")),
         botTrap: String(form.botTrap ?? ""),
         stats: nextStats
@@ -816,6 +824,15 @@ export default function App() {
     if (!assignedConcordId) return null;
     return ALL_CONCORD_CARDS.find((card) => card.routeId === assignedConcordId) ?? null;
   }, [assignedConcordId]);
+  const assignedConcord = useMemo(() => {
+    if (!assignedConcordId) return null;
+    return CONCORDS_BY_ID.get(assignedConcordId) ?? null;
+  }, [assignedConcordId]);
+  const assignedConcordDescription = useMemo(() => {
+    if (!assignedConcord) return [];
+    const body = assignedConcord.bodyParagraphs ?? (assignedConcord.body ? [assignedConcord.body] : []);
+    return [assignedConcord.lede, ...body].filter(Boolean).slice(0, 2);
+  }, [assignedConcord]);
   const assignedClass = useMemo(() => getAssignedClass(onboardingForm.stats), [onboardingForm.stats]);
   const remainingStatPoints = STAT_POINT_POOL - Object.values(onboardingForm.stats).reduce((total, value) => total + value, 0);
   const canAccessStory = Boolean(character);
@@ -882,14 +899,8 @@ export default function App() {
       }
 
        const normalized = normalizeName(matchedGuestName ?? onboardingForm.realName);
-       const existingCharacter = allCharacters.find((entry) => normalizeName(entry.realName) === normalized) ?? null;
+       const existingCharacter = allCharacters.find((entry) => normalizeName(entry.realName) === normalized && sameBirthdayMonthDay(entry.birthDate, onboardingForm.birthDate)) ?? null;
        if (existingCharacter) {
-         const inputMonthDay = monthDaySignature(onboardingForm.birthDate);
-         const existingMonthDay = monthDaySignature(existingCharacter.birthDate);
-         if (!inputMonthDay || !existingMonthDay || inputMonthDay !== existingMonthDay) {
-           setOnboardingError("Birth date does not match existing character.");
-           return;
-         }
 
          setCharacter(existingCharacter);
          setStoredCharacter(existingCharacter);
@@ -931,7 +942,7 @@ export default function App() {
         return;
       }
 
-      const claimed = latestCharacters.some((entry) => normalizeName(entry.realName) === normalizeName(onboardingForm.realName));
+      const claimed = latestCharacters.some((entry) => normalizeName(entry.realName) === normalizeName(onboardingForm.realName) && sameBirthdayMonthDay(entry.birthDate, onboardingForm.birthDate));
       if (claimed) {
         setOnboardingError("A character already exists for that name.");
         return;
@@ -946,6 +957,7 @@ export default function App() {
 
       const nextCharacter = {
         realName: (matchedGuestName ?? onboardingForm.realName).trim(),
+        characterName: (onboardingForm.characterName || "").trim() || (matchedGuestName ?? onboardingForm.realName).trim(),
         birthDate: monthDayToStorageDate(onboardingForm.birthDate),
         zodiacSign,
         concordId: allocatedConcordId,
@@ -957,7 +969,7 @@ export default function App() {
       try {
         await createCharacter(nextCharacter);
       } catch (error) {
-        const duplicateCheck = await findCharacterByNormalizedName(normalizeName(onboardingForm.realName)).catch(() => null);
+        const duplicateCheck = await findCharacterByIdentity(normalizeName(onboardingForm.realName), nextCharacter.birthDate).catch(() => null);
         if (duplicateCheck) {
           setOnboardingError("A character already exists for that name.");
           return;
@@ -974,9 +986,7 @@ export default function App() {
       setOnboardingStep(0);
       setOnboardingForm(INITIAL_ONBOARDING_FORM);
       clearStoredOnboardingDraft();
-      const nextRoute = createdCharacter?.concordId
-        ? { page: "concord-detail", concordId: createdCharacter.concordId, detailTab: "backstory" }
-        : { page: "home" };
+      const nextRoute = { page: "character", detailTab: "stats" };
       const nextPath = getPathFromRoute(nextRoute);
       if (window.location.pathname !== nextPath) {
         window.history.pushState({}, "", nextPath);
@@ -1181,6 +1191,7 @@ export default function App() {
         remainingPoints={remainingStatPoints}
         zodiacSign={zodiacSign}
         assignedConcordCard={assignedConcordCard}
+        assignedConcordDescription={assignedConcordDescription}
         welcomeName={matchedGuestName ?? onboardingForm.realName}
         error={onboardingError}
         statKeys={STAT_KEYS}
@@ -1188,6 +1199,7 @@ export default function App() {
         onNameChange={(realName) => setOnboardingForm((current) => ({ ...current, realName }))}
         onBotTrapChange={(botTrap) => setOnboardingForm((current) => ({ ...current, botTrap }))}
         onBirthDateChange={(birthDate) => setOnboardingForm((current) => ({ ...current, birthDate: normalizeMonthDayInput(birthDate) }))}
+        onCharacterNameChange={(characterName) => setOnboardingForm((current) => ({ ...current, characterName }))}
         onAdjustStat={handleAdjustStat}
         onResetStats={() => setOnboardingForm((current) => ({ ...current, stats: INITIAL_STATS }))}
         onBack={handleOnboardingBack}
@@ -1231,7 +1243,35 @@ export default function App() {
           costumeImagesByConcord={COSTUME_IMAGES_BY_CONCORD}
           detailTab={route.detailTab ?? "stats"}
           onOpenTab={(detailTab) => navigate({ page: "character", detailTab })}
+          onOpenConcord={(concordId) => navigate({ page: "concord-detail", concordId, detailTab: "backstory" })}
           getPathFromRoute={getPathFromRoute}
+          onSaveCharacterName={async (characterName) => {
+            if (!character) return false;
+            try {
+              let updatedCharacter = null;
+              if (character.id) {
+                updatedCharacter = await updateCharacterById(character.id, { characterName });
+              }
+
+              if (!updatedCharacter) {
+                const refreshed = await fetchAllCharacters();
+                updatedCharacter = refreshed.find((entry) => normalizeName(entry.realName) === normalizeName(character.realName)) ?? null;
+              }
+              if (!updatedCharacter) return false;
+
+              setCharacter(updatedCharacter);
+              setStoredCharacter(updatedCharacter);
+              setAllCharacters((current) => current.map((entry) => {
+                if (updatedCharacter.id && entry.id === updatedCharacter.id) return updatedCharacter;
+                if (!updatedCharacter.id && normalizeName(entry.realName) === normalizeName(updatedCharacter.realName)) return updatedCharacter;
+                return entry;
+              }));
+              return true;
+            } catch (error) {
+              console.error("Failed to save character name.", error);
+              return false;
+            }
+          }}
         />
       )
       : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;

@@ -77,7 +77,7 @@ export function ConcordDetailPage({
   const costumeImages = costumeImagesByConcord[concord.id] ?? [];
   const teamMembers = (characters ?? [])
     .filter((entry) => entry?.concordId === concord.id)
-    .sort((a, b) => (a.realName ?? "").localeCompare(b.realName ?? ""));
+    .sort((a, b) => (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? ""));
   const teamData = teamBlueprint[concord.id] ?? null;
 
   return (
@@ -153,7 +153,7 @@ export function ConcordDetailPage({
         ) : detailTab === "players" ? (
           <section className="concord-players-list" aria-label={`${concord.label} players`}>
             {teamMembers.map((entry) => (
-              <p key={`${concord.id}-${entry.realName}`} className="concord-player-name">{entry.realName}</p>
+              <p key={`${concord.id}-${entry.realName}`} className="concord-player-name">{entry.characterName ?? entry.realName}</p>
             ))}
           </section>
         ) : (

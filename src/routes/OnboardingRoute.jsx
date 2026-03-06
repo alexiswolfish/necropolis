@@ -1,4 +1,13 @@
-import React from "react";
+import React, { useMemo } from "react";
+
+const CHARACTER_NAME_PLACEHOLDERS = [
+  "Angraharad of the Fell Flame",
+  "Mordred the Truly Dreaded",
+  "Lord Vetinari",
+  "Ysoria, Ashen Regent",
+  "Grimwald of Blackmere",
+  "Mora Vex, Candle-Eater"
+];
 
 export function BeginGate({ onBegin, onHoverOmenStart, onHoverOmenEnd }) {
   return (
@@ -22,11 +31,13 @@ export function OnboardingWizard({
   remainingPoints,
   zodiacSign,
   assignedConcordCard,
+  assignedConcordDescription,
   welcomeName,
   error,
   statKeys,
   statLabels,
   onNameChange,
+  onCharacterNameChange,
   onBotTrapChange,
   onBirthDateChange,
   onAdjustStat,
@@ -37,6 +48,10 @@ export function OnboardingWizard({
   onHoverOmenEnd
 }) {
   const isStepThreeLocked = step === 3 && remainingPoints > 0;
+  const characterNamePlaceholder = useMemo(
+    () => CHARACTER_NAME_PLACEHOLDERS[Math.floor(Math.random() * CHARACTER_NAME_PLACEHOLDERS.length)],
+    []
+  );
 
   return (
     <main className="onboarding-layout">
@@ -127,6 +142,21 @@ export function OnboardingWizard({
                 <p className="concord-card-desire">{assignedConcordCard.desire.toLowerCase()}</p>
               </div>
             ) : null}
+            <label className="onboarding-character-name-label type-body" htmlFor="character-name">Name your character (you can change this later)</label>
+            <input
+              id="character-name"
+              className="onboarding-input onboarding-input-character"
+              value={form.characterName ?? ""}
+              onChange={(event) => onCharacterNameChange(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  onNext();
+                }
+              }}
+              placeholder={characterNamePlaceholder}
+              autoComplete="off"
+            />
           </>
         ) : null}
 

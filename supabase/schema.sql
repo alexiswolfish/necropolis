@@ -5,7 +5,8 @@ create extension if not exists "pgcrypto";
 create table if not exists public.characters (
   id uuid primary key default gen_random_uuid(),
   real_name text not null,
-  real_name_normalized text not null unique,
+  character_name text,
+  real_name_normalized text not null,
   birth_date date not null,
   zodiac_sign text not null,
   concord_id text not null,
@@ -18,6 +19,7 @@ create table if not exists public.characters (
 
 create index if not exists characters_concord_id_idx on public.characters (concord_id);
 create index if not exists characters_completed_at_idx on public.characters (completed_at);
+create unique index if not exists characters_real_name_birth_date_unique_idx on public.characters (real_name_normalized, birth_date);
 
 create or replace function public.set_updated_at()
 returns trigger

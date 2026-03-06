@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 const STAT_LABELS = {
   pulchritude: "Pulchritude",
@@ -36,7 +36,7 @@ export function PlayersPage({ characters, teamBlueprint }) {
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {
     const members = characters
       .filter((player) => player.concordId === concordId)
-      .sort((a, b) => (a.realName ?? "").localeCompare(b.realName ?? ""));
+      .sort((a, b) => (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? ""));
     return {
       concordId,
       concordName: teamBlueprint[concordId]?.concordName ?? concordId,
@@ -54,7 +54,7 @@ export function PlayersPage({ characters, teamBlueprint }) {
             <h2 className="type-caps players-concord-name" style={{ color: group.backgroundColor }}>{group.concordName}</h2>
             <div className="concord-players-list">
               {group.members.map((member) => (
-                <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: group.memberColor }}>{member.realName}</p>
+                <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: group.memberColor }}>{member.characterName ?? member.realName}</p>
               ))}
             </div>
           </article>
@@ -64,8 +64,16 @@ export function PlayersPage({ characters, teamBlueprint }) {
   );
 }
 
-export function CharacterPage({ character, teamBlueprint, concord, costumeImagesByConcord, detailTab, onOpenTab, getPathFromRoute }) {
+export function CharacterPage({ character, teamBlueprint, concord, costumeImagesByConcord, detailTab, onOpenTab, onOpenConcord, getPathFromRoute, onSaveCharacterName }) {
   const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
+  const [nameDraft, setNameDraft] = useState(character?.characterName ?? "");
+  const [isSavingName, setIsSavingName] = useState(false);
+  const [nameSaveMessage, setNameSaveMessage] = useState("");
+
+  useEffect(() => {
+    setNameDraft(character?.characterName ?? "");
+    setNameSaveMessage("");
+  }, [character?.id, character?.realName, character?.characterName]);
 
   if (!character) {
     return (
@@ -104,15 +112,35 @@ export function CharacterPage({ character, teamBlueprint, concord, costumeImages
     )
     : concordName;
 
+  const canSaveName = nameDraft.trim().length > 0 && (nameDraft.trim() !== (character.characterName ?? character.realName));
+  const commitCharacterName = async () => {
+    if (!canSaveName || isSavingName) return;
+    setIsSavingName(true);
+    setNameSaveMessage("");
+    const ok = await onSaveCharacterName(nameDraft.trim());
+    setIsSavingName(false);
+    setNameSaveMessage(ok ? "Saved" : "Could not save");
+  };
+
   return (
-    <main className="concord-detail-layout character-detail-layout">
+      <main className="concord-detail-layout character-detail-layout">
       <aside className="concord-detail-left">
-        <h1 className="concord-detail-name">{concordDisplay}</h1>
+        <a
+          href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "backstory" })}
+          onClick={onOpenConcord(character.concordId)}
+          className="character-concord-link"
+        >
+          <h1 className="concord-detail-name">{concordDisplay}</h1>
+        </a>
 
         <dl className="concord-meta">
           <div className="concord-meta-row">
             <dt className="type-caps">Element:</dt>
             <dd className="type-caps concord-meta-value">{teamData?.element ?? "unknown"}</dd>
+          </div>
+          <div className="concord-meta-row">
+            <dt className="type-caps">Sign:</dt>
+            <dd className="type-caps concord-meta-value">{character.zodiacSign}</dd>
           </div>
           <div className="concord-meta-row">
             <dt className="type-caps">Earthly Desire:</dt>
@@ -122,8 +150,29 @@ export function CharacterPage({ character, teamBlueprint, concord, costumeImages
       </aside>
 
       <article className="concord-detail-right character-detail-right">
-        <p className="character-hero-name">{character.realName}</p>
-        <p className="character-hero-meta type-caps">{character.zodiacSign} • {character.className}</p>
+        <p className="character-player-label type-caps">Player Name: {character.realName}</p>
+        <input
+          id="character-name-editor-input"
+          className="character-name-hero-input"
+          value={nameDraft}
+          onChange={(event) => {
+            setNameDraft(event.target.value);
+            setNameSaveMessage("");
+          }}
+          onBlur={() => {
+            void commitCharacterName();
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              void commitCharacterName();
+            }
+          }}
+          maxLength={64}
+          autoComplete="off"
+          placeholder="Character Name"
+        />
+        {nameSaveMessage ? <p className="type-caps character-name-save-msg">{nameSaveMessage}</p> : null}
         <nav className="concord-subnav character-subnav" aria-label="Character details">
           <a
             href={getPathFromRoute({ page: "character", detailTab: "stats" })}
@@ -161,7 +210,7 @@ export function CharacterPage({ character, teamBlueprint, concord, costumeImages
           </section>
         ) : detailTab === "costumes" ? (
           <section className="character-costume-notes" aria-label="Costume notes">
-            <p className="character-concord-paragraph">Below is the mood and vibe for your concord. Please wear shoes in which you can navigate uncertain terrain, and appear however you feel best</p>
+            <p className="character-concord-paragraph">Below is the mood and vibe for your concord. Please remember to wear flat shoes, and appear however you feel best</p>
             <section className="costume-grid" aria-label={`${concordName} costumes`}>
               {costumeImages.map((src, index) => (
                 <img
