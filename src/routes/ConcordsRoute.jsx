@@ -97,6 +97,10 @@ export function ConcordDetailPage({
             <dd className="type-caps concord-meta-value">{concord.element}</dd>
           </div>
           <div className="concord-meta-row">
+            <dt className="type-caps">Ruling Planet:</dt>
+            <dd className="type-caps concord-meta-value">{teamData?.planet ?? "unknown"}</dd>
+          </div>
+          <div className="concord-meta-row">
             <dt className="type-caps">Earthly Desire:</dt>
             <dd className="type-caps concord-meta-value">{teamData?.earthlyDesire ?? concord.earthlyDesire}</dd>
           </div>

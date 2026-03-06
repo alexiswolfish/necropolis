@@ -254,6 +254,7 @@ const TEAM_BLUEPRINT = {
     concordName: "Desire & Conspire",
     element: "fire",
     directSign: "Sagittarius",
+    planet: "Jupiter ♃",
     ambition: "Influence",
     earthlyDesire: "Ambition",
     palette: { id: 332, background: "#b32200", accent: "#f5dc74", title: "#f5dc74" }
@@ -263,6 +264,7 @@ const TEAM_BLUEPRINT = {
     concordName: "Pleasure & Treasure",
     element: "earth",
     directSign: "Taurus",
+    planet: "Venus ♀",
     ambition: "Prosperity",
     earthlyDesire: "Hedonism",
     palette: { id: 342, background: "#0d2b0f", accent: "#b89342", title: "#f0a925" }
@@ -272,6 +274,7 @@ const TEAM_BLUEPRINT = {
     concordName: "Brood & Feud",
     element: "fire",
     directSign: "Aries",
+    planet: "Mars ♂",
     ambition: "Dominance",
     earthlyDesire: "Conquest",
     palette: { id: 51, background: "#9e001f", accent: "#c1c494", title: "#0b25e4" }
@@ -281,6 +284,7 @@ const TEAM_BLUEPRINT = {
     concordName: "Zeal & Steel",
     element: "earth",
     directSign: "Capricorn",
+    planet: "Saturn ♄",
     ambition: "Order",
     earthlyDesire: "Legacy",
     palette: { id: 273, background: "#e596c9", accent: "#cc5920", title: "#7d1532" }
@@ -290,6 +294,7 @@ const TEAM_BLUEPRINT = {
     concordName: "Tears & Spears",
     element: "water",
     directSign: "Cancer",
+    planet: "Moon ☽",
     ambition: "Sanctity",
     earthlyDesire: "Devotion",
     palette: { id: 277, background: "#3b1138", accent: "#96a8ba", title: "#df7a91" }
@@ -299,6 +304,7 @@ const TEAM_BLUEPRINT = {
     concordName: "Veils & Sails",
     element: "water",
     directSign: "Pisces",
+    planet: "Neptune ♆",
     ambition: "Transcendence",
     earthlyDesire: "Rapture",
     palette: { id: 27, background: "#1d4255", accent: "#cc8c37", title: "#e6a4dc" }
@@ -308,6 +314,7 @@ const TEAM_BLUEPRINT = {
     concordName: "Laurels & Quarrels",
     element: "air",
     directSign: "Leo",
+    planet: "Sun ☉",
     ambition: "Renown",
     earthlyDesire: "Glory",
     palette: { id: 339, background: "#cc5918", accent: "#df7a91", title: "#4a1e8d" }
@@ -317,6 +324,7 @@ const TEAM_BLUEPRINT = {
     concordName: "Wit & Spit",
     element: "air",
     directSign: "Gemini",
+    planet: "Chiron ⚶",
     ambition: "Leverage",
     earthlyDesire: "Cunning",
     palette: { id: 329, background: "#f7f7f7", accent: "#f3b1bc", title: "#4a1e8d" }

@@ -167,6 +167,10 @@ export function CharacterPage({ character, teamBlueprint, concord, shortConcordL
             <dd className="type-caps concord-meta-value">{concord?.element ?? teamData?.element ?? "unknown"}</dd>
           </div>
           <div className="concord-meta-row">
+            <dt className="type-caps">Ruling Planet:</dt>
+            <dd className="type-caps concord-meta-value">{teamData?.planet ?? "unknown"}</dd>
+          </div>
+          <div className="concord-meta-row">
             <dt className="type-caps">Sign:</dt>
             <dd className="type-caps concord-meta-value">{character.zodiacSign}</dd>
           </div>
