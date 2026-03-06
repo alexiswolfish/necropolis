@@ -927,11 +927,14 @@ export default function App() {
       setOnboardingStep(0);
       setOnboardingForm(INITIAL_ONBOARDING_FORM);
       clearStoredOnboardingDraft();
-      const nextPath = getPathFromRoute({ page: "home" });
+      const nextRoute = createdCharacter?.concordId
+        ? { page: "concord-detail", concordId: createdCharacter.concordId, detailTab: "backstory" }
+        : { page: "home" };
+      const nextPath = getPathFromRoute(nextRoute);
       if (window.location.pathname !== nextPath) {
         window.history.pushState({}, "", nextPath);
       }
-      setRoute({ page: "home" });
+      setRoute(nextRoute);
     }
   };
 

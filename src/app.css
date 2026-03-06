@@ -603,6 +603,11 @@ html.fonts-ready #root {
   width: min(760px, 100%);
   background: color-mix(in srgb, var(--color-bg) 86%, transparent);
   padding: 1.6rem 1.2rem;
+  position: relative;
+}
+
+.onboarding-panel-has-back {
+  padding-top: calc(1.6rem + 10px);
 }
 
 .onboarding-title {
@@ -683,7 +688,11 @@ html.fonts-ready #root {
 
 .onboarding-error {
   margin: 0.8rem 0 0;
-  color: #f58e84;
+  color: #b32200;
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .onboarding-actions {
@@ -726,6 +735,13 @@ html.fonts-ready #root {
   line-height: 1;
   text-transform: none;
   letter-spacing: 0;
+}
+
+.onboarding-back-anchor {
+  position: absolute;
+  top: 0.9rem;
+  left: 0.9rem;
+  z-index: 2;
 }
 
 .onboarding-btn-primary {
@@ -790,22 +806,6 @@ html.fonts-ready #root {
   margin-bottom: 1rem;
 }
 
-.onboarding-back-link {
-  border: 0;
-  background: transparent;
-  color: var(--color-text-primary);
-  font-family: var(--font-body);
-  font-size: 12px;
-  line-height: 1.2;
-  cursor: pointer;
-  padding: 0;
-  margin: 0 0 0.9rem;
-}
-
-.onboarding-back-link:hover {
-  animation: begin-shiver 220ms linear infinite;
-}
-
 .onboarding-concord-card {
   margin: 0 auto 1rem;
   cursor: default;
@@ -813,6 +813,10 @@ html.fonts-ready #root {
 
 .onboarding-concord-card:hover {
   transform: none;
+}
+
+.onboarding-concord-intro {
+  margin-bottom: 1rem;
 }
 
 
@@ -849,7 +853,7 @@ html.fonts-ready #root {
 }
 
 .stat-btn-plus {
-  font-family: var(--font-logo);
+  font-family: var(--font-caps);
   font-size: 28px;
   line-height: 0.8;
   padding-top: 1px;

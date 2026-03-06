@@ -40,7 +40,8 @@ export function OnboardingWizard({
 
   return (
     <main className="onboarding-layout">
-      <section className={`onboarding-panel${step === 1 ? " onboarding-panel-name" : ""}${step === 2 ? " onboarding-panel-birth" : ""}${step === 3 ? " onboarding-panel-traits" : ""}${step === 4 ? " onboarding-panel-concord" : ""}`}>
+      <section className={`onboarding-panel${step > 1 ? " onboarding-panel-has-back" : ""}${step === 1 ? " onboarding-panel-name" : ""}${step === 2 ? " onboarding-panel-birth" : ""}${step === 3 ? " onboarding-panel-traits" : ""}${step === 4 ? " onboarding-panel-concord" : ""}`}>
+        {step > 1 ? <button type="button" className="onboarding-btn onboarding-btn-back onboarding-btn-back-arrow onboarding-back-anchor" onClick={onBack} aria-label="Go back">←</button> : null}
         {step === 1 ? (
           <>
             <p className="onboarding-name-prompt type-logo" onMouseEnter={onHoverOmenStart} onMouseLeave={onHoverOmenEnd}>what is your real name</p>
@@ -64,7 +65,6 @@ export function OnboardingWizard({
 
         {step === 2 ? (
           <>
-            <button type="button" className="onboarding-back-link" onClick={onBack}>(not you? go back)</button>
             <p className="onboarding-name-prompt type-logo">Welcome, {welcomeName}</p>
             <p className="type-body onboarding-lede onboarding-birth-prompt">What stars were you born under?</p>
             <input
@@ -102,7 +102,9 @@ export function OnboardingWizard({
 
         {step === 4 ? (
           <>
-            <p className="onboarding-name-prompt type-logo">You are an esteemed member of</p>
+            <p className="type-body onboarding-concord-intro">
+              You are joining the <span className="concord-logo-word">CONCORD</span> of
+            </p>
             {assignedConcordCard ? (
               <div
                 className="concord-card onboarding-concord-card"
@@ -128,12 +130,11 @@ export function OnboardingWizard({
           </>
         ) : null}
 
-        {error ? <p className="onboarding-error">{error}</p> : null}
+        {error ? <p className="onboarding-error">GRAVE ERROR. PLEASE LET ALEX KNOW THIS HAS FAILED, or TRY AGAIN</p> : null}
 
         <div className="onboarding-actions">
-          {step > 1 && step !== 2 ? <button type="button" className="onboarding-btn onboarding-btn-back onboarding-btn-back-arrow" onClick={onBack} aria-label="Go back">←</button> : null}
           {step === 3 ? <button type="button" className="onboarding-btn type-caps onboarding-btn-restart" onClick={onResetStats}>Restart</button> : null}
-          <button type="button" className="onboarding-btn type-caps onboarding-btn-primary" onClick={onNext} disabled={isStepThreeLocked}>{step === 4 ? "FINISH" : "SWEAR"}</button>
+          <button type="button" className="onboarding-btn type-caps onboarding-btn-primary" onClick={onNext} disabled={isStepThreeLocked}>{step === 4 ? "ENTER" : "SWEAR"}</button>
         </div>
       </section>
     </main>
