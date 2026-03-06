@@ -18,7 +18,7 @@ const PLAYERS_CONCORD_HEADING_COLORS = {
   "tears-spears": "#3b1138",
   "veils-sails": "#1d4255",
   "laurels-quarrels": "#cc5918",
-  "wit-spit": "#f7f7f7"
+  "wit-spit": "#4169e1"
 };
 
 const PLAYERS_CONCORD_MEMBER_COLORS = {
