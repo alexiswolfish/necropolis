@@ -105,6 +105,24 @@ html.fonts-ready #root {
   background-color: var(--concord-primary);
 }
 
+.page-shell[data-page="character"] {
+  --theme-nav-font: var(--font-caps);
+  --theme-nav-color: var(--concord-nav);
+  --theme-heading-color: var(--concord-title);
+  --theme-body-color: var(--concord-tertiary);
+  --theme-brand-color: var(--concord-nav);
+  background-color: var(--concord-primary);
+}
+
+.page-shell[data-page="players"] {
+  --theme-nav-font: var(--font-caps);
+  --theme-nav-color: #151515;
+  --theme-heading-color: #151515;
+  --theme-body-color: #151515;
+  --theme-brand-color: #151515;
+  background-color: #ffffff;
+}
+
 .page-shell[data-concord="pleasure-treasure"] {
   --concord-primary: #0d2b0f;
   --concord-title: #f0a925;
@@ -896,7 +914,79 @@ html.fonts-ready #root {
 .players-layout,
 .character-layout {
   max-width: 980px;
-  margin: 0 auto;
+  margin: 0;
+}
+
+.character-detail-layout {
+  max-width: 1320px;
+}
+
+.character-detail-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 480px;
+}
+
+.character-hero-name {
+  margin: 0;
+  font-family: "Lohengrin", serif;
+  font-size: clamp(4rem, 3.2rem + 3vw, 7rem);
+  line-height: 0.9;
+  color: var(--concord-tertiary);
+}
+
+.character-hero-meta {
+  margin: 0.9rem 0 0;
+  color: var(--concord-tertiary);
+}
+
+.character-subnav {
+  margin-top: 1rem;
+}
+
+.character-subnav-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.character-stats {
+  margin-top: 1.2rem;
+  max-width: 540px;
+}
+
+.character-stat-row {
+  display: grid;
+  grid-template-columns: 180px minmax(72px, 1fr);
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.45rem;
+}
+
+.character-stat-label {
+  text-align: left;
+  justify-self: start;
+}
+
+.character-stat-value {
+  text-align: left;
+  white-space: nowrap;
+  color: var(--concord-tertiary);
+}
+
+.character-concord-copy {
+  margin-top: 1.2rem;
+}
+
+.character-concord-lede,
+.character-concord-paragraph {
+  margin: 0 0 1rem;
+  font-family: var(--font-body);
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--concord-tertiary);
 }
 
 .players-title,
@@ -912,6 +1002,27 @@ html.fonts-ready #root {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 0.7rem;
+}
+
+.players-layout {
+  padding-top: 40px;
+}
+
+.players-concord-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.players-concord-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.players-concord-name {
+  margin: 0;
+  text-transform: none;
 }
 
 .player-card {

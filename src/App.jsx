@@ -4,7 +4,7 @@ import { HomeRoute } from "./routes/HomeRoute";
 import { BeginGate, OnboardingWizard } from "./routes/OnboardingRoute";
 import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
 import { CharacterPage, PlayersPage } from "./routes/PlayersRoute";
-import { createCharacter, fetchAllCharacters, findCharacterByNormalizedName, replaceAllCharacters } from "./data/charactersApi";
+import { createCharacter, fetchAllCharacters, findCharacterByNormalizedName } from "./data/charactersApi";
 
 const CONCORDS = [
   {
@@ -685,7 +685,8 @@ function getRouteFromPath(pathname) {
   if (appPath === "/concords") return { page: "concords" };
   if (appPath === "/concords/spare") return { page: "concords-spare" };
   if (appPath === "/players") return { page: "players" };
-  if (appPath === "/character") return { page: "character" };
+  const characterMatch = appPath.match(/^\/character(?:\/(stats|about|costumes))?$/);
+  if (characterMatch) return { page: "character", detailTab: characterMatch[1] ?? "stats" };
 
   const detailMatch = appPath.match(/^\/concords\/([a-z0-9-]+)(?:\/(backstory|costumes|players))?$/);
   if (detailMatch && CONCORDS_BY_ID.has(detailMatch[1])) {
@@ -700,7 +701,11 @@ function getPathFromRoute(route) {
   if (route.page === "concords") return withBase("/concords");
   if (route.page === "concords-spare") return withBase("/concords/spare");
   if (route.page === "players") return withBase("/players");
-  if (route.page === "character") return withBase("/character");
+  if (route.page === "character") {
+    if (route.detailTab === "about") return withBase("/character/about");
+    if (route.detailTab === "costumes") return withBase("/character/costumes");
+    return withBase("/character");
+  }
   if (route.page === "concord-detail" && route.concordId) {
     if (route.detailTab === "costumes") return withBase(`/concords/${route.concordId}/costumes`);
     if (route.detailTab === "players") return withBase(`/concords/${route.concordId}/players`);
@@ -781,6 +786,13 @@ export default function App() {
     if (route.page !== "concord-detail") return null;
     return CONCORDS_BY_ID.get(route.concordId) ?? null;
   }, [route]);
+  const themedConcord = useMemo(() => {
+    if (route.page === "concord-detail") return selectedConcord;
+    if (route.page === "character" && character?.concordId) {
+      return CONCORDS_BY_ID.get(character.concordId) ?? null;
+    }
+    return null;
+  }, [route.page, selectedConcord, character]);
   const zodiacSign = useMemo(() => getZodiacSign(onboardingForm.birthDate), [onboardingForm.birthDate]);
   const matchedGuestName = useMemo(() => findGuestNameMatch(onboardingForm.realName), [onboardingForm.realName]);
   const teamCounts = useMemo(() => getTeamCounts(allCharacters), [allCharacters]);
@@ -1182,30 +1194,12 @@ export default function App() {
       ? (
         <CharacterPage
           character={character}
-          allCharacters={allCharacters}
-          concordTeams={CONCORD_TEAMS}
           teamBlueprint={TEAM_BLUEPRINT}
-          onSaveRoster={(nextRoster) => {
-            void (async () => {
-              try {
-                const savedRoster = await replaceAllCharacters(nextRoster);
-                setAllCharacters(savedRoster);
-                if (character) {
-                  const updatedSelf = savedRoster.find((entry) => normalizeName(entry.realName) === normalizeName(character.realName));
-                  if (updatedSelf) {
-                    setCharacter(updatedSelf);
-                    setStoredCharacter(updatedSelf);
-                  } else {
-                    setCharacter(null);
-                    clearStoredCharacter();
-                  }
-                }
-              } catch (error) {
-                console.error("Failed to save roster.", error);
-                window.alert("Unable to save roster right now.");
-              }
-            })();
-          }}
+          concord={character?.concordId ? (CONCORDS_BY_ID.get(character.concordId) ?? null) : null}
+          costumeImagesByConcord={COSTUME_IMAGES_BY_CONCORD}
+          detailTab={route.detailTab ?? "stats"}
+          onOpenTab={(detailTab) => navigate({ page: "character", detailTab })}
+          getPathFromRoute={getPathFromRoute}
         />
       )
       : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
@@ -1219,7 +1213,7 @@ export default function App() {
   const inCharacterSection = route.page === "character";
 
   return (
-    <div className="page-shell" data-page={route.page} data-concord={selectedConcord ? selectedConcord.id : undefined}>
+    <div className="page-shell" data-page={route.page} data-concord={themedConcord ? themedConcord.id : undefined}>
       <header className="top-bar">
         <a href={getPathFromRoute({ page: "home" })} onClick={navigate({ page: "home" })} className="type-logo brand" aria-label="Necropolis home">Necropolis</a>
         <nav className="top-nav" aria-label="Primary">
