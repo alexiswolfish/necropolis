@@ -33,10 +33,12 @@ export function OnboardingWizard({
   assignedConcordCard,
   assignedConcordDescription,
   welcomeName,
+  nameSuggestions,
   error,
   statKeys,
   statLabels,
   onNameChange,
+  onSelectNameSuggestion,
   onCharacterNameChange,
   onBotTrapChange,
   onBirthDateChange,
@@ -74,6 +76,23 @@ export function OnboardingWizard({
               }}
               autoComplete="name"
             />
+            {nameSuggestions?.length ? (
+              <div className="onboarding-name-suggestions" aria-label="Name suggestions">
+                <p className="type-caps onboarding-name-suggestions-label">Could you be this guy?</p>
+                <div className="onboarding-name-suggestions-list">
+                  {nameSuggestions.map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      className="onboarding-name-suggestion-btn"
+                      onClick={() => onSelectNameSuggestion(suggestion)}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             <input className="bot-trap-input" tabIndex="-1" autoComplete="off" value={form.botTrap} onChange={(event) => onBotTrapChange(event.target.value)} />
           </>
         ) : null}

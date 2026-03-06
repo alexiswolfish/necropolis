@@ -12,6 +12,7 @@ function toDbCharacter(character) {
   return {
     real_name: character.realName?.trim() ?? "",
     character_name: character.characterName?.trim() || null,
+    rsvp_matched: character.rsvpMatched ?? true,
     real_name_normalized: normalizeName(character.realName),
     birth_date: character.birthDate ?? null,
     zodiac_sign: character.zodiacSign ?? null,
@@ -32,6 +33,7 @@ function fromDbCharacter(row) {
     id: row.id,
     realName: row.real_name,
     characterName: row.character_name ?? null,
+    rsvpMatched: row.rsvp_matched ?? true,
     birthDate: row.birth_date,
     zodiacSign: row.zodiac_sign,
     concordId: row.concord_id,
@@ -41,7 +43,7 @@ function fromDbCharacter(row) {
   };
 }
 
-const CHARACTER_SELECT = "id,real_name,character_name,birth_date,zodiac_sign,concord_id,class_name,stats,completed_at";
+const CHARACTER_SELECT = "id,real_name,character_name,rsvp_matched,birth_date,zodiac_sign,concord_id,class_name,stats,completed_at";
 
 export async function fetchAllCharacters() {
   const rows = await supabaseRequest("characters", {

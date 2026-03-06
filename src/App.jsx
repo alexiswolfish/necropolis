@@ -462,6 +462,42 @@ function findGuestNameMatch(realName) {
   return GOING_GUEST_NAMES.find((guestName) => namesLikelyMatch(realName, guestName)) ?? null;
 }
 
+function getGuestNameSuggestions(realName, limit = 5) {
+  const input = String(realName ?? "").trim();
+  if (!input || GOING_GUEST_NAMES.length === 0) return [];
+
+  const inputTokens = tokenizeName(input);
+  if (inputTokens.length === 0) return [];
+
+  const ranked = GOING_GUEST_NAMES.map((guestName) => {
+    const guestTokens = tokenizeName(guestName);
+    let score = 0;
+
+    if (guestTokens[0] && inputTokens[0]) {
+      if (guestTokens[0] === inputTokens[0]) score += 6;
+      else if (guestTokens[0].startsWith(inputTokens[0]) || inputTokens[0].startsWith(guestTokens[0])) score += 4;
+    }
+
+    const guestLast = guestTokens[guestTokens.length - 1] ?? "";
+    const inputLast = inputTokens[inputTokens.length - 1] ?? "";
+    if (guestLast && inputLast) {
+      if (guestLast === inputLast) score += 5;
+      else if (guestLast.startsWith(inputLast) || inputLast.startsWith(guestLast)) score += 3;
+    }
+
+    if (guestName.toLowerCase().includes(input.toLowerCase())) score += 2;
+    if (namesLikelyMatch(input, guestName)) score += 8;
+
+    return { guestName, score };
+  })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || a.guestName.localeCompare(b.guestName))
+    .slice(0, limit)
+    .map((entry) => entry.guestName);
+
+  return ranked;
+}
+
 function parseMonthDayInput(input) {
   const trimmed = String(input ?? "").trim();
   if (!trimmed) return null;
@@ -818,6 +854,10 @@ export default function App() {
   }, [route.page, selectedConcord, character]);
   const zodiacSign = useMemo(() => getZodiacSign(onboardingForm.birthDate), [onboardingForm.birthDate]);
   const matchedGuestName = useMemo(() => findGuestNameMatch(onboardingForm.realName), [onboardingForm.realName]);
+  const guestNameSuggestions = useMemo(
+    () => (matchedGuestName ? [] : getGuestNameSuggestions(onboardingForm.realName)),
+    [matchedGuestName, onboardingForm.realName]
+  );
   const teamCounts = useMemo(() => getTeamCounts(allCharacters), [allCharacters]);
   const assignedConcordId = zodiacSign ? assignTeamForSign(zodiacSign, teamCounts) : null;
   const assignedConcordCard = useMemo(() => {
@@ -883,11 +923,7 @@ export default function App() {
         setOnboardingError("Please enter your real name.");
         return;
       }
-      if (!matchedName) {
-        setOnboardingError("Name not recognized in RSVP list.");
-        return;
-      }
-      setOnboardingForm((current) => ({ ...current, realName: matchedName }));
+      setOnboardingForm((current) => ({ ...current, realName: matchedName ?? current.realName }));
       setOnboardingStep(2);
       return;
     }
@@ -958,6 +994,7 @@ export default function App() {
       const nextCharacter = {
         realName: (matchedGuestName ?? onboardingForm.realName).trim(),
         characterName: (onboardingForm.characterName || "").trim() || (matchedGuestName ?? onboardingForm.realName).trim(),
+        rsvpMatched: Boolean(matchedGuestName),
         birthDate: monthDayToStorageDate(onboardingForm.birthDate),
         zodiacSign,
         concordId: allocatedConcordId,
@@ -1193,10 +1230,12 @@ export default function App() {
         assignedConcordCard={assignedConcordCard}
         assignedConcordDescription={assignedConcordDescription}
         welcomeName={matchedGuestName ?? onboardingForm.realName}
+        nameSuggestions={guestNameSuggestions}
         error={onboardingError}
         statKeys={STAT_KEYS}
         statLabels={STAT_LABELS}
         onNameChange={(realName) => setOnboardingForm((current) => ({ ...current, realName }))}
+        onSelectNameSuggestion={(realName) => setOnboardingForm((current) => ({ ...current, realName }))}
         onBotTrapChange={(botTrap) => setOnboardingForm((current) => ({ ...current, botTrap }))}
         onBirthDateChange={(birthDate) => setOnboardingForm((current) => ({ ...current, birthDate: normalizeMonthDayInput(birthDate) }))}
         onCharacterNameChange={(characterName) => setOnboardingForm((current) => ({ ...current, characterName }))}

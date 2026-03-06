@@ -6,6 +6,7 @@ create table if not exists public.characters (
   id uuid primary key default gen_random_uuid(),
   real_name text not null,
   character_name text,
+  rsvp_matched boolean not null default true,
   real_name_normalized text not null,
   birth_date date not null,
   zodiac_sign text not null,
