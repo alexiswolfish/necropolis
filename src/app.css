@@ -619,6 +619,11 @@ html.fonts-ready #root {
   text-align: center;
 }
 
+.onboarding-panel-traits {
+  background: transparent;
+  text-align: center;
+}
+
 .onboarding-panel-concord {
   background: transparent;
   text-align: center;
@@ -683,6 +688,10 @@ html.fonts-ready #root {
   color: var(--color-text-primary);
   padding: 0.5rem 20px;
   cursor: pointer;
+  font-family: var(--font-caps);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .onboarding-panel-name .onboarding-input {
@@ -704,6 +713,10 @@ html.fonts-ready #root {
 }
 
 .onboarding-panel-birth .onboarding-actions {
+  justify-content: center;
+}
+
+.onboarding-panel-traits .onboarding-actions {
   justify-content: center;
 }
 
@@ -741,10 +754,6 @@ html.fonts-ready #root {
   animation: begin-shiver 220ms linear infinite;
 }
 
-.onboarding-concord-name {
-  margin-bottom: 0.8rem;
-}
-
 .onboarding-concord-card {
   margin: 0 auto 1rem;
   cursor: default;
@@ -754,12 +763,23 @@ html.fonts-ready #root {
   transform: none;
 }
 
+
 .stat-row {
   display: grid;
-  grid-template-columns: 120px 36px 48px 36px;
+  grid-template-columns: 180px 36px minmax(72px, 1fr) 36px;
   align-items: center;
   gap: 0.4rem;
   margin-bottom: 0.45rem;
+}
+
+.stat-label {
+  text-align: left;
+  justify-self: start;
+}
+
+.stat-value {
+  text-align: left;
+  white-space: nowrap;
 }
 
 .stat-btn {
@@ -768,6 +788,12 @@ html.fonts-ready #root {
   color: var(--color-text-primary);
   cursor: pointer;
   height: 28px;
+  width: 36px;
+  padding: 0;
+  font-family: var(--font-caps);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .stat-btn-plus {

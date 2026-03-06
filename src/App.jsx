@@ -722,7 +722,6 @@ export default function App() {
   const matchedGuestName = useMemo(() => findGuestNameMatch(onboardingForm.realName), [onboardingForm.realName]);
   const teamCounts = useMemo(() => getTeamCounts(allCharacters), [allCharacters]);
   const assignedConcordId = zodiacSign ? assignTeamForSign(zodiacSign, teamCounts) : null;
-  const assignedConcordLabel = assignedConcordId ? (TEAM_BLUEPRINT[assignedConcordId]?.concordName ?? CONCORDS_BY_ID.get(assignedConcordId)?.label ?? null) : null;
   const assignedConcordCard = useMemo(() => {
     if (!assignedConcordId) return null;
     return ALL_CONCORD_CARDS.find((card) => card.routeId === assignedConcordId) ?? null;
@@ -801,15 +800,15 @@ export default function App() {
     }
 
     if (onboardingStep === 3) {
+      if (remainingStatPoints > 0) {
+        setOnboardingError("Spend all stat points before continuing.");
+        return;
+      }
       setOnboardingStep(4);
       return;
     }
 
     if (onboardingStep === 4) {
-      if (remainingStatPoints > 0) {
-        setOnboardingError("Spend all stat points before continuing.");
-        return;
-      }
       if (!zodiacSign) {
         setOnboardingError("Missing zodiac sign.");
         return;
@@ -1068,7 +1067,6 @@ export default function App() {
         remainingPoints={remainingStatPoints}
         assignedClass={assignedClass}
         zodiacSign={zodiacSign}
-        assignedConcordLabel={assignedConcordLabel}
         assignedConcordCard={assignedConcordCard}
         welcomeName={matchedGuestName ?? onboardingForm.realName}
         error={onboardingError}
