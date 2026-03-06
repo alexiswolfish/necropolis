@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const STAT_LABELS = {
   pulchritude: "Pulchritude",
@@ -64,13 +64,8 @@ export function PlayersPage({ characters, teamBlueprint }) {
   );
 }
 
-export function CharacterPage({ character, teamBlueprint, concord, costumeImagesByConcord }) {
-  const [detailTab, setDetailTab] = useState("stats");
+export function CharacterPage({ character, teamBlueprint, concord, costumeImagesByConcord, detailTab, onOpenTab, getPathFromRoute }) {
   const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
-
-  useEffect(() => {
-    setDetailTab("stats");
-  }, [character?.realName, character?.concordId]);
 
   if (!character) {
     return (
@@ -130,9 +125,30 @@ export function CharacterPage({ character, teamBlueprint, concord, costumeImages
         <p className="character-hero-name">{character.realName}</p>
         <p className="character-hero-meta type-caps">{character.zodiacSign} • {character.className}</p>
         <nav className="concord-subnav character-subnav" aria-label="Character details">
-          <button type="button" className="type-caps concord-subnav-link character-subnav-btn" aria-current={detailTab === "stats" ? "page" : undefined} onClick={() => setDetailTab("stats")}>Stats</button>
-          <button type="button" className="type-caps concord-subnav-link character-subnav-btn" aria-current={detailTab === "about" ? "page" : undefined} onClick={() => setDetailTab("about")}>About Your Concord</button>
-          <button type="button" className="type-caps concord-subnav-link character-subnav-btn" aria-current={detailTab === "costumes" ? "page" : undefined} onClick={() => setDetailTab("costumes")}>Costume Notes</button>
+          <a
+            href={getPathFromRoute({ page: "character", detailTab: "stats" })}
+            onClick={onOpenTab("stats")}
+            className="type-caps concord-subnav-link character-subnav-btn"
+            aria-current={detailTab === "stats" ? "page" : undefined}
+          >
+            Stats
+          </a>
+          <a
+            href={getPathFromRoute({ page: "character", detailTab: "about" })}
+            onClick={onOpenTab("about")}
+            className="type-caps concord-subnav-link character-subnav-btn"
+            aria-current={detailTab === "about" ? "page" : undefined}
+          >
+            About Your Concord
+          </a>
+          <a
+            href={getPathFromRoute({ page: "character", detailTab: "costumes" })}
+            onClick={onOpenTab("costumes")}
+            className="type-caps concord-subnav-link character-subnav-btn"
+            aria-current={detailTab === "costumes" ? "page" : undefined}
+          >
+            Costume Notes
+          </a>
         </nav>
         {detailTab === "stats" ? (
           <section className="character-stats" aria-label="Character stats">
