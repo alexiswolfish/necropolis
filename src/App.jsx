@@ -501,6 +501,12 @@ function monthDayToStorageDate(monthDayInput) {
   return `2000-${month}-${day}`;
 }
 
+function monthDaySignature(value) {
+  const parsed = parseMonthDayInput(value);
+  if (!parsed) return null;
+  return `${String(parsed.month).padStart(2, "0")}-${String(parsed.day).padStart(2, "0")}`;
+}
+
 function getStoredCharacter() {
   try {
     const raw = window.localStorage.getItem(STORAGE_CHARACTER_KEY);
@@ -855,11 +861,6 @@ export default function App() {
         setOnboardingError("Name not recognized in RSVP list.");
         return;
       }
-      const localDuplicate = allCharacters.some((entry) => normalizeName(entry.realName) === normalized);
-      if (localDuplicate) {
-        setOnboardingError("A character already exists for that name.");
-        return;
-      }
       setOnboardingForm((current) => ({ ...current, realName: matchedName }));
       setOnboardingStep(2);
       return;
@@ -870,6 +871,30 @@ export default function App() {
         setOnboardingError("Please enter a valid birth date.");
         return;
       }
+
+       const normalized = normalizeName(matchedGuestName ?? onboardingForm.realName);
+       const existingCharacter = allCharacters.find((entry) => normalizeName(entry.realName) === normalized) ?? null;
+       if (existingCharacter) {
+         const inputMonthDay = monthDaySignature(onboardingForm.birthDate);
+         const existingMonthDay = monthDaySignature(existingCharacter.birthDate);
+         if (!inputMonthDay || !existingMonthDay || inputMonthDay !== existingMonthDay) {
+           setOnboardingError("Birth date does not match existing character.");
+           return;
+         }
+
+         setCharacter(existingCharacter);
+         setStoredCharacter(existingCharacter);
+         setOnboardingStep(0);
+         setOnboardingForm(INITIAL_ONBOARDING_FORM);
+         clearStoredOnboardingDraft();
+         const nextPath = getPathFromRoute({ page: "character" });
+         if (window.location.pathname !== nextPath) {
+           window.history.pushState({}, "", nextPath);
+         }
+         setRoute({ page: "character", detailTab: "stats" });
+         return;
+       }
+
       setOnboardingStep(3);
       return;
     }
@@ -1185,9 +1210,7 @@ export default function App() {
     );
   }
   if (route.page === "players") {
-    pageContent = canAccessStory
-      ? <PlayersPage characters={allCharacters} teamBlueprint={TEAM_BLUEPRINT} />
-      : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
+    pageContent = <PlayersPage characters={allCharacters} teamBlueprint={TEAM_BLUEPRINT} />;
   }
   if (route.page === "character") {
     pageContent = canSeeCharacterPage

@@ -290,17 +290,20 @@ html.fonts-ready #root {
 }
 
 .home-death-wrap {
-  position: absolute;
-  right: -5rem;
-  top: -18vh;
+  position: relative;
+  right: auto;
+  top: auto;
   pointer-events: none;
   z-index: 0;
-  height: 150vh;
+  height: auto;
+  width: min(92vw, 440px);
+  margin: -5rem 0 0 auto;
+  transform: none;
 }
 
 .home-death-bg {
-  width: auto;
-  height: 100%;
+  width: 100%;
+  height: auto;
   opacity: 0.48;
   object-fit: contain;
 }
@@ -310,7 +313,7 @@ html.fonts-ready #root {
   inset: 0;
   background:
     linear-gradient(to bottom, var(--color-bg) 0%, transparent 33%),
-    linear-gradient(to right, var(--color-bg) 0%, transparent 33%);
+    linear-gradient(to right, color-mix(in srgb, var(--color-bg) 55%, transparent) 0%, transparent 33%);
 }
 
 .event-meta {
@@ -679,7 +682,7 @@ html.fonts-ready #root {
   text-align: center;
 }
 
-.onboarding-name-prompt {
+.onboarding-header {
   margin: 0 0 1.2rem;
   font-family: var(--font-logo);
   font-size: clamp(2rem, 1.7rem + 1.3vw, 3rem);
@@ -768,6 +771,7 @@ html.fonts-ready #root {
 .onboarding-btn-back {
   grid-column: 1;
   justify-self: start;
+  padding-bottom: 20px;
 }
 
 .onboarding-btn-back-arrow {
@@ -1126,16 +1130,6 @@ html.fonts-ready #root {
     grid-template-columns: 1fr;
   }
 
-  .home-death-wrap {
-    right: -3rem;
-    top: -16vh;
-    height: 130vh;
-  }
-
-  .home-death-bg {
-    opacity: 0.32;
-  }
-
   .costume-grid {
     column-count: 2;
   }
@@ -1190,14 +1184,45 @@ html.fonts-ready #root {
 }
 
 @media (max-width: 620px) {
+  .page-shell[data-page="home"] .event-meta {
+    display: none;
+  }
+
+  .page-shell[data-page="home"] .story-block,
+  .page-shell[data-page="home"] .event-meta {
+    position: relative;
+    z-index: 2;
+  }
+
+  .page-shell[data-page="home"] .home-death-wrap {
+    z-index: 0;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .top-nav {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.9rem 1.2rem;
+  }
+
+  .page-shell[data-page="home"] .site-footer {
+    display: none;
+  }
+
   .home-death-wrap {
     position: relative;
     top: auto;
     right: auto;
-    z-index: 1;
     height: auto;
     width: min(92vw, 440px);
     margin: -5rem 0 0 auto;
+    transform: none;
   }
 
   .home-death-bg {
@@ -1216,5 +1241,23 @@ html.fonts-ready #root {
 
   .concord-lede {
     margin-bottom: 1.4rem;
+  }
+}
+
+@media (min-width: 1300px) {
+  .home-death-wrap {
+    position: absolute;
+    right: 0;
+    top: -18vh;
+    height: 150vh;
+    width: auto;
+    margin: 0;
+    transform: translateX(50%);
+  }
+
+  .home-death-bg {
+    width: auto;
+    height: 100%;
+    opacity: 0.48;
   }
 }

@@ -44,7 +44,7 @@ export function OnboardingWizard({
         {step > 1 ? <button type="button" className="onboarding-btn onboarding-btn-back onboarding-btn-back-arrow onboarding-back-anchor" onClick={onBack} aria-label="Go back">←</button> : null}
         {step === 1 ? (
           <>
-            <p className="onboarding-name-prompt type-logo" onMouseEnter={onHoverOmenStart} onMouseLeave={onHoverOmenEnd}>what is your real name</p>
+            <p className="onboarding-header type-logo" onMouseEnter={onHoverOmenStart} onMouseLeave={onHoverOmenEnd}>what is your real name</p>
             <p className="onboarding-name-subnote">(the one you rsvped to partiful with)</p>
             <input
               id="real-name"
@@ -65,7 +65,7 @@ export function OnboardingWizard({
 
         {step === 2 ? (
           <>
-            <p className="onboarding-name-prompt type-logo">Welcome, {welcomeName}</p>
+            <p className="onboarding-header type-logo">Welcome, {welcomeName}</p>
             <p className="type-body onboarding-lede onboarding-birth-prompt">What stars were you born under?</p>
             <input
               id="birth-date"
@@ -87,7 +87,7 @@ export function OnboardingWizard({
 
         {step === 3 ? (
           <>
-            <p className="onboarding-name-prompt type-logo">Ah, a {zodiacSign}.</p>
+            <p className="onboarding-header type-logo">Ah, a {zodiacSign}.</p>
             <p className="type-body onboarding-lede">Let's see your mettle. Allocate {remainingPoints} shards below</p>
             {statKeys.map((statKey) => (
               <div key={statKey} className="stat-row">
