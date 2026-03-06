@@ -20,7 +20,6 @@ export function OnboardingWizard({
   step,
   form,
   remainingPoints,
-  assignedClass,
   zodiacSign,
   assignedConcordCard,
   welcomeName,
@@ -37,6 +36,8 @@ export function OnboardingWizard({
   onHoverOmenStart,
   onHoverOmenEnd
 }) {
+  const isStepThreeLocked = step === 3 && remainingPoints > 0;
+
   return (
     <main className="onboarding-layout">
       <section className={`onboarding-panel${step === 1 ? " onboarding-panel-name" : ""}${step === 2 ? " onboarding-panel-birth" : ""}${step === 3 ? " onboarding-panel-traits" : ""}${step === 4 ? " onboarding-panel-concord" : ""}`}>
@@ -86,18 +87,16 @@ export function OnboardingWizard({
 
         {step === 3 ? (
           <>
-            <p className="onboarding-name-prompt type-logo">Ah a, {zodiacSign}</p>
-            <p className="type-body onboarding-lede">Let's see your mettle. Allocate 16 shards below</p>
-            <p className="onboarding-meta type-caps">Points Remaining: {remainingPoints}</p>
+            <p className="onboarding-name-prompt type-logo">Ah, a {zodiacSign}.</p>
+            <p className="type-body onboarding-lede">Let's see your mettle. Allocate {remainingPoints} shards below</p>
             {statKeys.map((statKey) => (
               <div key={statKey} className="stat-row">
                 <span className="type-caps stat-label">{statLabels[statKey] ?? statKey}:</span>
                 <button type="button" className="stat-btn" onClick={() => onAdjustStat(statKey, -1)}>-</button>
-                <span className="type-caps stat-value">{"+".repeat(form.stats[statKey]) || "\u00a0"}</span>
-                <button type="button" className="stat-btn stat-btn-plus type-logo" onClick={() => onAdjustStat(statKey, 1)} aria-label={`Increase ${statLabels[statKey] ?? statKey}`}>+</button>
+                <span className="type-logo stat-value">{"+".repeat(form.stats[statKey]) || "\u00a0"}</span>
+                <button type="button" className="stat-btn stat-btn-plus type-caps" onClick={() => onAdjustStat(statKey, 1)} aria-label={`Increase ${statLabels[statKey] ?? statKey}`}>+</button>
               </div>
             ))}
-            <p className="onboarding-meta type-caps">Class: {assignedClass}</p>
           </>
         ) : null}
 
@@ -132,9 +131,9 @@ export function OnboardingWizard({
         {error ? <p className="onboarding-error">{error}</p> : null}
 
         <div className="onboarding-actions">
-          {step > 1 && step !== 2 ? <button type="button" className="onboarding-btn type-caps" onClick={onBack}>Back</button> : null}
-          {step === 3 ? <button type="button" className="onboarding-btn type-caps" onClick={onResetStats}>Restart</button> : null}
-          <button type="button" className="onboarding-btn type-caps" onClick={onNext}>{step === 4 ? "FINISH" : "SWEAR"}</button>
+          {step > 1 && step !== 2 ? <button type="button" className="onboarding-btn onboarding-btn-back onboarding-btn-back-arrow" onClick={onBack} aria-label="Go back">←</button> : null}
+          {step === 3 ? <button type="button" className="onboarding-btn type-caps onboarding-btn-restart" onClick={onResetStats}>Restart</button> : null}
+          <button type="button" className="onboarding-btn type-caps onboarding-btn-primary" onClick={onNext} disabled={isStepThreeLocked}>{step === 4 ? "FINISH" : "SWEAR"}</button>
         </div>
       </section>
     </main>

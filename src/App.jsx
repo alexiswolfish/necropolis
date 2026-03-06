@@ -375,6 +375,7 @@ const CONCORD_NOTES_BY_ID = {
   "wit-spit": 220.0 // A3
 };
 const STORAGE_CHARACTER_KEY = "necropolis.character";
+const STORAGE_ONBOARDING_DRAFT_KEY = "necropolis.onboarding_draft";
 const TEAM_MAX_SIZE = 9;
 const CONCORD_TEAMS = Object.keys(TEAM_BLUEPRINT);
 const DIRECT_SIGN_TO_TEAM = Object.fromEntries(Object.values(TEAM_BLUEPRINT).map((team) => [team.directSign, team.id]));
@@ -407,6 +408,12 @@ const STAT_LABELS = Object.fromEntries(ONBOARDING_STATS.map((stat) => [stat.key,
 const STAT_KEYS = ONBOARDING_STATS.map((stat) => stat.key);
 const STAT_POINT_POOL = 16;
 const INITIAL_STATS = Object.fromEntries(STAT_KEYS.map((key) => [key, 0]));
+const INITIAL_ONBOARDING_FORM = {
+  realName: "",
+  birthDate: "",
+  botTrap: "",
+  stats: INITIAL_STATS
+};
 
 function normalizeName(name) {
   return name.trim().toLowerCase().replace(/[^\w\s]/g, " ").replace(/\s+/g, " ");
@@ -509,6 +516,53 @@ function setStoredCharacter(character) {
 
 function clearStoredCharacter() {
   window.localStorage.removeItem(STORAGE_CHARACTER_KEY);
+}
+
+function getStoredOnboardingDraft() {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_ONBOARDING_DRAFT_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+
+    const step = Number(parsed.step);
+    if (!Number.isInteger(step) || step < 0 || step > 4) return null;
+
+    const form = parsed.form ?? {};
+    const nextStats = Object.fromEntries(
+      STAT_KEYS.map((key) => {
+        const value = Number(form?.stats?.[key]);
+        if (!Number.isFinite(value)) return [key, 0];
+        return [key, Math.max(0, Math.min(10, Math.floor(value)))];
+      })
+    );
+
+    return {
+      step,
+      form: {
+        realName: String(form.realName ?? ""),
+        birthDate: normalizeMonthDayInput(String(form.birthDate ?? "")),
+        botTrap: String(form.botTrap ?? ""),
+        stats: nextStats
+      }
+    };
+  } catch {
+    return null;
+  }
+}
+
+function setStoredOnboardingDraft(step, form) {
+  window.localStorage.setItem(
+    STORAGE_ONBOARDING_DRAFT_KEY,
+    JSON.stringify({
+      step,
+      form
+    })
+  );
+}
+
+function clearStoredOnboardingDraft() {
+  window.localStorage.removeItem(STORAGE_ONBOARDING_DRAFT_KEY);
 }
 
 function getTeamCounts(characters) {
@@ -666,17 +720,13 @@ function NotFoundPage({ onReturnHome }) {
 
 export default function App() {
   const storedCharacter = getStoredCharacter();
+  const storedOnboardingDraft = getStoredOnboardingDraft();
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
   const [character, setCharacter] = useState(() => storedCharacter);
   const [allCharacters, setAllCharacters] = useState([]);
-  const [onboardingStep, setOnboardingStep] = useState(0);
+  const [onboardingStep, setOnboardingStep] = useState(() => (storedCharacter ? 0 : (storedOnboardingDraft?.step ?? 0)));
   const [onboardingError, setOnboardingError] = useState("");
-  const [onboardingForm, setOnboardingForm] = useState({
-    realName: "",
-    birthDate: "",
-    botTrap: "",
-    stats: INITIAL_STATS
-  });
+  const [onboardingForm, setOnboardingForm] = useState(() => (storedCharacter ? INITIAL_ONBOARDING_FORM : (storedOnboardingDraft?.form ?? INITIAL_ONBOARDING_FORM)));
   const audioContextRef = useRef(null);
   const lastHoverRef = useRef({ concordId: "", time: 0 });
   const ominousHumRef = useRef(null);
@@ -713,6 +763,18 @@ export default function App() {
       audioContextRef.current.close().catch(() => {});
     }
   }, []);
+
+  useEffect(() => {
+    if (character) {
+      clearStoredOnboardingDraft();
+      return;
+    }
+    if (onboardingStep > 0) {
+      setStoredOnboardingDraft(onboardingStep, onboardingForm);
+    } else {
+      clearStoredOnboardingDraft();
+    }
+  }, [character, onboardingStep, onboardingForm]);
 
   const selectedConcord = useMemo(() => {
     if (route.page !== "concord-detail") return null;
@@ -863,6 +925,8 @@ export default function App() {
       setStoredCharacter(createdCharacter);
       setAllCharacters(updatedCharacters);
       setOnboardingStep(0);
+      setOnboardingForm(INITIAL_ONBOARDING_FORM);
+      clearStoredOnboardingDraft();
       const nextPath = getPathFromRoute({ page: "home" });
       if (window.location.pathname !== nextPath) {
         window.history.pushState({}, "", nextPath);
@@ -1065,7 +1129,6 @@ export default function App() {
         step={onboardingStep}
         form={onboardingForm}
         remainingPoints={remainingStatPoints}
-        assignedClass={assignedClass}
         zodiacSign={zodiacSign}
         assignedConcordCard={assignedConcordCard}
         welcomeName={matchedGuestName ?? onboardingForm.realName}
