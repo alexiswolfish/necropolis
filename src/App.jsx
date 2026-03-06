@@ -212,6 +212,41 @@ const EXTRA_CONCORD_DETAILS = [
   }
 ];
 
+const SHORT_CONCORD_LORE = {
+  "desire-conspire": [
+    "The Concord of Desire & Conspire has never found it necessary to raise its voice. They move through a room collecting leverage — a careless word here, a useful secret there, a rumor placed with care and left to ripen.",
+    "By the time a contest is declared, they have been several moves deep for some time. Velvet, rings, candlelit corners."
+  ],
+  "pleasure-treasure": [
+    "The Concord of Pleasure & Treasure approaches both life and conflict with the same admirable philosophy: good things are worth waiting for, and waiting is considerably more enjoyable with wine.",
+    "They are patient as earth and roughly as easy to move once settled somewhere comfortable. Rich fabrics, good food, conspicuous gold."
+  ],
+  "brood-feud": [
+    "The Concord of Brood & Feud holds, as a matter of deep philosophical conviction, that most disagreements could be settled immediately, loudly, and in front of witnesses willing to confirm who won.",
+    "They keep grudges the way other people keep heirlooms — with care, with affection, and brought out on appropriate occasions. Leather, steel, the air of someone who came ready."
+  ],
+  "zeal-steel": [
+    "The Concord of Zeal & Steel has built more things meant to last than any other order — fortresses, roads, institutions, and filing systems of considerable sophistication. Their governing body is known, entirely sincerely, as the Administration.",
+    "In contest they bring the patience of stone and the confidence of people who have done the paperwork. Dark coats, iron signet rings, bearing of someone who has read all the relevant documents."
+  ],
+  "tears-spears": [
+    "The Concord of Tears & Spears began with small quiet promises made by moonlit pools in a pale birch forest. Those promises, tended over generations with great care and love, eventually grew sharp edges.",
+    "They are oath-bound and emotionally sincere in a way that proves, repeatedly, to be the most dangerous combination available. Pale silk, cold conviction, bright spears."
+  ],
+  "veils-sails": [
+    "The Concord of Veils & Sails is composed of sea-witches, wandering sailors, and people who stared at the horizon long enough that it stared back. They are not in any hurry.",
+    "They fight the way the tide does — circling, retreating, pulling opponents gently off balance until the moment comes to arrive all at once. The tide, it should be noted, has an excellent record. Fishermen's layers, shells, sea-worn things."
+  ],
+  "laurels-quarrels": [
+    "The Concord of Laurels & Quarrels has never seen the point of subtlety — it is difficult to see from a distance and nearly impossible to properly applaud.",
+    "They claim the center of every room and make the moment theirs. Who deserves the laurels is a lively ongoing debate that each member is quite certain they are winning. Bold fabrics, gold, capes that move well."
+  ],
+  "wit-spit": [
+    "The Concord of Wit & Spit traces its origins to the Faculty, a wandering institution devoted to scholarship, spirited debate, and the careful study of other people's mistakes.",
+    "They have read the room, predicted the move, and formed contingency plans before most people have finished their opening statement. Knowledge is useful. Knowing when to use it is fatal. Dark coats, ink-stained cuffs."
+  ]
+};
+
 const CONCORDS_BY_ID = new Map([...CONCORDS, ...EXTRA_CONCORD_DETAILS].map((concord) => [concord.id, concord]));
 const TEAM_BLUEPRINT = {
   "desire-conspire": {
@@ -1299,6 +1334,7 @@ export default function App() {
           character={character}
           teamBlueprint={TEAM_BLUEPRINT}
           concord={character?.concordId ? (CONCORDS_BY_ID.get(character.concordId) ?? null) : null}
+          shortConcordLore={character?.concordId ? (SHORT_CONCORD_LORE[character.concordId] ?? []) : []}
           costumeImagesByConcord={COSTUME_IMAGES_BY_CONCORD}
           detailTab={route.detailTab ?? "stats"}
           onOpenTab={(detailTab) => navigate({ page: "character", detailTab })}

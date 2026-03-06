@@ -32,10 +32,13 @@ const PLAYERS_CONCORD_MEMBER_COLORS = {
   "wit-spit": "#c0a9b3"
 };
 
-const ADMIN_REAL_NAMES = ["alexandra k wolfe", "jordan f morris"];
-
 function isAdmin(character) {
-  return ADMIN_REAL_NAMES.includes((character?.realName ?? "").trim().toLowerCase());
+  const parts = (character?.realName ?? "").trim().toLowerCase().split(/\s+/);
+  const first = parts[0] ?? "";
+  const last = parts[1] ?? "";
+  if ((first === "alex" || first === "alexandra") && last.startsWith("w")) return true;
+  if (first === "jordan" && last.startsWith("m")) return true;
+  return false;
 }
 
 export function PlayersPage({ characters, teamBlueprint, currentCharacter, onToggleExcluded }) {
@@ -70,6 +73,7 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, onTog
                 <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: group.memberColor }}>
                   {member.characterName ?? member.realName}
                   {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
+                  {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
                   {adminMode ? (
                     <button
                       className="type-caps players-admin-toggle"
@@ -88,7 +92,7 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, onTog
   );
 }
 
-export function CharacterPage({ character, teamBlueprint, concord, costumeImagesByConcord, detailTab, onOpenTab, onOpenConcord, getPathFromRoute, onSaveCharacterName }) {
+export function CharacterPage({ character, teamBlueprint, concord, shortConcordLore, costumeImagesByConcord, detailTab, onOpenTab, onOpenConcord, getPathFromRoute, onSaveCharacterName }) {
   const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
   const [nameDraft, setNameDraft] = useState(character?.characterName ?? "");
   const [isSavingName, setIsSavingName] = useState(false);
@@ -160,7 +164,7 @@ export function CharacterPage({ character, teamBlueprint, concord, costumeImages
         <dl className="concord-meta">
           <div className="concord-meta-row">
             <dt className="type-caps">Element:</dt>
-            <dd className="type-caps concord-meta-value">{teamData?.element ?? "unknown"}</dd>
+            <dd className="type-caps concord-meta-value">{concord?.element ?? teamData?.element ?? "unknown"}</dd>
           </div>
           <div className="concord-meta-row">
             <dt className="type-caps">Sign:</dt>
@@ -256,10 +260,16 @@ export function CharacterPage({ character, teamBlueprint, concord, costumeImages
           </section>
         ) : (
           <section className="character-concord-copy" aria-label="Concord backstory">
-            {concord?.lede ? <p className="character-concord-lede">{concord.lede}</p> : null}
-            {concordBody.map((paragraph, index) => (
-              <p key={`${character.concordId}-about-${index}`} className="character-concord-paragraph">{paragraph}</p>
+            {(shortConcordLore ?? []).map((paragraph, index) => (
+              <p key={`${character.concordId}-short-${index}`} className="character-concord-paragraph">{paragraph}</p>
             ))}
+            <a
+              href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "backstory" })}
+              onClick={onOpenConcord(character.concordId)}
+              className="type-caps character-more-lore-btn"
+            >
+              More Lore
+            </a>
           </section>
         )}
       </article>
