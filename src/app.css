@@ -458,11 +458,23 @@ html.fonts-ready #root {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   margin-bottom: 0.8rem;
+  align-items: center;
 }
 
 .concord-meta-row dt,
 .concord-meta-row dd {
   margin: 0;
+}
+
+.concord-meta-row dt {
+  color: var(--concord-nav);
+  font-family: var(--font-caps);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
+.concord-meta-row dd {
   color: var(--concord-tertiary);
   font-family: "Darksame Regular", "Lohengrin", serif;
   text-transform: lowercase;
@@ -473,6 +485,7 @@ html.fonts-ready #root {
 .concord-meta-value {
   font-family: "Darksame Regular", "Lohengrin", serif;
   text-transform: lowercase;
+  font-size: 22px !important;
 }
 
 .concord-detail-right {
@@ -527,6 +540,20 @@ html.fonts-ready #root {
   opacity: 1;
   filter: blur(0);
   transform: scale(1);
+}
+
+.concord-players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.concord-player-name {
+  margin: 0;
+  font-family: "Lohengrin", serif;
+  font-size: 52px;
+  line-height: 1.05;
+  color: var(--concord-tertiary);
 }
 
 .not-found-layout {

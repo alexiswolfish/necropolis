@@ -687,7 +687,7 @@ function getRouteFromPath(pathname) {
   if (appPath === "/players") return { page: "players" };
   if (appPath === "/character") return { page: "character" };
 
-  const detailMatch = appPath.match(/^\/concords\/([a-z0-9-]+)(?:\/(backstory|costumes))?$/);
+  const detailMatch = appPath.match(/^\/concords\/([a-z0-9-]+)(?:\/(backstory|costumes|players))?$/);
   if (detailMatch && CONCORDS_BY_ID.has(detailMatch[1])) {
     return { page: "concord-detail", concordId: detailMatch[1], detailTab: detailMatch[2] ?? "backstory" };
   }
@@ -703,6 +703,7 @@ function getPathFromRoute(route) {
   if (route.page === "character") return withBase("/character");
   if (route.page === "concord-detail" && route.concordId) {
     if (route.detailTab === "costumes") return withBase(`/concords/${route.concordId}/costumes`);
+    if (route.detailTab === "players") return withBase(`/concords/${route.concordId}/players`);
     return withBase(`/concords/${route.concordId}`);
   }
   return withBase("/");
@@ -1167,6 +1168,7 @@ export default function App() {
         getPathFromRoute={getPathFromRoute}
         costumeImagesByConcord={COSTUME_IMAGES_BY_CONCORD}
         teamBlueprint={TEAM_BLUEPRINT}
+        characters={allCharacters}
       />
     );
   }

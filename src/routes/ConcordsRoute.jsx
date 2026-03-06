@@ -58,7 +58,8 @@ export function ConcordDetailPage({
   onStopDetailHum,
   getPathFromRoute,
   costumeImagesByConcord,
-  teamBlueprint
+  teamBlueprint,
+  characters
 }) {
   const [leftLabel, rightLabel] = concord.label.split(" & ");
   const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
@@ -74,6 +75,9 @@ export function ConcordDetailPage({
     )
     : concord.label;
   const costumeImages = costumeImagesByConcord[concord.id] ?? [];
+  const teamMembers = (characters ?? [])
+    .filter((entry) => entry?.concordId === concord.id)
+    .sort((a, b) => (a.realName ?? "").localeCompare(b.realName ?? ""));
   const teamData = teamBlueprint[concord.id] ?? null;
 
   return (
@@ -96,10 +100,6 @@ export function ConcordDetailPage({
             <dt className="type-caps">Earthly Desire:</dt>
             <dd className="type-caps concord-meta-value">{teamData?.earthlyDesire ?? concord.earthlyDesire}</dd>
           </div>
-          <div className="concord-meta-row">
-            <dt className="type-caps">Palette:</dt>
-            <dd className="type-caps concord-meta-value">Wada #{teamData?.palette.id ?? concord.paletteId}</dd>
-          </div>
         </dl>
       </aside>
 
@@ -121,6 +121,14 @@ export function ConcordDetailPage({
           >
             Costumes
           </a>
+          <a
+            href={getPathFromRoute({ page: "concord-detail", concordId: concord.id, detailTab: "players" })}
+            onClick={onOpenTab("players")}
+            className="type-caps concord-subnav-link"
+            aria-current={detailTab === "players" ? "page" : undefined}
+          >
+            Players
+          </a>
         </nav>
 
         {detailTab === "costumes" ? (
@@ -140,6 +148,12 @@ export function ConcordDetailPage({
                   });
                 }}
               />
+            ))}
+          </section>
+        ) : detailTab === "players" ? (
+          <section className="concord-players-list" aria-label={`${concord.label} players`}>
+            {teamMembers.map((entry) => (
+              <p key={`${concord.id}-${entry.realName}`} className="concord-player-name">{entry.realName}</p>
             ))}
           </section>
         ) : (
