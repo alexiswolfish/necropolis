@@ -54,7 +54,10 @@ export function PlayersPage({ characters, teamBlueprint }) {
             <h2 className="type-caps players-concord-name" style={{ color: group.backgroundColor }}>{group.concordName}</h2>
             <div className="concord-players-list">
               {group.members.map((member) => (
-                <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: group.memberColor }}>{member.characterName ?? member.realName}</p>
+                <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: group.memberColor }}>
+                  {member.characterName ?? member.realName}
+                  {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
+                </p>
               ))}
             </div>
           </article>
