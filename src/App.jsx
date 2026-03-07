@@ -978,7 +978,7 @@ export default function App() {
         setOnboardingError("Unable to proceed.");
         return;
       }
-      if (normalized.length < 3) {
+      if (!matchedName && normalized.length < 3) {
         setOnboardingError("Please enter your real name.");
         return;
       }
