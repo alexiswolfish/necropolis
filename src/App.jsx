@@ -427,11 +427,14 @@ const ZODIAC_ELEMENT = {
   Leo: "fire",
   Virgo: "earth",
   Libra: "air",
-  Scorpio: "water",
+  Scorpio: "fire",
   Sagittarius: "fire",
   Capricorn: "earth",
   Aquarius: "air",
   Pisces: "water"
+};
+const ZODIAC_SECONDARY_ELEMENT = {
+  Aquarius: "water"
 };
 const TEAM_ELEMENT = Object.fromEntries(Object.values(TEAM_BLUEPRINT).map((team) => [team.id, team.element]));
 const ONBOARDING_STATS = [
