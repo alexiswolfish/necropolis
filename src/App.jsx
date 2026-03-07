@@ -3,7 +3,7 @@ import { GOING_GUEST_NAMES } from "./guestAllowlist";
 import { HomeRoute } from "./routes/HomeRoute";
 import { BeginGate, OnboardingWizard } from "./routes/OnboardingRoute";
 import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
-import { CharacterPage, PlayersPage } from "./routes/PlayersRoute";
+import { CharacterPage, PlayersPage, PublicCharacterPage } from "./routes/PlayersRoute";
 import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterById } from "./data/charactersApi";
 
 const CONCORDS = [
@@ -200,12 +200,12 @@ const EXTRA_CONCORD_DETAILS = [
     paletteId: 329,
     element: "Wandering Air",
     earthlyDesire: "Cunning",
-    lede: "The Concord of Wit & Spit traces its origins to the Faculty, a wandering institution devoted to scholarship, debate, and the careful study of other people's mistakes.",
+    lede: "The Concord of Wit & Spit traces its origins to the Academy, a wandering institution devoted to scholarship, debate, and the careful study of other people's mistakes.",
     bodyParagraphs: [
       "Members travel widely collecting manuscripts, rumors, theories, and useful bits of information that other people were careless enough to say out loud. Libraries are respected, but conversation is often more productive.",
       "They favor dark coats, ink-stained cuffs, spectacles, and the general air of someone who has either been studying very hard or quietly winning an argument that hasn't happened yet.",
       "Among the Concords they are known for quick tongues, sharper minds, and the unsettling habit of finishing other people's thoughts when they become predictable.",
-      "Members of the Faculty take pride in being the most informed person in the room.",
+      "Members of the Academy take pride in being the most informed person in the room.",
       "Knowledge is useful. Knowing when to use it is fatal."
     ],
     preview: { start: "#f7f7f7", end: "#f7f7f7", border: "#f3b1bc", text: "#4a1e8d" }
@@ -242,7 +242,7 @@ const SHORT_CONCORD_LORE = {
     "They claim the center of every room and make the moment theirs. Who deserves the laurels is a lively ongoing debate that each member is quite certain they are winning. Bold fabrics, gold, capes that move well."
   ],
   "wit-spit": [
-    "The Concord of Wit & Spit traces its origins to the Faculty, a wandering institution devoted to scholarship, spirited debate, and the careful study of other people's mistakes.",
+    "The Concord of Wit & Spit traces its origins to the Academy, a wandering institution devoted to scholarship, spirited debate, and the careful study of other people's mistakes.",
     "They have read the room, predicted the move, and formed contingency plans before most people have finished their opening statement. Knowledge is useful. Knowing when to use it is fatal. Dark coats, ink-stained cuffs."
   ]
 };
@@ -795,6 +795,8 @@ function getRouteFromPath(pathname) {
   if (appPath === "/concords") return { page: "concords" };
   if (appPath === "/concords/spare") return { page: "concords-spare" };
   if (appPath === "/players") return { page: "players" };
+  const playerDetailMatch = appPath.match(/^\/players\/([a-zA-Z0-9-]+)$/);
+  if (playerDetailMatch) return { page: "player-detail", characterId: playerDetailMatch[1] };
   const characterMatch = appPath.match(/^\/character(?:\/(stats|about|costumes))?$/);
   if (characterMatch) return { page: "character", detailTab: characterMatch[1] ?? "stats" };
 
@@ -811,6 +813,7 @@ function getPathFromRoute(route) {
   if (route.page === "concords") return withBase("/concords");
   if (route.page === "concords-spare") return withBase("/concords/spare");
   if (route.page === "players") return withBase("/players");
+  if (route.page === "player-detail" && route.characterId) return withBase(`/players/${route.characterId}`);
   if (route.page === "character") {
     if (route.detailTab === "about") return withBase("/character/about");
     if (route.detailTab === "costumes") return withBase("/character/costumes");
@@ -840,6 +843,7 @@ export default function App() {
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
   const [character, setCharacter] = useState(() => storedCharacter);
   const [allCharacters, setAllCharacters] = useState([]);
+  const [charactersLoaded, setCharactersLoaded] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(() => (storedCharacter ? 0 : (storedOnboardingDraft?.step ?? 0)));
   const [onboardingError, setOnboardingError] = useState("");
   const [onboardingForm, setOnboardingForm] = useState(() => (storedCharacter ? INITIAL_ONBOARDING_FORM : (storedOnboardingDraft?.form ?? INITIAL_ONBOARDING_FORM)));
@@ -862,6 +866,7 @@ export default function App() {
         const roster = await fetchAllCharacters();
         if (!cancelled) {
           setAllCharacters(roster);
+          setCharactersLoaded(true);
         }
       } catch (error) {
         console.error("Failed to load characters from Supabase.", error);
@@ -897,12 +902,18 @@ export default function App() {
     return CONCORDS_BY_ID.get(route.concordId) ?? null;
   }, [route]);
   const themedConcord = useMemo(() => {
+    if (route.page === "home") return { id: "home" };
+    if (route.page === "players") return { id: "players" };
     if (route.page === "concord-detail") return selectedConcord;
     if (route.page === "character" && character?.concordId) {
       return CONCORDS_BY_ID.get(character.concordId) ?? null;
     }
+    if (route.page === "player-detail" && route.characterId) {
+      const profileChar = allCharacters.find((c) => c.id === route.characterId) ?? null;
+      return profileChar?.concordId ? (CONCORDS_BY_ID.get(profileChar.concordId) ?? null) : null;
+    }
     return null;
-  }, [route.page, selectedConcord, character]);
+  }, [route.page, route.characterId, selectedConcord, character, allCharacters]);
   const zodiacSign = useMemo(() => getZodiacSign(onboardingForm.birthDate), [onboardingForm.birthDate]);
   const matchedGuestName = useMemo(() => findGuestNameMatch(onboardingForm.realName), [onboardingForm.realName]);
   const guestNameSuggestions = useMemo(
@@ -1314,6 +1325,7 @@ export default function App() {
         onStartDetailHum={startDetailConcordHum}
         onStopDetailHum={stopDetailConcordHum}
         getPathFromRoute={getPathFromRoute}
+        onNavigate={navigate}
         costumeImagesByConcord={COSTUME_IMAGES_BY_CONCORD}
         teamBlueprint={TEAM_BLUEPRINT}
         characters={allCharacters}
@@ -1326,12 +1338,27 @@ export default function App() {
         characters={allCharacters}
         teamBlueprint={TEAM_BLUEPRINT}
         currentCharacter={character}
+        getPathFromRoute={getPathFromRoute}
+        onNavigate={navigate}
         onToggleExcluded={async (characterId, excluded) => {
           const updated = await updateCharacterById(characterId, { excludedFromCount: excluded });
           if (updated) {
             setAllCharacters((prev) => prev.map((c) => c.id === characterId ? { ...c, excludedFromCount: excluded } : c));
           }
         }}
+      />
+    );
+  }
+  if (route.page === "player-detail") {
+    const profileCharacter = allCharacters.find((c) => c.id === route.characterId) ?? null;
+    pageContent = (
+      <PublicCharacterPage
+        character={profileCharacter}
+        charactersLoaded={charactersLoaded}
+        teamBlueprint={TEAM_BLUEPRINT}
+        concord={profileCharacter?.concordId ? (CONCORDS_BY_ID.get(profileCharacter.concordId) ?? null) : null}
+        getPathFromRoute={getPathFromRoute}
+        onNavigate={navigate}
       />
     );
   }
@@ -1384,7 +1411,7 @@ export default function App() {
   }
 
   const inConcordsSection = concordsVisible;
-  const inPlayersSection = route.page === "players";
+  const inPlayersSection = route.page === "players" || route.page === "player-detail";
   const inCharacterSection = route.page === "character";
 
   return (

@@ -42,7 +42,66 @@ function isAdmin(character) {
   return false;
 }
 
-export function PlayersPage({ characters, teamBlueprint, currentCharacter, onToggleExcluded }) {
+// Shared: left sidebar showing concord name + meta
+function ConcordSidebar({ character, concord, teamData, getPathFromRoute, onOpenConcord }) {
+  const concordName = teamData?.concordName ?? character.concordId;
+  const [leftWord, rightWord] = concordName.split(" & ");
+  const concordDisplay = rightWord
+    ? (<>{leftWord}<br />&<br />{rightWord}</>)
+    : concordName;
+
+  return (
+    <aside className="concord-detail-left">
+      <a
+        href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "backstory" })}
+        onClick={onOpenConcord(character.concordId)}
+        className="character-concord-link"
+      >
+        <h1 className="concord-detail-name">{concordDisplay}</h1>
+      </a>
+      <dl className="concord-meta">
+        <div className="concord-meta-row">
+          <dt className="type-caps">Element:</dt>
+          <dd className="type-caps concord-meta-value">{concord?.element ?? teamData?.element ?? "unknown"}</dd>
+        </div>
+        <div className="concord-meta-row">
+          <dt className="type-caps">Ruling Planet:</dt>
+          <dd className="type-caps concord-meta-value">{teamData?.planet ?? "unknown"}</dd>
+        </div>
+        <div className="concord-meta-row">
+          <dt className="type-caps">Sign:</dt>
+          <dd className="type-caps concord-meta-value">{character.zodiacSign}</dd>
+        </div>
+        <div className="concord-meta-row">
+          <dt className="type-caps">Earthly Desire:</dt>
+          <dd className="type-caps concord-meta-value">{teamData?.earthlyDesire ?? "unknown"}</dd>
+        </div>
+      </dl>
+    </aside>
+  );
+}
+
+// Shared: stat rows
+function StatsList({ character }) {
+  const stats = character.stats ?? {};
+  const statEntries = Object.entries(STAT_LABELS).map(([key, label]) => ({
+    key,
+    label,
+    value: Number(stats[key] ?? 0)
+  }));
+  return (
+    <section className="character-stats" aria-label="Character stats">
+      {statEntries.map((entry) => (
+        <div key={entry.key} className="character-stat-row">
+          <span className="type-caps character-stat-label">{entry.label}:</span>
+          <span className="type-logo character-stat-value">{"+".repeat(Math.max(0, entry.value)) || "\u00a0"}</span>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+export function PlayersPage({ characters, teamBlueprint, currentCharacter, onToggleExcluded, getPathFromRoute, onNavigate }) {
   const adminMode = isAdmin(currentCharacter);
 
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {
@@ -72,7 +131,9 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, onTog
             <div className="concord-players-list">
               {group.members.map((member) => (
                 <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: group.memberColor }}>
-                  {member.characterName ?? member.realName}
+                  <a href={getPathFromRoute({ page: "player-detail", characterId: member.id })} onClick={onNavigate({ page: "player-detail", characterId: member.id })} className="concord-player-link">
+                    {member.characterName ?? member.realName}
+                  </a>
                   {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
                   {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
                   {adminMode ? (
@@ -118,28 +179,10 @@ export function CharacterPage({ character, teamBlueprint, concord, shortConcordL
   const teamData = teamBlueprint[character.concordId] ?? null;
   const concordName = teamData?.concordName ?? character.concordId;
   const costumeImages = (costumeImagesByConcord ?? {})[character.concordId] ?? [];
-  const stats = character.stats ?? {};
   const concordBody = useMemo(() => {
     if (!concord) return [];
     return concord.bodyParagraphs ?? (concord.body ? [concord.body] : []);
   }, [concord]);
-  const statEntries = Object.entries(STAT_LABELS).map(([key, label]) => ({
-    key,
-    label,
-    value: Number(stats[key] ?? 0)
-  }));
-  const [leftWord, rightWord] = concordName.split(" & ");
-  const concordDisplay = rightWord
-    ? (
-      <>
-        {leftWord}
-        <br />
-        &
-        <br />
-        {rightWord}
-      </>
-    )
-    : concordName;
 
   const canSaveName = nameDraft.trim().length > 0 && (nameDraft.trim() !== (character.characterName ?? character.realName));
   const commitCharacterName = async () => {
@@ -152,35 +195,14 @@ export function CharacterPage({ character, teamBlueprint, concord, shortConcordL
   };
 
   return (
-      <main className="concord-detail-layout character-detail-layout">
-      <aside className="concord-detail-left">
-        <a
-          href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "backstory" })}
-          onClick={onOpenConcord(character.concordId)}
-          className="character-concord-link"
-        >
-          <h1 className="concord-detail-name">{concordDisplay}</h1>
-        </a>
-
-        <dl className="concord-meta">
-          <div className="concord-meta-row">
-            <dt className="type-caps">Element:</dt>
-            <dd className="type-caps concord-meta-value">{concord?.element ?? teamData?.element ?? "unknown"}</dd>
-          </div>
-          <div className="concord-meta-row">
-            <dt className="type-caps">Ruling Planet:</dt>
-            <dd className="type-caps concord-meta-value">{teamData?.planet ?? "unknown"}</dd>
-          </div>
-          <div className="concord-meta-row">
-            <dt className="type-caps">Sign:</dt>
-            <dd className="type-caps concord-meta-value">{character.zodiacSign}</dd>
-          </div>
-          <div className="concord-meta-row">
-            <dt className="type-caps">Earthly Desire:</dt>
-            <dd className="type-caps concord-meta-value">{teamData?.earthlyDesire ?? "unknown"}</dd>
-          </div>
-        </dl>
-      </aside>
+    <main className="concord-detail-layout character-detail-layout">
+      <ConcordSidebar
+        character={character}
+        concord={concord}
+        teamData={teamData}
+        getPathFromRoute={getPathFromRoute}
+        onOpenConcord={onOpenConcord}
+      />
 
       <article className="concord-detail-right character-detail-right">
         <p className="character-player-label type-caps">Player Name: {character.realName}</p>
@@ -192,9 +214,7 @@ export function CharacterPage({ character, teamBlueprint, concord, shortConcordL
             setNameDraft(event.target.value);
             setNameSaveMessage("");
           }}
-          onBlur={() => {
-            void commitCharacterName();
-          }}
+          onBlur={() => { void commitCharacterName(); }}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
@@ -233,14 +253,7 @@ export function CharacterPage({ character, teamBlueprint, concord, shortConcordL
           </a>
         </nav>
         {detailTab === "stats" ? (
-          <section className="character-stats" aria-label="Character stats">
-            {statEntries.map((entry) => (
-              <div key={entry.key} className="character-stat-row">
-                <span className="type-caps character-stat-label">{entry.label}:</span>
-                <span className="type-logo character-stat-value">{"+".repeat(Math.max(0, entry.value)) || "\u00a0"}</span>
-              </div>
-            ))}
-          </section>
+          <StatsList character={character} />
         ) : detailTab === "costumes" ? (
           <section className="character-costume-notes" aria-label="Costume notes">
             <p className="character-concord-paragraph">Below is the mood and vibe for your concord. Please remember to wear flat shoes, and appear however you feel best</p>
@@ -277,6 +290,45 @@ export function CharacterPage({ character, teamBlueprint, concord, shortConcordL
             </a>
           </section>
         )}
+      </article>
+    </main>
+  );
+}
+
+export function PublicCharacterPage({ character, charactersLoaded, teamBlueprint, concord, getPathFromRoute, onNavigate }) {
+  if (!character) {
+    return (
+      <main className="concord-detail-layout character-detail-layout">
+        <aside className="concord-detail-left" />
+        <article className="concord-detail-right character-detail-right">
+          {charactersLoaded ? <p className="type-caps">Character not found.</p> : null}
+        </article>
+      </main>
+    );
+  }
+
+  const teamData = teamBlueprint[character.concordId] ?? null;
+
+  return (
+    <main className="concord-detail-layout character-detail-layout">
+      <ConcordSidebar
+        character={character}
+        concord={concord}
+        teamData={teamData}
+        getPathFromRoute={getPathFromRoute}
+        onOpenConcord={(concordId) => onNavigate({ page: "concord-detail", concordId, detailTab: "backstory" })}
+      />
+
+      <article className="concord-detail-right character-detail-right">
+        <a
+          href={getPathFromRoute({ page: "players" })}
+          onClick={onNavigate({ page: "players" })}
+          className="type-caps public-character-back"
+        >
+          ← Players
+        </a>
+        <p className="character-name-hero-display">{character.characterName ?? character.realName}</p>
+        <StatsList character={character} />
       </article>
     </main>
   );

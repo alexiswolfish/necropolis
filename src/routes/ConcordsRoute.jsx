@@ -57,6 +57,7 @@ export function ConcordDetailPage({
   onStartDetailHum,
   onStopDetailHum,
   getPathFromRoute,
+  onNavigate,
   costumeImagesByConcord,
   teamBlueprint,
   characters
@@ -157,7 +158,11 @@ export function ConcordDetailPage({
         ) : detailTab === "players" ? (
           <section className="concord-players-list" aria-label={`${concord.label} players`}>
             {teamMembers.map((entry) => (
-              <p key={`${concord.id}-${entry.realName}`} className="concord-player-name">{entry.characterName ?? entry.realName}</p>
+              <p key={`${concord.id}-${entry.realName}`} className="concord-player-name">
+                <a href={getPathFromRoute({ page: "player-detail", characterId: entry.id })} onClick={onNavigate({ page: "player-detail", characterId: entry.id })} className="concord-player-link">
+                  {entry.characterName ?? entry.realName}
+                </a>
+              </p>
             ))}
           </section>
         ) : (
