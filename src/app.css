@@ -278,14 +278,25 @@ html.fonts-ready #root {
   align-items: center;
 }
 
+.site-footer-left {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+
 .site-footer-date,
 .site-footer-address {
   margin: 0;
   color: var(--theme-nav-color);
 }
 
-.site-footer-address {
-  text-align: right;
+.site-footer-partiful {
+  color: var(--theme-nav-color);
+  text-decoration: none;
+}
+
+.site-footer-partiful:hover {
+  opacity: 0.7;
 }
 
 .hero-layout {
@@ -1274,10 +1285,7 @@ html.fonts-ready #root {
   .site-footer {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .site-footer-address {
-    text-align: left;
+    gap: 0.6rem;
   }
 
   .page-shell {
@@ -1291,6 +1299,10 @@ html.fonts-ready #root {
   .hero-layout {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .home-death-wrap {
+    margin: 2rem auto 0;
   }
 
   .event-meta {
@@ -1358,7 +1370,7 @@ html.fonts-ready #root {
     right: auto;
     height: auto;
     width: min(92vw, 440px);
-    margin: -5rem 0 0 auto;
+    margin: 2rem auto 0;
     transform: none;
   }
 

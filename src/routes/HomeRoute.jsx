@@ -3,12 +3,7 @@ import React from "react";
 export function HomeRoute({ onHoverOmenStart, onHoverOmenEnd, deathImageSrc }) {
   return (
     <main className="hero-layout">
-      <aside className="event-meta type-caps">
-        <p>March 14th 2026</p>
-        <p>Piedmont</p>
-        <p>Community</p>
-        <p>Center</p>
-      </aside>
+      <aside className="event-meta" />
 
       <article className="story-block">
         <h1 className="type-before before-mark">Before...</h1>

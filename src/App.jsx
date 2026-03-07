@@ -1401,8 +1401,11 @@ export default function App() {
       {pageContent}
 
       <footer className="site-footer" aria-label="Party details">
-        <p className="type-caps site-footer-date">{PARTY_DATE}</p>
-        <p className="type-caps site-footer-address">{PARTY_ADDRESS}</p>
+        <div className="site-footer-left">
+          <p className="type-caps site-footer-date">{PARTY_DATE}</p>
+          <p className="type-caps site-footer-address">{PARTY_ADDRESS}</p>
+        </div>
+        <a href="https://partiful.com/e/QJJYEJyPjvd42XfIskM5" target="_blank" rel="noreferrer" className="type-caps site-footer-partiful">Partiful</a>
       </footer>
     </div>
   );
