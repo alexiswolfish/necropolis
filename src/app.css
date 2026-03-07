@@ -1284,7 +1284,7 @@ html.fonts-ready #root {
 }
 
 .concord-detail-right .concord-body:last-child {
-  margin-bottom: 0;
+  margin-bottom: 40px;
 }
 
 .type-logo {
