@@ -981,8 +981,8 @@ export default function App() {
         setOnboardingError("Unable to proceed.");
         return;
       }
-      if (!matchedName && normalized.length < 3) {
-        setOnboardingError("Please enter your real name.");
+      if (!matchedName && normalized.length < 1) {
+        setOnboardingError("Please use at least a full syllable for your name.");
         return;
       }
       setOnboardingForm((current) => ({ ...current, realName: matchedName ?? current.realName }));
