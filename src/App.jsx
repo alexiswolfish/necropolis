@@ -29,7 +29,7 @@ const CONCORDS = [
     paletteId: 332,
     element: "Wandering Fire",
     earthlyDesire: "Ambition",
-    lede: "The Concord of Desire & Conspire drifts from court to court wherever power gathers. They favor velvet, rings, and candlelit corners, moving easily among nobles, spies, and fools alike.",
+    lede: "The Concord of Desire & Conspire moves wherever power gathers, collecting leverage with the patience of people who have never needed to raise their voice.",
     bodyParagraphs: [
       "They are students of ambition. Every glance, rumor, and careless word is weighed for advantage. Gossip is their sport and their weapon. A quiet whisper can wound more deeply than steel.",
       "Members of the Concord carry themselves with charm and danger in equal measure. They flirt, provoke, and linger where secrets are being traded. Laughter comes easily, but their eyes are always searching the room for the next opportunity.",
@@ -132,13 +132,12 @@ const EXTRA_CONCORD_DETAILS = [
     paletteId: 273,
     element: "Wakened Earth",
     earthlyDesire: "Legacy",
-    lede: "The Concord of Zeal & Steel believes that anything worth doing is worth organizing properly.",
+    lede: "The Concord of Zeal & Steel intends to be in charge, has a detailed plan for how, and considers the matter largely settled.",
     bodyParagraphs: [
-      "They build things meant to last-fortresses, roads, institutions, and occasionally very large filing systems. Their governing body is known, quite sincerely, as the Administration, which many outsiders have observed bears a striking resemblance to an incredibly German bureaucracy.",
-      "Members favor dark coats, iron clasps, and heavy iron signet rings engraved with the mark of Saturn. These rings denote office, achievement, and seniority.",
-      "Particularly accomplished members tend to wear several, which makes their handshakes increasingly memorable.",
-      "They speak plainly, respect hierarchy, and have the remarkable ability to turn even the most festive gathering into the opening session of a committee.",
-      "At a party they can usually be found discussing plans, forming subcommittees, or quietly evaluating whether the evening could be run more efficiently.",
+      "They have been governing things since before several of the other Concords thought to ask permission. Their ruling body — known, entirely sincerely, as the Administration — has outlasted three separate empires and shows no signs of finding this remarkable.",
+      "Everything Zeal & Steel builds is designed to outlast whoever commissioned it. At a gathering they speak plainly, respect hierarchy, and locate with uncanny speed the one person most likely to be useful — with whom they will begin a detailed discussion about governance before anyone else has found a comfortable chair.",
+      "Members favor dark coats, iron clasps, and heavy iron signet rings engraved with the mark of Saturn — one ring per significant achievement. The most accomplished members deliver handshakes of considerable consequence.",
+      "In contest they are patient as stone and twice as heavy. They do not strike first — they position, consolidate, and advance until the other side runs out of room to move, at which point the outcome is simply a matter of paperwork.",
       "An achievement unrecorded is, in the Administration's view, an achievement to be repeated more carefully. Ideally in triplicate."
     ],
     preview: { start: "#e596c9", end: "#e596c9", border: "#cc5920", text: "#7d1532" }
@@ -149,7 +148,7 @@ const EXTRA_CONCORD_DETAILS = [
     paletteId: 277,
     element: "Wakened Water",
     earthlyDesire: "Devotion",
-    lede: "The great halls of the CONCORD of Tears & Spears were once nothing but a pale forest of white birch, where moonlight fell into pools of silver water collected amongst the tangled roots.",
+    lede: "The Concord of Tears & Spears swears its oaths beside moonlit pools, and keeps them — which has historically been the more dangerous part.",
     bodyParagraphs: [
       "There, in that quiet wood, the first of their order knelt.",
       "They began as the keepers of small promises by which lives are bound together. A devotion to kin, to memory, to the soft gravity that binds blood to blood.",
@@ -198,12 +197,11 @@ const EXTRA_CONCORD_DETAILS = [
     paletteId: 329,
     element: "Wandering Air",
     earthlyDesire: "Cunning",
-    lede: "The Concord of Wit & Spit traces its origins to the Academy — an institution that has never stayed anywhere long enough to be taxed, devoted since its founding to scholarship, the careful study of other people's mistakes, and the conviction that knowledge, properly applied, is the most dangerous thing in any room.",
+    lede: "The Concord of Wit & Spit knows something about everyone in the room, and has been considering for some time how best to use it.",
     bodyParagraphs: [
-      "The Academy has no permanent address. It has occupied a tower in three different cities, a barge, a series of interconnected tents, and briefly a very large wagon that everyone agreed was technically a library. The Academy maintains it was an administrative building. The debate is ongoing and extensively documented.",
+      "They trace their origins to the Academy — an institution that has never stayed anywhere long enough to be taxed. It has occupied a tower in three different cities, a barge, a series of interconnected tents, and briefly a very large wagon that everyone agreed was technically a library. The curriculum, however, has remained consistent: the insantiable accumulation of knowledge, and the careful study of other people's mistakes.",
       "Members travel widely, collecting manuscripts, rumors, half-finished theories, and pieces of information that other people were careless enough to say aloud near someone with a notebook. They have found that people, given wine and a sympathetic ear, will disclose things that no archive would dare commit to vellum.",
       "They thirst, insatiably, for knowledge. The mechanics of courts, the weaknesses of rivals, the particular way a room rearranges itself when someone enters who understands where the leverage is.",
-      "A challenge formally declared against a member of the Academy is, in practice, a challenge against someone who has already read your correspondence, identified your three most exploitable weaknesses, and spent some time deciding which of them would be most instructive to demonstrate first.",
       "Dark coats, ink-stained cuffs, and spectacles that may or may not be strictly necessary for vision, but prove very useful to remove slowly while composing a response.",
       "A member of the Academy, in full possession of the relevant facts, is — as several former governments could confirm — the most dangerous thing in any room."
     ],

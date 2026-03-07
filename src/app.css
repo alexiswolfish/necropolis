@@ -235,7 +235,7 @@ html.fonts-ready #root {
   --concord-primary: #f7f7f7;
   --concord-title: #4a1e8d;
   --concord-secondary: #c0a9b3;
-  --concord-tertiary: #34454c;
+  --concord-tertiary: #66629c;
   --concord-nav: #f37f94;
 }
 
@@ -385,6 +385,10 @@ html.fonts-ready #root {
   font-family: var(--font-logo);
   text-transform: uppercase;
   color: #ffffff;
+}
+
+.page-shell[data-concord="wit-spit"] .concord-logo-word {
+  color: #cc0000;
 }
 
 .story-omen-paragraph {
@@ -1261,7 +1265,15 @@ html.fonts-ready #root {
   margin-bottom: 0.35rem;
 }
 
-.concord-lede,
+.concord-lede {
+  margin: 0 0 2.2rem;
+  font-family: var(--font-body);
+  font-size: 38px;
+  line-height: 1.12;
+  color: var(--concord-tertiary);
+  letter-spacing: 0.01em;
+}
+
 .concord-body {
   margin: 0 0 1.35rem;
   font-family: var(--font-body);
