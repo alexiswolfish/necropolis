@@ -109,10 +109,10 @@ html.fonts-ready #root {
 
 .page-shell[data-page="concords"] {
   --theme-nav-font: "Lohengrin", serif;
-  --theme-nav-color: #d8a1ae;
+  --theme-nav-color: var(--color-text-caps);
   --theme-heading-color: #35122e;
   --theme-body-color: #210f18;
-  --theme-brand-color: #d8a1ae;
+  --theme-brand-color: var(--color-before);
 }
 
 .page-shell[data-page="concord-detail"] {
@@ -171,7 +171,7 @@ html.fonts-ready #root {
   --concord-primary: #e596c9;
   --concord-title: #7d1532;
   --concord-secondary: #b6bfc1;
-  --concord-tertiary: #7d133a;
+  --concord-tertiary: #C14B0C;
   --concord-nav: #f5ecc2;
 }
 

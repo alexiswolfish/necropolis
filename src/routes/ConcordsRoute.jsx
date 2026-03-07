@@ -162,6 +162,7 @@ export function ConcordDetailPage({
                 <a href={getPathFromRoute({ page: "player-detail", characterId: entry.id })} onClick={onNavigate({ page: "player-detail", characterId: entry.id })} className="concord-player-link">
                   {entry.characterName ?? entry.realName}
                 </a>
+                {entry.characterName && entry.characterName !== entry.realName ? <span className="players-real-name type-caps"> ({entry.realName})</span> : null}
               </p>
             ))}
           </section>

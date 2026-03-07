@@ -19,8 +19,7 @@ const CONCORDS = [
       <>They value <strong>pleasure, possession, and excellent company</strong>. Good wine should be finished, fine food should be appreciated slowly, and gold should ideally be counted several times just to enjoy the sound.</>,
       "In contest they fight with the stubborn patience of earth itself. They advance slowly, refuse to be hurried, and prove extremely difficult to dislodge once they have decided they would like something, whether that something is a chair, a jewel, or victory.",
       "At a gathering they are usually found reclining somewhere comfortable, enjoying themselves immensely while quietly accumulating small valuables and allies.",
-      "After all, pleasure is wonderful.",
-      "But treasure lasts."
+      "In Necropolis as in life: the wine should be good, the company better, and the gold kept somewhere close at hand."
     ],
     preview: { start: "#0d2b0f", end: "#102f12", border: "#b89342", text: "#f0a925" }
   },
@@ -121,7 +120,7 @@ const EXTRA_CONCORD_DETAILS = [
     lede: "The Concord of Brood & Feud settles disputes the old-fashioned way: loudly, immediately, and preferably with witnesses.",
     bodyParagraphs: [
       "They live for contest. Steel, argument, arm-wrestling, duels of honor, duels of insults-any contest will do so long as someone wins and someone else knows they lost. Grudges are kept carefully and revisited often, like family heirlooms brought out for special occasions.",
-      "Victory matters deeply to them. Details such as fairness, subtlety, or long-term diplomacy matter somewhat less.",
+      "Victory is the point. Fairness, subtlety, and long-term diplomacy are considered a different Concord's problem.",
       "Members of the Concord arrive ready for battle, dressed in leather, steel, and the sort of attire that suggests they may have come directly from a fight-or are about to start one. Music is loud, tempers are quick, and alliances are usually sealed with a handshake that feels suspiciously like the beginning of a wrestling match.",
       "Spend enough time near them and you will learn an important truth: for the Concord of Brood & Feud, peace is simply the brief and pleasant interval between fights."
     ],
@@ -140,8 +139,7 @@ const EXTRA_CONCORD_DETAILS = [
       "Particularly accomplished members tend to wear several, which makes their handshakes increasingly memorable.",
       "They speak plainly, respect hierarchy, and have the remarkable ability to turn even the most festive gathering into the opening session of a committee.",
       "At a party they can usually be found discussing plans, forming subcommittees, or quietly evaluating whether the evening could be run more efficiently.",
-      "Legacy matters to them. But so does proper documentation.",
-      "And ideally both will be filed in triplicate."
+      "An achievement unrecorded is, in the Administration's view, an achievement to be repeated more carefully. Ideally in triplicate."
     ],
     preview: { start: "#e596c9", end: "#e596c9", border: "#cc5920", text: "#7d1532" }
   },
@@ -171,7 +169,7 @@ const EXTRA_CONCORD_DETAILS = [
     bodyParagraphs: [
       "Members carry themselves like champions whether or not a victory has technically occurred yet. They favor bold entrances, sweeping gestures, and the sort of confidence that suggests applause is expected to arrive shortly.",
       "They dress to be seen: bright fabrics, gold accents, laurel wreaths, and capes that move well during dramatic turns. One should always look ready for a portrait.",
-      "They value reputation as much as victory. Achievements are important, but stories about achievements are equally essential.",
+      "They value reputation as much as victory. Reputation travels further than the deed and arrives in considerably better clothes.",
       "In contest they fight openly and spectacularly, seizing the center and making the moment theirs. Subtlety is avoided, partly on principle and partly because it is difficult to applaud subtlety properly.",
       "At a gathering they are usually found at the center of the room-holding court, recounting triumphs, and debating who deserves the laurels.",
       "The matter remains unsettled, largely because everyone present is quite certain it ought to be them."
@@ -200,13 +198,14 @@ const EXTRA_CONCORD_DETAILS = [
     paletteId: 329,
     element: "Wandering Air",
     earthlyDesire: "Cunning",
-    lede: "The Concord of Wit & Spit traces its origins to the Academy, a wandering institution devoted to scholarship, debate, and the careful study of other people's mistakes.",
+    lede: "The Concord of Wit & Spit traces its origins to the Academy — an institution that has never stayed anywhere long enough to be taxed, devoted since its founding to scholarship, the careful study of other people's mistakes, and the conviction that knowledge, properly applied, is the most dangerous thing in any room.",
     bodyParagraphs: [
-      "Members travel widely collecting manuscripts, rumors, theories, and useful bits of information that other people were careless enough to say out loud. Libraries are respected, but conversation is often more productive.",
-      "They favor dark coats, ink-stained cuffs, spectacles, and the general air of someone who has either been studying very hard or quietly winning an argument that hasn't happened yet.",
-      "Among the Concords they are known for quick tongues, sharper minds, and the unsettling habit of finishing other people's thoughts when they become predictable.",
-      "Members of the Academy take pride in being the most informed person in the room.",
-      "Knowledge is useful. Knowing when to use it is fatal."
+      "The Academy has no permanent address. It has occupied a tower in three different cities, a barge, a series of interconnected tents, and briefly a very large wagon that everyone agreed was technically a library. The Academy maintains it was an administrative building. The debate is ongoing and extensively documented.",
+      "Members travel widely, collecting manuscripts, rumors, half-finished theories, and pieces of information that other people were careless enough to say aloud near someone with a notebook. They have found that people, given wine and a sympathetic ear, will disclose things that no archive would dare commit to vellum.",
+      "They thirst, insatiably, for knowledge. The mechanics of courts, the weaknesses of rivals, the particular way a room rearranges itself when someone enters who understands where the leverage is.",
+      "A challenge formally declared against a member of the Academy is, in practice, a challenge against someone who has already read your correspondence, identified your three most exploitable weaknesses, and spent some time deciding which of them would be most instructive to demonstrate first.",
+      "Dark coats, ink-stained cuffs, and spectacles that may or may not be strictly necessary for vision, but prove very useful to remove slowly while composing a response.",
+      "A member of the Academy, in full possession of the relevant facts, is — as several former governments could confirm — the most dangerous thing in any room."
     ],
     preview: { start: "#f7f7f7", end: "#f7f7f7", border: "#f3b1bc", text: "#4a1e8d" }
   }
@@ -242,8 +241,8 @@ const SHORT_CONCORD_LORE = {
     "They claim the center of every room and make the moment theirs. Who deserves the laurels is a lively ongoing debate that each member is quite certain they are winning. Bold fabrics, gold, capes that move well."
   ],
   "wit-spit": [
-    "The Concord of Wit & Spit traces its origins to the Academy, a wandering institution devoted to scholarship, spirited debate, and the careful study of other people's mistakes.",
-    "They have read the room, predicted the move, and formed contingency plans before most people have finished their opening statement. Knowledge is useful. Knowing when to use it is fatal. Dark coats, ink-stained cuffs."
+    "The Concord of Wit & Spit traces its origins to the Academy — an institution with no permanent address, strong opinions about that fact, and a devotion since its founding to scholarship, the careful study of other people's mistakes, and the collected correspondence of anyone foolish enough to write their plans down.",
+    "What they want is to know: how courts work, where leverage lives, what you said in confidence to someone who wrote it down. By the time a contest is declared, they have usually already read your correspondence. Dark coats, ink-stained cuffs, the patience of someone waiting for you to confirm what they already suspected."
   ]
 };
 
