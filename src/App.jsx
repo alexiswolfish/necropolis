@@ -223,12 +223,12 @@ const SHORT_CONCORD_LORE = {
     "They keep grudges the way other people keep heirlooms — with care, with affection, and brought out on appropriate occasions. Leather, steel, the air of someone who came ready."
   ],
   "zeal-steel": [
-    "The Concord of Zeal & Steel has built more things meant to last than any other order — fortresses, roads, institutions, and filing systems of considerable sophistication. Their governing body is known, entirely sincerely, as the Administration.",
-    "In contest they bring the patience of stone and the confidence of people who have done the paperwork. Dark coats, iron signet rings, bearing of someone who has read all the relevant documents."
+    "The Concord of Zeal & Steel intends to be in charge and considers the matter largely settled. Their governing body — known, entirely sincerely, as the Administration — has outlasted three separate empires and shows no signs of finding this remarkable.",
+    "In contest they are patient as stone and twice as heavy, advancing until the other side runs out of room to move. Dark coats, iron signet rings, the bearing of someone who has already filed the relevant paperwork."
   ],
   "tears-spears": [
     "The Concord of Tears & Spears began with small quiet promises made by moonlit pools in a pale birch forest. Those promises, tended over generations with great care and love, eventually grew sharp edges.",
-    "They are oath-bound and emotionally sincere in a way that proves, repeatedly, to be the most dangerous combination available. Pale silk, cold conviction, bright spears."
+    "They are oath-bound and emotionally sincere in a way that proves, repeatedly, to be the most dangerous combination available. Pale silk, bright spears, and the emotional sincerity that has historically proven the most dangerous thing about them."
   ],
   "veils-sails": [
     "The Concord of Veils & Sails is composed of sea-witches, wandering sailors, and people who stared at the horizon long enough that it stared back. They are not in any hurry.",
