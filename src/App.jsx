@@ -150,11 +150,11 @@ const EXTRA_CONCORD_DETAILS = [
     earthlyDesire: "Devotion",
     lede: "The Concord of Tears & Spears swears its oaths beside moonlit pools, and keeps them — which has historically been the more dangerous part.",
     bodyParagraphs: [
-      "There, in that quiet wood, the first of their order knelt.",
-      "They began as the keepers of small promises by which lives are bound together. A devotion to kin, to memory, to the soft gravity that binds blood to blood.",
-      "Yet grief and love, when tended such, retain a sharp edge. And what was once tenderness hardened into oath. Oath into doctrine, and doctrine into Order.",
-      "When an acolyte swears their vow, they kneel beside the mirrored pools and shed a single tear into the water. The oath is inscribed upon a strip of pale silk, dipped in wax against wind and weather, and tied beneath the blade of a spear planted among the roots. Over the years the banks have grown thick with such spears, their pale prayer strips stirring softly beneath the birches.",
-      "Woe, and the blade of a bright mirrored spear may meet any soul foolish enough to scorn their emotions. Bright eyes plays, probably."
+      "They began in a pale wood of white birch, where moonlight fell into pools of still water and the first of their order knelt to make a small, quiet promise. That promise, and the thousands that followed it, were matters of devotion — to kin, to memory, to the soft gravity that binds blood to blood.",
+      "Grief and love, tended long enough, retain a sharp edge. What began as tenderness hardened into oath, oath into doctrine, and doctrine into Order.",
+      "When an acolyte swears their vow, they kneel beside the mirrored pools and shed a single tear into the water. The oath is inscribed on a strip of pale silk, dipped in wax against wind and weather, and tied beneath the blade of a spear planted among the roots. Over the years the banks have grown thick with such spears, their pale prayer strips stirring softly beneath the birches.",
+      "In contest, Tears & Spears brings everything: grief, conviction, and the absolute certainty of people who made promises they intend to keep. Those who mistake their grief for vulnerability seldom do so twice.",
+      "Pale silk, bright spears, and the quiet certainty of people who have been keeping a very detailed journal about this since they were fourteen."
     ],
     preview: { start: "#3b1138", end: "#3b1138", border: "#96a8ba", text: "#df7a91" }
   },
