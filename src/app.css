@@ -367,7 +367,7 @@ html.fonts-ready #root {
 
 .before-mark {
   margin: 0 0 2.4rem;
-  padding-top: 16px;
+  padding-top: 40px;
 }
 
 .story-paragraph {
@@ -1387,6 +1387,10 @@ html.fonts-ready #root {
 
   .story-block {
     max-width: 100%;
+  }
+
+  .page-shell[data-page="home"] .story-block {
+    text-align: left;
   }
 
   .concord-detail-layout {
