@@ -366,7 +366,7 @@ html.fonts-ready #root {
 }
 
 .before-mark {
-  margin: 0 0 1.35rem;
+  margin: 0 0 2.4rem;
   padding-top: 16px;
 }
 
@@ -1326,7 +1326,19 @@ html.fonts-ready #root {
 }
 
 .page-shell[data-page="home"] .story-block {
-  padding-left: 40px;
+  width: min(100%, 800px);
+  max-width: 800px;
+  margin-inline: auto;
+  padding-left: 0;
+  text-align: center;
+}
+
+.page-shell[data-page="home"] .hero-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.page-shell[data-page="home"] .event-meta {
+  display: none;
 }
 
 @media (max-width: 1200px) {
