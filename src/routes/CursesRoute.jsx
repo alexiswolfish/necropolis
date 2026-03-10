@@ -140,7 +140,7 @@ export const CURSE_CARDS = [
   },
   {
     id: "curse-fighter",
-    header: "IRON VANITY",
+    header: "WORMTOUNGED",
     difficulty: "xx",
     body: [
       { text: "Your pride has turned to stone. Compliment every person before you may address them, until a " },
@@ -160,7 +160,7 @@ export const CURSE_CARDS = [
   },
   {
     id: "curse-druid",
-    header: "SENTINEL SLEEP",
+    header: "DUMBFOUNDED",
     difficulty: "x",
     body: [
       { text: "Your vigilance has turned inward. You are the last to notice everything. Find a " },
