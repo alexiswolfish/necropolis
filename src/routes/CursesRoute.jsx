@@ -135,11 +135,11 @@ export const CURSE_CARDS = [
   },
   {
     id: "curse-wizard",
-    header: "MOON'S FOLLY",
+    header: "WIT'S END",
     body: [
-      { text: "Announce every scheme aloud before you attempt it, until a " },
+      { text: "You may only respond to questions with another question until a " },
       { spinosa: "WIZARD" },
-      { text: " joins in without being asked." },
+      { text: " answers one correctly on your behalf." },
     ],
   },
   {
@@ -158,6 +158,36 @@ export const CURSE_CARDS = [
       { text: "Every promise you make echoes back twice as loud. Speak only when spoken to, until a " },
       { spinosa: "MONK" },
       { text: " grants you permission to begin again." },
+    ],
+  },
+  {
+    id: "curse-escort",
+    header: "THE ESCORT",
+    body: [
+      { text: "You are too frightened to travel alone. Guide another player from the Bar to the Tea House to break this curse." },
+    ],
+  },
+  {
+    id: "curse-exiled",
+    header: "EXILED",
+    body: [
+      { text: "You cannot sit at the table of your CONCORD until a member of a rival CONCORD vouches for you." },
+    ],
+  },
+  {
+    id: "curse-pilgrimage",
+    header: "PILGRIMAGE",
+    body: [
+      { text: "You must visit all 5 shrines and greet each shrine keeper before you can engage in combat again." },
+    ],
+  },
+  {
+    id: "curse-haunted",
+    header: "HAUNTED",
+    body: [
+      { text: "You must narrate everything you do in third person until you receive the touch of a " },
+      { spinosa: "DRUID" },
+      { text: "." },
     ],
   },
 ];
