@@ -33,13 +33,13 @@ const PLAYERS_CONCORD_MEMBER_COLORS = {
   "wit-spit": "#c0a9b3"
 };
 
+const ADMIN_IDS = new Set([
+  "29450a65-8925-4b85-b4ef-c1b0870653cf",
+  "0bb97f08-c5bd-43d1-9934-99bbfcae3a21"
+]);
+
 function isAdmin(character) {
-  const parts = (character?.realName ?? "").trim().toLowerCase().split(/\s+/);
-  const first = parts[0] ?? "";
-  const last = parts[1] ?? "";
-  if ((first === "alex" || first === "alexandra") && last.startsWith("w")) return true;
-  if (first === "jordan" && last.startsWith("m")) return true;
-  return false;
+  return Boolean(character?.id && ADMIN_IDS.has(character.id));
 }
 
 // Shared: left sidebar showing concord name + meta
@@ -101,7 +101,7 @@ function StatsList({ character }) {
   );
 }
 
-export function PlayersPage({ characters, teamBlueprint, currentCharacter, onToggleExcluded, getPathFromRoute, onNavigate }) {
+export function PlayersPage({ characters, teamBlueprint, currentCharacter, characterClassMap, onToggleExcluded, getPathFromRoute, onNavigate }) {
   const adminMode = isAdmin(currentCharacter);
 
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {
@@ -130,12 +130,13 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, onTog
             </h2>
             <div className="concord-players-list">
               {group.members.map((member) => (
-                <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: group.memberColor }}>
+                <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: member.excludedFromCount ? "#000000" : group.memberColor }}>
                   <a href={getPathFromRoute({ page: "player-detail", characterId: member.id })} onClick={onNavigate({ page: "player-detail", characterId: member.id })} className="concord-player-link">
                     {member.characterName ?? member.realName}
                   </a>
                   {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
                   {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
+                  {/* characterClass display hidden until classes are ready to ship */}
                   {adminMode ? (
                     <button
                       className="type-caps players-admin-toggle"
@@ -154,7 +155,7 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, onTog
   );
 }
 
-export function CharacterPage({ character, teamBlueprint, concord, shortConcordLore, costumeImagesByConcord, detailTab, onOpenTab, onOpenConcord, getPathFromRoute, onSaveCharacterName }) {
+export function CharacterPage({ character, characterClass, teamBlueprint, concord, shortConcordLore, costumeImagesByConcord, detailTab, onOpenTab, onOpenConcord, getPathFromRoute, onSaveCharacterName }) {
   const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
   const [nameDraft, setNameDraft] = useState(character?.characterName ?? "");
   const [isSavingName, setIsSavingName] = useState(false);
@@ -295,7 +296,7 @@ export function CharacterPage({ character, teamBlueprint, concord, shortConcordL
   );
 }
 
-export function PublicCharacterPage({ character, charactersLoaded, teamBlueprint, concord, getPathFromRoute, onNavigate }) {
+export function PublicCharacterPage({ character, charactersLoaded, characterClass, teamBlueprint, concord, getPathFromRoute, onNavigate }) {
   if (!character) {
     return (
       <main className="concord-detail-layout character-detail-layout">

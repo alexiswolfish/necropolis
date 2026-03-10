@@ -1220,10 +1220,10 @@ html.fonts-ready #root {
   border: 1px solid currentColor;
   color: inherit;
   cursor: pointer;
-  font-size: 0.38em;
-  margin-left: 10px;
+  font-size: 0.3em;
+  margin-left: 40px;
   opacity: 0.7;
-  padding: 1px 6px;
+  padding: 1px 4px;
   vertical-align: middle;
 }
 

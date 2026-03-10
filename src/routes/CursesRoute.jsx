@@ -238,7 +238,7 @@ function CurseCard({ card }) {
 
   return (
     <div className="curse-card-wrap">
-      <div className="curse-card" ref={cardRef}>
+      <div className="curse-card" ref={cardRef} data-card-id={card.id}>
         <div className="curse-card-border-top">{BORDER_H}</div>
         <div className="curse-card-border-bottom">{BORDER_H}</div>
         <div className="curse-card-border-left"><span>{BORDER_V}</span></div>

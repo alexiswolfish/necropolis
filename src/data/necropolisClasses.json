@@ -1,0 +1,58 @@
+[
+  {
+    "id": "mortuary-medium",
+    "label": "Mortuary Medium",
+    "tag": "sorcerer",
+    "primaryStat": "pulchritude",
+    "secondaryStats": ["shenanigans"]
+  },
+  {
+    "id": "lantern-warden",
+    "label": "Lantern Warden",
+    "tag": "fighter",
+    "primaryStat": "brawn",
+    "secondaryStats": ["vigilance"]
+  },
+  {
+    "id": "reliquarian",
+    "label": "Reliquarian",
+    "tag": "scholar",
+    "primaryStat": "vigilance",
+    "secondaryStats": ["grit"]
+  },
+  {
+    "id": "ossuary-monk",
+    "label": "Ossuary Monk",
+    "tag": "monk",
+    "primaryStat": "grit",
+    "secondaryStats": ["mystery"]
+  },
+  {
+    "id": "tomb-runner",
+    "label": "Tomb Runner",
+    "tag": "rogue",
+    "primaryStat": "shenanigans",
+    "secondaryStats": ["pulchritude"]
+  },
+  {
+    "id": "sepulchral-mage",
+    "label": "Sepulchral Mage",
+    "tag": "wizard",
+    "primaryStat": "mystery",
+    "secondaryStats": ["dumbLuck"]
+  },
+  {
+    "id": "peasant",
+    "label": "Peasant",
+    "tag": "peasant",
+    "primaryStat": null,
+    "secondaryStats": []
+  },
+  {
+    "id": "npc",
+    "label": "NPC",
+    "tag": "npc",
+    "primaryStat": null,
+    "secondaryStats": []
+  }
+]

@@ -6,6 +6,7 @@ import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
 import { CharacterPage, PlayersPage, PublicCharacterPage } from "./routes/PlayersRoute";
 import { CursesRoute } from "./routes/CursesRoute";
 import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterById } from "./data/charactersApi";
+import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
 
 const CONCORDS = [
   {
@@ -240,7 +241,7 @@ const SHORT_CONCORD_LORE = {
     "They claim the center of every room and make the moment theirs. Who deserves the laurels is a lively ongoing debate that each member is quite certain they are winning. Bold fabrics, gold, capes that move well."
   ],
   "wit-spit": [
-    "The Concord of Wit & Spit traces its origins to the Academy — an institution with no permanent address, strong opinions about that fact, and a devotion since its founding to scholarship, the careful study of other people's mistakes, and the collected correspondence of anyone foolish enough to write their plans down.",
+    "The Concord of Wit & Spit considers the accumulation of knowledge — by any means, in any room, from anyone willing to keep talking — the only project worth undertaking.",
     "What they want is to know: how courts work, where leverage lives, what you said in confidence to someone who wrote it down. By the time a contest is declared, they have usually already read your correspondence. Dark coats, ink-stained cuffs, the patience of someone waiting for you to confirm what they already suspected."
   ]
 };
@@ -737,6 +738,72 @@ function getAssignedClass(stats) {
   return "Doom Herald";
 }
 
+const COMPETITIVE_CLASSES = NECROPOLIS_CLASSES.filter((c) => c.primaryStat !== null);
+const PEASANT_CLASS = NECROPOLIS_CLASSES.find((c) => c.id === "peasant");
+const NPC_CLASS = NECROPOLIS_CLASSES.find((c) => c.id === "npc");
+const CLASS_BY_TAG = Object.fromEntries(NECROPOLIS_CLASSES.map((c) => [c.tag, c]));
+
+function assignNecroClasses(members) {
+  const result = new Map();
+  if (!members || members.length === 0) return result;
+
+  const competitive = [];
+
+  for (const member of members) {
+    // Excluded players are NPCs and don't compete for classes
+    if (member.excludedFromCount) {
+      result.set(member.id, NPC_CLASS);
+      continue;
+    }
+
+    const stats = member.stats ?? {};
+    const vals = Object.entries(stats).map(([, v]) => Number(v ?? 0));
+    const maxVal = Math.max(0, ...vals);
+    const topCount = vals.filter((v) => v === maxVal).length;
+
+    // Evenly balanced (no points, or 3+ stats tied at the top) → Peasant
+    if (maxVal === 0 || topCount >= 3) {
+      result.set(member.id, PEASANT_CLASS);
+      continue;
+    }
+
+    competitive.push(member);
+  }
+
+  // Score each (player, class) pair — primary * 10 + secondary + dumb luck bonus
+  const pairs = [];
+  for (const member of competitive) {
+    const stats = member.stats ?? {};
+    const dumbLuck = Number(stats.dumbLuck ?? 0);
+    for (const cls of COMPETITIVE_CLASSES) {
+      const primary = Number(stats[cls.primaryStat] ?? 0);
+      const secondary = cls.secondaryStats.reduce((sum, s) => sum + Number(stats[s] ?? 0), 0);
+      const score = primary * 10 + secondary + dumbLuck * 0.5;
+      pairs.push({ memberId: member.id, cls, score });
+    }
+  }
+
+  pairs.sort((a, b) => b.score - a.score || a.cls.id.localeCompare(b.cls.id));
+
+  const assignedClasses = new Set();
+  const assignedPlayers = new Set();
+
+  for (const pair of pairs) {
+    if (assignedPlayers.has(pair.memberId) || assignedClasses.has(pair.cls.id)) continue;
+    result.set(pair.memberId, pair.cls);
+    assignedPlayers.add(pair.memberId);
+    assignedClasses.add(pair.cls.id);
+  }
+
+  for (const member of competitive) {
+    if (!result.has(member.id)) {
+      result.set(member.id, PEASANT_CLASS);
+    }
+  }
+
+  return result;
+}
+
 function playGongTone(audioContext, frequency) {
   const now = audioContext.currentTime;
   const endTime = now + 3.4;
@@ -899,6 +966,32 @@ export default function App() {
       clearStoredOnboardingDraft();
     }
   }, [character, onboardingStep, onboardingForm]);
+
+  const characterClassMap = useMemo(() => {
+    if (allCharacters.length === 0) return new Map();
+    const byConcord = {};
+    for (const c of allCharacters) {
+      if (!byConcord[c.concordId]) byConcord[c.concordId] = [];
+      byConcord[c.concordId].push(c);
+    }
+    const result = new Map();
+    for (const members of Object.values(byConcord)) {
+      const teamAssignment = assignNecroClasses(members);
+      for (const [id, cls] of teamAssignment) result.set(id, cls);
+    }
+    return result;
+  }, [allCharacters]);
+
+  useEffect(() => {
+    if (characterClassMap.size === 0) return;
+    for (const char of allCharacters) {
+      if (!char.id) continue;
+      const computed = characterClassMap.get(char.id);
+      if (computed && char.className !== computed.tag) {
+        updateCharacterById(char.id, { className: computed.tag }).catch(() => {});
+      }
+    }
+  }, [characterClassMap]);
 
   const selectedConcord = useMemo(() => {
     if (route.page !== "concord-detail") return null;
@@ -1341,6 +1434,7 @@ export default function App() {
         characters={allCharacters}
         teamBlueprint={TEAM_BLUEPRINT}
         currentCharacter={character}
+        characterClassMap={characterClassMap}
         getPathFromRoute={getPathFromRoute}
         onNavigate={navigate}
         onToggleExcluded={async (characterId, excluded) => {
@@ -1360,6 +1454,7 @@ export default function App() {
         charactersLoaded={charactersLoaded}
         teamBlueprint={TEAM_BLUEPRINT}
         concord={profileCharacter?.concordId ? (CONCORDS_BY_ID.get(profileCharacter.concordId) ?? null) : null}
+        characterClass={profileCharacter ? (characterClassMap.get(profileCharacter.id) ?? null) : null}
         getPathFromRoute={getPathFromRoute}
         onNavigate={navigate}
       />
@@ -1370,6 +1465,7 @@ export default function App() {
       ? (
         <CharacterPage
           character={character}
+          characterClass={character ? (characterClassMap.get(character.id) ?? null) : null}
           teamBlueprint={TEAM_BLUEPRINT}
           concord={character?.concordId ? (CONCORDS_BY_ID.get(character.concordId) ?? null) : null}
           shortConcordLore={character?.concordId ? (SHORT_CONCORD_LORE[character.concordId] ?? []) : []}
