@@ -4,6 +4,7 @@ import { HomeRoute } from "./routes/HomeRoute";
 import { BeginGate, OnboardingWizard } from "./routes/OnboardingRoute";
 import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
 import { CharacterPage, PlayersPage, PublicCharacterPage } from "./routes/PlayersRoute";
+import { CursesRoute } from "./routes/CursesRoute";
 import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterById } from "./data/charactersApi";
 
 const CONCORDS = [
@@ -792,6 +793,7 @@ function playGongTone(audioContext, frequency) {
 function getRouteFromPath(pathname) {
   const appPath = stripBase(pathname);
   if (appPath === "/") return { page: "home" };
+  if (appPath === "/curses") return { page: "curses" };
   if (appPath === "/concords") return { page: "concords" };
   if (appPath === "/concords/spare") return { page: "concords-spare" };
   if (appPath === "/players") return { page: "players" };
@@ -810,6 +812,7 @@ function getRouteFromPath(pathname) {
 
 function getPathFromRoute(route) {
   if (route.page === "home") return withBase("/");
+  if (route.page === "curses") return withBase("/curses");
   if (route.page === "concords") return withBase("/concords");
   if (route.page === "concords-spare") return withBase("/concords/spare");
   if (route.page === "players") return withBase("/players");
@@ -1405,6 +1408,9 @@ export default function App() {
         />
       )
       : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
+  }
+  if (route.page === "curses") {
+    pageContent = <CursesRoute />;
   }
   if (route.page === "not-found") {
     pageContent = <NotFoundPage onReturnHome={navigate({ page: "home" })} />;

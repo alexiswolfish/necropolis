@@ -1471,12 +1471,20 @@ html.fonts-ready #root {
   }
 }
 
+@media (min-width: 981px) {
+  .page-shell[data-page="home"] .home-death-wrap {
+    width: min(92vw, 660px);
+    height: 90vh;
+    max-height: 90vh;
+  }
+}
+
 @media (min-width: 1300px) {
   .home-death-wrap {
     position: absolute;
     right: 0;
     top: -18vh;
-    height: 225vh;
+    height: 90vh;
     width: auto;
     margin: 0;
     transform: translateX(50%);
@@ -1487,4 +1495,209 @@ html.fonts-ready #root {
     height: 100%;
     opacity: 0.48;
   }
+}
+
+/* ─── Curses route ──────────────────────────────────────── */
+
+.curses-layout {
+  padding: 40px 32px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.curses-page-title {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--color-text-caps);
+  margin: 0 0 32px;
+  text-align: center;
+}
+
+.curses-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px 36px;
+  justify-content: center;
+}
+
+.curse-card-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/*
+  Card shell — 300 × 525px CSS = 600 × 1050px export at html2canvas scale:2
+  600px / 300 DPI = 2"  |  1050px / 300 DPI = 3.5"  →  standard business card
+  40px CSS inset × 2 = 80px in export (content safe zone on all sides)
+  Pink border shows the bleed edge for print reference
+*/
+.curse-card {
+  position: relative;
+  width: 300px;
+  height: 525px;
+  background: #111314;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid #eea78c;
+}
+
+/* Borders — Spinosa characters, card overflow: hidden clips them */
+.curse-card-border-top,
+.curse-card-border-bottom,
+.curse-card-border-left,
+.curse-card-border-right {
+  font-family: var(--font-logo);
+  font-size: 17px;
+  color: #009465;
+  letter-spacing: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 1;
+}
+
+/* Top border — relative so it sits in normal flow, nudged down 8px, truncated 4px each side */
+.curse-card-border-top {
+  position: relative;
+  top: 8px;
+  margin: 0 4px;
+}
+
+.curse-card-border-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 4px;
+  right: 4px;
+}
+
+.curse-card-border-left {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  bottom: 0;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.curse-card-border-right {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  bottom: 0;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.curse-card-border-left span {
+  display: inline-block;
+  transform: rotate(90deg);
+}
+
+.curse-card-border-right span {
+  display: inline-block;
+  transform: rotate(-90deg);
+}
+
+/* Inner content — top 74px matches Figma gap from border to "YOU ARE"; sides/bottom 40px */
+.curse-card-inner {
+  position: absolute;
+  inset: 74px 40px 40px;
+  padding-bottom: 28px; /* room for absolutely-positioned xx */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.curse-card-you-are {
+  margin: 0 0 3px;
+  font-size: 11px;
+  color: #eea78c;
+  line-height: 1;
+}
+
+.curse-card-cursed {
+  margin: 0 0 14px;
+  font-family: var(--font-logo);
+  font-size: 32px;
+  font-weight: normal;
+  color: #f37420;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.curse-card-eye-wrap {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+.curse-card-eye {
+  display: block;
+  width: 110px;
+  height: auto;
+}
+
+.curse-card-header {
+  margin: 0 0 9px;
+  font-family: var(--font-logo);
+  font-size: 18px;
+  font-weight: normal;
+  color: #f37420;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.curse-card-body {
+  margin: 0;
+  font-size: 13px;
+  color: #eea78c;
+  line-height: 1.5;
+  text-align: left;
+  width: 100%;
+}
+
+.curse-card-spinosa-word {
+  font-family: var(--font-logo);
+  font-size: 12.5px;
+  color: #009465;
+}
+
+.curse-card-xx {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-family: var(--font-logo);
+  font-size: 23px;
+  color: #009465;
+  letter-spacing: 6px;
+  line-height: 1;
+  text-align: center;
+}
+
+.curse-card-dl-btn {
+  font-family: var(--font-caps);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #eea78c;
+  background: transparent;
+  border: 1px solid rgba(238, 167, 140, 0.4);
+  padding: 7px 18px;
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+
+.curse-card-dl-btn:hover {
+  color: #f37420;
+  border-color: #f37420;
 }
