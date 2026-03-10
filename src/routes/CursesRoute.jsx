@@ -17,6 +17,105 @@ export const CURSE_CARDS = [
     ],
   },
   {
+    id: "curse-silence-die",
+    header: "TO DIE",
+    body: [
+      { text: "Give all your soul shards to whomever handed you this curse." },
+      { br: true },
+      { br: true },
+      { text: "Return to the AFTERLIFE and see ALEX for more." },
+    ],
+  },
+  {
+    id: "curse-silence",
+    header: "Silence",
+    body: [
+      { text: "You may not speak above a whisper until you manage to kill someone with at least 3 points in " },
+      { spinosa: "PULCHRITUDE" },
+      { text: "." },
+    ],
+  },
+  {
+    id: "curse-touch-grass",
+    header: "TO TOUCH GRASS",
+    body: [
+      { text: "Go get a drink, sit on the grass. Feel yourself be pulled into the EARTH. Will you ever want to get up again?" },
+    ],
+  },
+  {
+    id: "curse-hunger-grapes",
+    header: "To HUNGER for grapes",
+    body: [
+      { text: "You are possessed with an irrational craving for grapes. Cease all activities until you find someone at the event to feed you one." },
+    ],
+  },
+  {
+    id: "curse-perform",
+    header: "To perform",
+    body: [
+      { text: "Find a " },
+      { spinosa: "BARD" },
+      { text: " to hum or sling a beat for you while you do a short 20 second jig for whomever handed you this card." },
+    ],
+  },
+  {
+    id: "curse-service",
+    header: "TO SERVICE",
+    body: [
+      { text: "Kneel to the first player you lay eyes on after receiving this card. You owe them one BOON of service of their choice. (e.g. one command)" },
+    ],
+  },
+  {
+    id: "curse-tithe-thirst",
+    header: "TO TITHE",
+    body: [
+      { text: "Fetch a DRINK for the next person you find who THIRSTS." },
+    ],
+  },
+  {
+    id: "curse-tithe-hunger",
+    header: "TO TITHE",
+    body: [
+      { text: "Fetch a plate of cheese and crackers for the next person you encounter who HUNGERS." },
+    ],
+  },
+  {
+    id: "curse-conquest",
+    header: "TO CONQUEST",
+    body: [
+      { text: "Find someone with at least five points in " },
+      { spinosa: "BRAWN" },
+      { text: " and challenge them to a FEAT OF STRENGTH (arm wrestling, pushups, your choice.)" },
+    ],
+  },
+  {
+    id: "curse-air",
+    header: "IMMUNE TO AIR",
+    body: [
+      { text: "Next time you are killed by any denizen aligned to " },
+      { spinosa: "AIR" },
+      { text: " you may hand them one of your cleansed Curse Cards instead of a Soul Shard. You must hand this card over as well." },
+    ],
+  },
+  {
+    id: "curse-earth",
+    header: "IMMUNE TO EARTH",
+    body: [
+      { text: "Next time you are killed by any denizen aligned to " },
+      { spinosa: "EARTH" },
+      { text: " you may hand them one of your cleansed Curse Cards instead of a Soul Shard." },
+    ],
+  },
+  {
+    id: "curse-fire",
+    header: "IMMUNE TO FIRE",
+    body: [
+      { text: "Next time you are killed by any denizen aligned to " },
+      { spinosa: "FIRE" },
+      { text: " you may hand them one of your cleansed Curse Cards instead of a Soul Shard." },
+    ],
+  },
+  {
     id: "curse-rogue",
     header: "BORROWED GRIT",
     body: [
@@ -103,6 +202,8 @@ function CurseCard({ card }) {
             {card.body.map((seg, i) =>
               "spinosa" in seg
                 ? <span key={i} className="curse-card-spinosa-word">{seg.spinosa}</span>
+                : "br" in seg
+                ? <br key={i} />
                 : seg.text
             )}
           </p>
