@@ -10,6 +10,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-bard",
     header: "PHANTOM THORNS",
+    difficulty: "xx",
     body: [
       { text: "You are beset with painful thorns. Walk with an exaggerated limp until you can find a " },
       { spinosa: "BARD" },
@@ -19,6 +20,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-silence-die",
     header: "TO DIE",
+    difficulty: "xxx",
     body: [
       { text: "Give all your soul shards to whomever handed you this curse." },
       { br: true },
@@ -29,6 +31,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-silence",
     header: "Silence",
+    difficulty: "xxx",
     body: [
       { text: "You may not speak above a whisper until you manage to kill someone with at least 3 points in " },
       { spinosa: "PULCHRITUDE" },
@@ -38,6 +41,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-touch-grass",
     header: "TO TOUCH GRASS",
+    difficulty: "x",
     body: [
       { text: "Go get a drink, sit on the grass. Feel yourself be pulled into the EARTH. Will you ever want to get up again?" },
     ],
@@ -45,6 +49,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-hunger-grapes",
     header: "To HUNGER for grapes",
+    difficulty: "x",
     body: [
       { text: "You are possessed with an irrational craving for grapes. Cease all activities until you find someone at the event to feed you one." },
     ],
@@ -52,6 +57,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-perform",
     header: "To perform",
+    difficulty: "x",
     body: [
       { text: "Find a " },
       { spinosa: "BARD" },
@@ -61,6 +67,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-service",
     header: "TO SERVICE",
+    difficulty: "xx",
     body: [
       { text: "Kneel to the first player you lay eyes on after receiving this card. You owe them one BOON of service of their choice. (e.g. one command)" },
     ],
@@ -68,6 +75,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-tithe-thirst",
     header: "TO TITHE",
+    difficulty: "x",
     body: [
       { text: "Fetch a DRINK for the next person you find who THIRSTS." },
     ],
@@ -75,6 +83,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-tithe-hunger",
     header: "TO TITHE",
+    difficulty: "x",
     body: [
       { text: "Fetch a plate of cheese and crackers for the next person you encounter who HUNGERS." },
     ],
@@ -82,6 +91,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-conquest",
     header: "TO CONQUEST",
+    difficulty: "xx",
     body: [
       { text: "Find someone with at least five points in " },
       { spinosa: "BRAWN" },
@@ -91,6 +101,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-air",
     header: "IMMUNE TO AIR",
+    difficulty: "x",
     body: [
       { text: "Next time you are killed by any denizen aligned to " },
       { spinosa: "AIR" },
@@ -100,6 +111,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-earth",
     header: "IMMUNE TO EARTH",
+    difficulty: "x",
     body: [
       { text: "Next time you are killed by any denizen aligned to " },
       { spinosa: "EARTH" },
@@ -109,6 +121,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-fire",
     header: "IMMUNE TO FIRE",
+    difficulty: "x",
     body: [
       { text: "Next time you are killed by any denizen aligned to " },
       { spinosa: "FIRE" },
@@ -118,6 +131,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-rogue",
     header: "BORROWED GRIT",
+    difficulty: "xx",
     body: [
       { text: "Your courage has been temporarily loaned to a stranger. Speak only in questions until a " },
       { spinosa: "ROGUE" },
@@ -127,6 +141,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-fighter",
     header: "IRON VANITY",
+    difficulty: "xx",
     body: [
       { text: "Your pride has turned to stone. Compliment every person before you may address them, until a " },
       { spinosa: "FIGHTER" },
@@ -136,6 +151,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-wizard",
     header: "WIT'S END",
+    difficulty: "xx",
     body: [
       { text: "You may only respond to questions with another question until a " },
       { spinosa: "WIZARD" },
@@ -145,6 +161,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-druid",
     header: "SENTINEL SLEEP",
+    difficulty: "x",
     body: [
       { text: "Your vigilance has turned inward. You are the last to notice everything. Find a " },
       { spinosa: "DRUID" },
@@ -154,6 +171,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-monk",
     header: "HOLLOW VOW",
+    difficulty: "xx",
     body: [
       { text: "Every promise you make echoes back twice as loud. Speak only when spoken to, until a " },
       { spinosa: "MONK" },
@@ -163,6 +181,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-escort",
     header: "THE ESCORT",
+    difficulty: "xx",
     body: [
       { text: "You are too frightened to travel alone. Guide another player from the Bar to the Tea House to break this curse." },
     ],
@@ -170,6 +189,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-exiled",
     header: "EXILED",
+    difficulty: "xxx",
     body: [
       { text: "You cannot sit at the table of your CONCORD until a member of a rival CONCORD vouches for you." },
     ],
@@ -177,6 +197,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-pilgrimage",
     header: "PILGRIMAGE",
+    difficulty: "xxx",
     body: [
       { text: "You must visit all 5 shrines and greet each shrine keeper before you can engage in combat again." },
     ],
@@ -184,6 +205,7 @@ export const CURSE_CARDS = [
   {
     id: "curse-haunted",
     header: "HAUNTED",
+    difficulty: "xx",
     body: [
       { text: "You must narrate everything you do in third person until you receive the touch of a " },
       { spinosa: "DRUID" },
@@ -237,7 +259,7 @@ function CurseCard({ card }) {
                 : seg.text
             )}
           </p>
-          <p className="curse-card-xx">xx</p>
+          <p className="curse-card-xx">{card.difficulty}</p>
         </div>
       </div>
       <button className="curse-card-dl-btn" onClick={downloadPng}>
