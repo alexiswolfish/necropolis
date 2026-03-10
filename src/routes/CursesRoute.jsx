@@ -13,7 +13,7 @@ export const CURSE_CARDS = [
     difficulty: "xx",
     body: [
       { text: "You are beset with painful thorns. Walk with an exaggerated limp until you can find a " },
-      { spinosa: "BARD" },
+      { spinosa: "DRUID" },
       { text: " willing to tap you thrice upon both shoulders with fauna of their choice." },
     ],
   },
