@@ -1561,7 +1561,7 @@ html.fonts-ready #root {
 .curse-card-border-top {
   position: relative;
   top: 8px;
-  margin: 0 4px;
+  margin: 0 30px;
 }
 
 .curse-card-border-bottom {
@@ -1569,6 +1569,7 @@ html.fonts-ready #root {
   bottom: 20px;
   left: 4px;
   right: 4px;
+  margin: 0 30px;
 }
 
 .curse-card-border-left {
@@ -1577,6 +1578,7 @@ html.fonts-ready #root {
   left: 20px;
   bottom: 0;
   width: 20px;
+  margin: 20px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1588,6 +1590,7 @@ html.fonts-ready #root {
   right: 20px;
   bottom: 0;
   width: 20px;
+  margin: 20px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1634,7 +1637,7 @@ html.fonts-ready #root {
 
 .curse-card-eye-wrap {
   flex-shrink: 0;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
 }
 
 .curse-card-eye {
@@ -1657,9 +1660,9 @@ html.fonts-ready #root {
 
 .curse-card-body {
   margin: 0;
-  font-size: 13px;
+  font-size: 16px;
   color: #eea78c;
-  line-height: 1.5;
+  line-height: 1.24;
   text-align: left;
   width: 100%;
 }
@@ -1672,7 +1675,7 @@ html.fonts-ready #root {
 
 .curse-card-xx {
   position: absolute;
-  bottom: 0;
+  bottom: -20px;
   left: 0;
   right: 0;
   font-family: var(--font-logo);

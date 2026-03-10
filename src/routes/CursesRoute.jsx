@@ -22,7 +22,7 @@ export const CURSE_CARDS = [
     body: [
       { text: "Your courage has been temporarily loaned to a stranger. Speak only in questions until a " },
       { spinosa: "ROGUE" },
-      { text: " gives you something heavy to carry." },
+      { text: " gives you something heavy to carry to the next srhine." },
     ],
   },
   {
@@ -49,7 +49,7 @@ export const CURSE_CARDS = [
     body: [
       { text: "Your vigilance has turned inward. You are the last to notice everything. Find a " },
       { spinosa: "DRUID" },
-      { text: " to confirm you are still present." },
+      { text: " to confirm you are still present, and help you touch the grass." },
     ],
   },
   {
