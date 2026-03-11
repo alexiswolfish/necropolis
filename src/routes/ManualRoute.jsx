@@ -15,6 +15,16 @@ export function ManualRoute({ getPathFromRoute, onNavigate }) {
           </a>
           <p className="manual-entry-byline type-body">Rules for ritual combat</p>
         </div>
+        <div className="manual-entry">
+          <a
+            href={getPathFromRoute({ page: "manual-classes" })}
+            onClick={onNavigate({ page: "manual-classes" })}
+            className="manual-entry-title"
+          >
+            Player Classes
+          </a>
+          <p className="manual-entry-byline type-body">Perks and Persuasions</p>
+        </div>
       </nav>
     </main>
   );

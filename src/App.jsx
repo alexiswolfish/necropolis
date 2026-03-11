@@ -923,13 +923,14 @@ export default function App() {
   const [onboardingStep, setOnboardingStep] = useState(() => (storedCharacter ? 0 : (storedOnboardingDraft?.step ?? 0)));
   const [onboardingError, setOnboardingError] = useState("");
   const [onboardingForm, setOnboardingForm] = useState(() => (storedCharacter ? INITIAL_ONBOARDING_FORM : (storedOnboardingDraft?.form ?? INITIAL_ONBOARDING_FORM)));
+  const [menuOpen, setMenuOpen] = useState(false);
   const audioContextRef = useRef(null);
   const lastHoverRef = useRef({ concordId: "", time: 0 });
   const ominousHumRef = useRef(null);
   const detailHumRef = useRef(null);
 
   useEffect(() => {
-    const onPopState = () => setRoute(getRouteFromPath(window.location.pathname));
+    const onPopState = () => { setRoute(getRouteFromPath(window.location.pathname)); setMenuOpen(false); };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
@@ -1531,13 +1532,16 @@ export default function App() {
 
   return (
     <div className="page-shell" data-page={route.page} data-concord={themedConcord ? themedConcord.id : undefined}>
-      <header className="top-bar">
+      <header className={`top-bar${menuOpen ? " is-open" : ""}`}>
         <a href={getPathFromRoute({ page: "home" })} onClick={navigate({ page: "home" })} className="type-logo brand" aria-label="Necropolis home">Necropolis</a>
+        <button className="nav-hamburger" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((o) => !o)}>
+          <span /><span /><span />
+        </button>
         <nav className="top-nav" aria-label="Primary">
-          <a href={getPathFromRoute({ page: "manual" })} onClick={navigate({ page: "manual" })} className="type-caps top-nav-link" aria-current={inManualSection ? "page" : undefined}>Handbook</a>
-          <a href={getPathFromRoute({ page: "concords" })} onClick={navigate({ page: "concords" })} className="type-caps top-nav-link" aria-current={inConcordsSection ? "page" : undefined}>Concords</a>
-          <a href={getPathFromRoute({ page: "players" })} onClick={navigate({ page: "players" })} className="type-caps top-nav-link" aria-current={inPlayersSection ? "page" : undefined}>Players</a>
-          <a href={getPathFromRoute({ page: canAccessStory ? "character" : "home" })} onClick={navigate({ page: canAccessStory ? "character" : "home" })} className="type-caps top-nav-link" aria-current={inCharacterSection ? "page" : undefined}>{canAccessStory ? "Character" : "Sign In"}</a>
+          <a href={getPathFromRoute({ page: "manual" })} onClick={(e) => { setMenuOpen(false); navigate({ page: "manual" })(e); }} className="type-caps top-nav-link" aria-current={inManualSection ? "page" : undefined}>Handbook</a>
+          <a href={getPathFromRoute({ page: "concords" })} onClick={(e) => { setMenuOpen(false); navigate({ page: "concords" })(e); }} className="type-caps top-nav-link" aria-current={inConcordsSection ? "page" : undefined}>Concords</a>
+          <a href={getPathFromRoute({ page: "players" })} onClick={(e) => { setMenuOpen(false); navigate({ page: "players" })(e); }} className="type-caps top-nav-link" aria-current={inPlayersSection ? "page" : undefined}>Players</a>
+          <a href={getPathFromRoute({ page: canAccessStory ? "character" : "home" })} onClick={(e) => { setMenuOpen(false); navigate({ page: canAccessStory ? "character" : "home" })(e); }} className="type-caps top-nav-link" aria-current={inCharacterSection ? "page" : undefined}>{canAccessStory ? "Character" : "Sign In"}</a>
         </nav>
       </header>
 
@@ -1545,7 +1549,7 @@ export default function App() {
 
       <footer className="site-footer" aria-label="Party details">
         <div className="site-footer-left">
-          <p className="type-caps site-footer-date">{PARTY_DATE}</p>
+          <p className="type-caps site-footer-date">March 14th<span className="site-footer-year"> 2026</span></p>
           <p className="type-caps site-footer-address">{PARTY_ADDRESS}</p>
         </div>
         <a href="https://partiful.com/e/QJJYEJyPjvd42XfIskM5" target="_blank" rel="noreferrer" className="type-caps site-footer-partiful">Partiful</a>
