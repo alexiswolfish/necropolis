@@ -341,7 +341,7 @@ html.fonts-ready #root {
     flex-direction: column;
     gap: 0;
     background: var(--color-bg);
-    padding: 120px 2rem 2rem;
+    padding: 120px 2.6rem 2rem;
     z-index: 0;
     overflow-y: auto;
   }
@@ -1536,9 +1536,9 @@ html.fonts-ready #root {
   }
 
   .site-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6rem;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .site-footer-address,
@@ -1591,6 +1591,11 @@ html.fonts-ready #root {
 }
 
 @media (max-width: 620px) {
+  .top-nav {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .page-shell[data-page="home"] .event-meta {
     display: none;
   }
@@ -2009,7 +2014,9 @@ html.fonts-ready #root {
 
 @media (max-width: 620px) {
   .combat-layout {
-    padding: 32px 0 60px;
+    padding: 32px 1rem 60px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .header-accent {
@@ -2019,8 +2026,7 @@ html.fonts-ready #root {
   }
 
   .combat-cards-row {
-    margin-left: 0;
-    margin-right: 0;
+    margin-bottom: 28px;
   }
 
   .combat-card-img {
