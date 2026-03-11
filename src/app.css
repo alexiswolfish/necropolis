@@ -31,6 +31,7 @@
 
 :root {
   --color-bg: #0a0d10;
+  --page-bg: var(--color-bg);
   --color-bg-soft: #101419;
   --color-text-primary: #f0efec;
   --color-text-caps: #d9d9d9;
@@ -106,6 +107,7 @@ html.fonts-ready #root {
   --theme-heading-color: var(--color-death);
   --theme-body-color: var(--color-text-primary);
   --theme-brand-color: var(--color-death);
+  --page-bg: var(--concord-primary);
   background-color: var(--concord-primary);
 }
 
@@ -123,6 +125,7 @@ html.fonts-ready #root {
   --theme-heading-color: var(--concord-title);
   --theme-body-color: var(--concord-tertiary);
   --theme-brand-color: var(--concord-nav);
+  --page-bg: var(--concord-primary);
   background-color: var(--concord-primary);
 }
 
@@ -133,6 +136,7 @@ html.fonts-ready #root {
   --theme-heading-color: var(--concord-title);
   --theme-body-color: var(--concord-tertiary);
   --theme-brand-color: var(--concord-nav);
+  --page-bg: var(--concord-primary);
   background-color: var(--concord-primary);
 }
 
@@ -142,6 +146,7 @@ html.fonts-ready #root {
   --theme-heading-color: #151515;
   --theme-body-color: #151515;
   --theme-brand-color: #151515;
+  --page-bg: var(--concord-primary);
   background-color: var(--concord-primary);
 }
 
@@ -340,7 +345,7 @@ html.fonts-ready #root {
     inset: 0;
     flex-direction: column;
     gap: 0;
-    background: var(--color-bg);
+    background: var(--page-bg);
     padding: 120px 2.6rem 2rem;
     z-index: 0;
     overflow-y: auto;
@@ -1473,12 +1478,24 @@ html.fonts-ready #root {
   color: var(--theme-heading-color);
 }
 
+@media (max-width: 620px) {
+  .type-before {
+    font-size: 66px;
+  }
+}
+
 .type-body-large {
   font-family: var(--font-body);
   font-size: 32px;
   line-height: 1.2;
   letter-spacing: 0.01em;
   color: var(--theme-body-color);
+}
+
+@media (max-width: 620px) {
+  .type-body-large {
+    font-size: 24px;
+  }
 }
 
 .type-body {
@@ -1835,6 +1852,10 @@ html.fonts-ready #root {
 /* Combat page — layout only; typography comes from type utilities */
 #combat-page .type-caps {
   color: #c19f2c;
+}
+
+#combat-page .page-back-link {
+  color: var(--color-text-secondary, #888);
 }
 
 #combat-page .type-logo {
