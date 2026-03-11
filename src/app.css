@@ -347,6 +347,7 @@ html.fonts-ready #root {
 
 .home-death-overlay {
   position: absolute;
+  left: -300px;
   inset: 0;
   background:
     linear-gradient(to bottom, var(--color-bg) 0%, transparent 33%),
@@ -356,6 +357,9 @@ html.fonts-ready #root {
 @media (max-width: 980px) {
   .home-death-wrap {
     margin: 2rem auto 0;
+  }
+  .home-death-bg {
+    left: auto;
   }
 }
 
@@ -1479,10 +1483,6 @@ html.fonts-ready #root {
     gap: 1.5rem;
   }
 
-  .home-death-wrap {
-    margin: 2rem auto 0;
-  }
-
   .event-meta {
     margin-top: 0;
     padding-bottom: 1rem;
@@ -1525,10 +1525,6 @@ html.fonts-ready #root {
     z-index: 2;
   }
 
-  .page-shell[data-page="home"] .home-death-wrap {
-    z-index: 0;
-  }
-
   .top-bar {
     flex-direction: column;
     align-items: flex-start;
@@ -1546,22 +1542,6 @@ html.fonts-ready #root {
     display: none;
   }
 
-  .home-death-wrap {
-    position: relative;
-    top: auto;
-    right: auto;
-    height: auto;
-    width: min(92vw, 440px);
-    margin: 2rem auto 0;
-    transform: none;
-  }
-
-  .home-death-bg {
-    height: auto;
-    width: 100%;
-    opacity: 0.42;
-  }
-
   .costume-grid {
     column-count: 1;
   }
@@ -1572,32 +1552,6 @@ html.fonts-ready #root {
 
   .concord-lede {
     margin-bottom: 1.4rem;
-  }
-}
-
-@media (min-width: 981px) {
-  .page-shell[data-page="home"] .home-death-wrap {
-    width: min(92vw, 660px);
-    height: 90vh;
-    max-height: 90vh;
-  }
-}
-
-@media (min-width: 1300px) {
-  .home-death-wrap {
-    position: absolute;
-    right: 0;
-    top: -18vh;
-    height: 90vh;
-    width: auto;
-    margin: 0;
-    transform: translateX(50%);
-  }
-
-  .home-death-bg {
-    width: auto;
-    height: 100%;
-    opacity: 0.48;
   }
 }
 
