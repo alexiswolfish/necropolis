@@ -42,6 +42,18 @@ function isAdmin(character) {
   return Boolean(character?.id && ADMIN_IDS.has(character.id));
 }
 
+function getPlayerStatSummary(character) {
+  const stats = character?.stats ?? {};
+  const statEntries = Object.entries(STAT_LABELS).map(([key, label]) => ({
+    key,
+    label,
+    value: Number(stats[key] ?? 0)
+  }));
+  const highestValue = statEntries.reduce((max, entry) => Math.max(max, entry.value), 0);
+  const highestStat = statEntries.find((entry) => entry.value === highestValue) ?? statEntries[0];
+  return { statEntries, highestValue, highestStat };
+}
+
 // Shared: left sidebar showing concord name + meta
 function ConcordSidebar({ character, concord, teamData, getPathFromRoute, onOpenConcord }) {
   const concordName = teamData?.concordName ?? character.concordId;
@@ -115,7 +127,11 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
       backgroundColor: PLAYERS_CONCORD_HEADING_COLORS[concordId] ?? "#000000",
       memberColor: PLAYERS_CONCORD_MEMBER_COLORS[concordId] ?? "#000000",
       members,
-      officialCount
+      officialCount,
+      teamHighestMystery: members.reduce((max, member) => {
+        const mystery = Number(member?.stats?.mystery ?? 0);
+        return Math.max(max, mystery);
+      }, 0)
     };
   }).filter((group) => group.members.length > 0);
 
@@ -129,24 +145,50 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
               {adminMode ? <span className="type-caps players-admin-count"> ({group.officialCount}/7)</span> : null}
             </h2>
             <div className="concord-players-list">
-              {group.members.map((member) => (
-                <p key={`${group.concordId}-${member.realName}`} className="concord-player-name" style={{ color: member.excludedFromCount ? "#000000" : group.memberColor }}>
-                  <a href={getPathFromRoute({ page: "player-detail", characterId: member.id })} onClick={onNavigate({ page: "player-detail", characterId: member.id })} className="concord-player-link">
-                    {member.characterName ?? member.realName}
-                  </a>
-                  {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
-                  {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
-                  {/* characterClass display hidden until classes are ready to ship */}
-                  {adminMode ? (
-                    <button
-                      className="type-caps players-admin-toggle"
-                      onClick={() => onToggleExcluded(member.id, !member.excludedFromCount)}
-                    >
-                      {member.excludedFromCount ? "include" : "exclude"}
-                    </button>
-                  ) : null}
-                </p>
-              ))}
+              {group.members.map((member) => {
+                const { statEntries, highestValue, highestStat } = getPlayerStatSummary(member);
+                return (
+                  <div key={`${group.concordId}-${member.realName}`} className="players-member">
+                    <p className="concord-player-name" style={{ color: member.excludedFromCount ? "#000000" : group.memberColor }}>
+                      <a href={getPathFromRoute({ page: "player-detail", characterId: member.id })} onClick={onNavigate({ page: "player-detail", characterId: member.id })} className="concord-player-link">
+                        {member.characterName ?? member.realName}
+                      </a>
+                      {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
+                      {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
+                      {/* characterClass display hidden until classes are ready to ship */}
+                      {adminMode ? (
+                        <button
+                          className="type-caps players-admin-toggle"
+                          onClick={() => onToggleExcluded(member.id, !member.excludedFromCount)}
+                        >
+                          {member.excludedFromCount ? "include" : "exclude"}
+                        </button>
+                      ) : null}
+                    </p>
+                    {adminMode ? (
+                      <section className="players-admin-stats" aria-label={`${member.characterName ?? member.realName} stats`}>
+                        <p className="players-admin-stat-list type-caps">
+                          {statEntries.map((entry) => (
+                            <span
+                              key={`${member.id}-${entry.key}`}
+                              className={[
+                                "players-admin-stat",
+                                entry.value === highestValue ? "players-admin-stat-highest" : "",
+                                entry.key === "mystery" && entry.value === group.teamHighestMystery ? "players-admin-stat-team-mystery-highest" : ""
+                              ].filter(Boolean).join(" ")}
+                            >
+                              {entry.label}: {entry.value}
+                            </span>
+                          ))}
+                        </p>
+                        <p className="players-admin-highest type-caps">
+                          Highest: <span className="players-admin-stat-highest">{highestStat.label}: {highestValue}</span>
+                        </p>
+                      </section>
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
           </article>
         ))}

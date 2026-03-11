@@ -34,7 +34,7 @@
   --color-bg-soft: #101419;
   --color-text-primary: #f0efec;
   --color-text-caps: #d9d9d9;
-  --color-before: #d4ece3;
+  --color-death: #d4ece3;
   --color-border-subtle: #252a30;
 
   --font-logo: "Spinosa BTW01 Regular", "Times New Roman", serif;
@@ -44,9 +44,11 @@
 
   --theme-nav-font: var(--font-caps);
   --theme-nav-color: var(--color-text-caps);
-  --theme-heading-color: var(--color-before);
+  --theme-heading-color: var(--color-death);
   --theme-body-color: var(--color-text-primary);
   --theme-brand-color: var(--color-text-primary);
+  --players-highest-stat-color: #b32200;
+  --players-team-mystery-highest-color: #1f8a3b;
 }
 
 * {
@@ -101,9 +103,9 @@ html.fonts-ready #root {
 .page-shell[data-page="home"] {
   --theme-nav-font: var(--font-caps);
   --theme-nav-color: var(--color-text-caps);
-  --theme-heading-color: var(--color-before);
+  --theme-heading-color: var(--color-death);
   --theme-body-color: var(--color-text-primary);
-  --theme-brand-color: var(--color-before);
+  --theme-brand-color: var(--color-death);
   background-color: var(--concord-primary);
 }
 
@@ -112,7 +114,7 @@ html.fonts-ready #root {
   --theme-nav-color: var(--color-text-caps);
   --theme-heading-color: #35122e;
   --theme-body-color: #210f18;
-  --theme-brand-color: var(--color-before);
+  --theme-brand-color: var(--color-death);
 }
 
 .page-shell[data-page="concord-detail"] {
@@ -377,7 +379,7 @@ html.fonts-ready #root {
 
 .story-concord-word {
   font-family: var(--font-logo);
-  color: var(--color-before);
+  color: var(--color-death);
   text-transform: uppercase;
 }
 
@@ -617,6 +619,43 @@ html.fonts-ready #root {
   font-size: 52px;
   line-height: 1.05;
   color: var(--concord-tertiary);
+}
+
+.players-member {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.players-admin-stats {
+  margin-left: 2px;
+}
+
+.players-admin-stat-list,
+.players-admin-highest {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  line-height: 1.35;
+  color: color-mix(in srgb, currentColor 72%, #000000 28%);
+}
+
+.players-admin-stat-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.players-admin-stat {
+  opacity: 0.95;
+}
+
+.players-admin-stat-highest {
+  color: var(--players-highest-stat-color);
+}
+
+.players-admin-stat-team-mystery-highest {
+  color: var(--players-team-mystery-highest-color);
 }
 
 .not-found-layout {
@@ -1295,16 +1334,24 @@ html.fonts-ready #root {
 
 .type-before {
   font-family: var(--font-display);
-  font-size: 124px;
+  font-size: 88px;
   line-height: 0.86;
   font-weight: 400;
   color: var(--theme-heading-color);
 }
 
+.type-body-large {
+  font-family: var(--font-body);
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--theme-body-color);
+}
+
 .type-body {
   font-family: var(--font-body);
-  font-size: 36px;
-  line-height: 1.2;
+  font-size: 20px;
+  line-height: 1.4;
   letter-spacing: 0.01em;
   color: var(--theme-body-color);
 }
@@ -1703,4 +1750,217 @@ html.fonts-ready #root {
 .curse-card-dl-btn:hover {
   color: #f37420;
   border-color: #f37420;
+}
+
+/* ── Combat Route ───────────────────────────────────────────────────────── */
+/* Combat page — layout only; typography comes from type utilities */
+#combat-page .type-caps {
+  color: #c19f2c;
+}
+
+#combat-page .type-logo {
+  color: var(--color-death);
+}
+
+#combat-page .type-body {
+  margin-top: 0;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+#combat-page .combat-total-pip {
+  color: #111314;
+}
+
+#combat-page .combat-keyword {
+  font-family: var(--font-logo);
+  color: #009465;
+  text-transform: uppercase;
+}
+
+.combat-layout {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+
+.page-back-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: #eea78c;
+  text-decoration: none;
+  margin: 0 0 16px;
+}
+
+.page-back-arrow {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.header-accent {
+  font-size: 44px;
+  font-weight: normal;
+  color: #f37420;
+  letter-spacing: 4px;
+  margin: 0 0 48px;
+}
+
+.combat-cards-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 60px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.combat-card-img {
+  flex: 1;
+  min-width: 0;
+  height: auto;
+  border-radius: 4px;
+}
+
+.combat-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+.combat-section-label {
+  margin: 0 0 16px;
+}
+
+.combat-subsection-label {
+  margin: 24px 0 10px;
+}
+
+.combat-weapon-steps {
+  margin: 12px 0 0;
+  padding-left: 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.combat-weapon-steps .type-body {
+  margin-top: 0;
+}
+
+.combat-weapon-steps .type-body::marker {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--color-death);
+}
+
+.combat-round {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 40px;
+}
+
+.combat-round-header {
+  font-size: 28px;
+  margin: 0;
+  font-weight: normal;
+}
+
+.combat-step-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.combat-step-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.combat-step-col .type-body {
+  margin: 0;
+}
+
+.combat-step-solo {
+  max-width: calc(50% - 6px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.combat-step-solo-centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.combat-step-solo .type-body {
+  margin: 0;
+}
+
+.combat-diagram {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+}
+
+.combat-totals-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.combat-total-pip {
+  font-size: 14px;
+  color: #111314;
+  background: #f37420;
+  padding: 4px 10px;
+}
+
+/* Manual / Handbook landing */
+.manual-layout {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+.manual-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--color-text-secondary, #888);
+  margin-bottom: 40px;
+}
+
+.manual-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.manual-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.manual-entry-title {
+  font-family: var(--font-display);
+  font-size: 64px;
+  line-height: 0.86;
+  font-weight: 400;
+  color: var(--theme-heading-color);
+  text-decoration: none;
+  display: block;
+}
+
+.manual-entry-title:hover {
+  opacity: 0.8;
+}
+
+.manual-entry-byline {
+  font-size: 24px;
+  color: var(--theme-body-color);
+  margin: 0;
+  padding-top: 8px;
 }

@@ -7,11 +7,11 @@ export function HomeRoute({ onHoverOmenStart, onHoverOmenEnd, deathImageSrc }) {
 
       <article className="story-block">
         <h1 className="type-before before-mark">Before...</h1>
-        <p className="type-body story-paragraph">the dead were put to rest, and before the end of Wonders or the withering of Mystery, there loomed in the dusk of all things, the city of Necropolis.</p>
-        <p className="type-body story-paragraph">There, eight <span className="story-concord-word">Concords</span>, may they be both cursed and blessed, return to the sparring fields to compete in another cycle of the eternal tournament.</p>
-        <p className="type-body story-paragraph">Victory promises eternal renewal, dominion, or release, each Concord tells the tale it prefers, but all agree on this: <strong>the Tournament must be held, and you must attend.</strong></p>
-        <p className="type-body story-paragraph">Death has no hold on those bound by grim accord. Yet even here, beneath rite and rivalry, its shadow gathers and its patience thins.</p>
-        <p className="type-body story-paragraph story-omen-paragraph">
+        <p className="type-body-large story-paragraph">the dead were put to rest, and before the end of Wonders or the withering of Mystery, there loomed in the dusk of all things, the city of Necropolis.</p>
+        <p className="type-body-large story-paragraph">There, eight <span className="story-concord-word">Concords</span>, may they be both cursed and blessed, return to the sparring fields to compete in another cycle of the eternal tournament.</p>
+        <p className="type-body-large story-paragraph">Victory promises eternal renewal, dominion, or release, each Concord tells the tale it prefers, but all agree on this: <strong>the Tournament must be held, and you must attend.</strong></p>
+        <p className="type-body-large story-paragraph">Death has no hold on those bound by grim accord. Yet even here, beneath rite and rivalry, its shadow gathers and its patience thins.</p>
+        <p className="type-body-large story-paragraph story-omen-paragraph">
           <span
             className="story-concord-word story-omen-word"
             onMouseEnter={onHoverOmenStart}

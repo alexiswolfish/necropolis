@@ -5,6 +5,8 @@ import { BeginGate, OnboardingWizard } from "./routes/OnboardingRoute";
 import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
 import { CharacterPage, PlayersPage, PublicCharacterPage } from "./routes/PlayersRoute";
 import { CursesRoute } from "./routes/CursesRoute";
+import { CombatRoute } from "./routes/CombatRoute";
+import { ManualRoute } from "./routes/ManualRoute";
 import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterById } from "./data/charactersApi";
 import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
 
@@ -861,6 +863,8 @@ function getRouteFromPath(pathname) {
   const appPath = stripBase(pathname);
   if (appPath === "/") return { page: "home" };
   if (appPath === "/curses") return { page: "curses" };
+  if (appPath === "/manual") return { page: "manual" };
+  if (appPath === "/manual/combat") return { page: "manual-combat" };
   if (appPath === "/concords") return { page: "concords" };
   if (appPath === "/concords/spare") return { page: "concords-spare" };
   if (appPath === "/players") return { page: "players" };
@@ -880,6 +884,8 @@ function getRouteFromPath(pathname) {
 function getPathFromRoute(route) {
   if (route.page === "home") return withBase("/");
   if (route.page === "curses") return withBase("/curses");
+  if (route.page === "manual") return withBase("/manual");
+  if (route.page === "manual-combat") return withBase("/manual/combat");
   if (route.page === "concords") return withBase("/concords");
   if (route.page === "concords-spare") return withBase("/concords/spare");
   if (route.page === "players") return withBase("/players");
@@ -1508,6 +1514,12 @@ export default function App() {
   if (route.page === "curses") {
     pageContent = <CursesRoute />;
   }
+  if (route.page === "manual") {
+    pageContent = <ManualRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
+  if (route.page === "manual-combat") {
+    pageContent = <CombatRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
   if (route.page === "not-found") {
     pageContent = <NotFoundPage onReturnHome={navigate({ page: "home" })} />;
   }
@@ -1515,12 +1527,14 @@ export default function App() {
   const inConcordsSection = concordsVisible;
   const inPlayersSection = route.page === "players" || route.page === "player-detail";
   const inCharacterSection = route.page === "character";
+  const inManualSection = route.page === "manual" || route.page === "manual-combat";
 
   return (
     <div className="page-shell" data-page={route.page} data-concord={themedConcord ? themedConcord.id : undefined}>
       <header className="top-bar">
         <a href={getPathFromRoute({ page: "home" })} onClick={navigate({ page: "home" })} className="type-logo brand" aria-label="Necropolis home">Necropolis</a>
         <nav className="top-nav" aria-label="Primary">
+          <a href={getPathFromRoute({ page: "manual" })} onClick={navigate({ page: "manual" })} className="type-caps top-nav-link" aria-current={inManualSection ? "page" : undefined}>Handbook</a>
           <a href={getPathFromRoute({ page: "concords" })} onClick={navigate({ page: "concords" })} className="type-caps top-nav-link" aria-current={inConcordsSection ? "page" : undefined}>Concords</a>
           <a href={getPathFromRoute({ page: "players" })} onClick={navigate({ page: "players" })} className="type-caps top-nav-link" aria-current={inPlayersSection ? "page" : undefined}>Players</a>
           <a href={getPathFromRoute({ page: canAccessStory ? "character" : "home" })} onClick={navigate({ page: canAccessStory ? "character" : "home" })} className="type-caps top-nav-link" aria-current={inCharacterSection ? "page" : undefined}>{canAccessStory ? "Character" : "Sign In"}</a>

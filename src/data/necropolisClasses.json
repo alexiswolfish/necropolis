@@ -2,7 +2,7 @@
   {
     "id": "mortuary-medium",
     "label": "Mortuary Medium",
-    "tag": "sorcerer",
+    "tag": "bard",
     "primaryStat": "pulchritude",
     "secondaryStats": ["shenanigans"]
   },
@@ -16,14 +16,14 @@
   {
     "id": "reliquarian",
     "label": "Reliquarian",
-    "tag": "scholar",
+    "tag": "monk",
     "primaryStat": "vigilance",
     "secondaryStats": ["grit"]
   },
   {
     "id": "ossuary-monk",
     "label": "Ossuary Monk",
-    "tag": "monk",
+    "tag": "druid",
     "primaryStat": "grit",
     "secondaryStats": ["mystery"]
   },

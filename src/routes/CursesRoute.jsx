@@ -212,6 +212,16 @@ export const CURSE_CARDS = [
       { text: "." },
     ],
   },
+  {
+    id: "curse-haunted",
+    header: "VOID CURSE",
+    difficulty: "xx",
+    body: [
+      { text: "Hand this card to another playing. If they are currently" },
+      { spinosa: "BLESSED" },
+      { text: "they must give you their BLESSING." },
+    ],
+  },
 ];
 
 function CurseCard({ card }) {
@@ -250,7 +260,7 @@ function CurseCard({ card }) {
             <img src={EYEBALL_SRC} alt="" className="curse-card-eye" />
           </div>
           <h2 className="curse-card-header">{card.header}</h2>
-          <p className="curse-card-body type-body">
+          <p className="curse-card-body type-body-large">
             {card.body.map((seg, i) =>
               "spinosa" in seg
                 ? <span key={i} className="curse-card-spinosa-word">{seg.spinosa}</span>

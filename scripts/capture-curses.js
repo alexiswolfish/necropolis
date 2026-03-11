@@ -12,7 +12,7 @@ const filterById = process.argv[2] ?? null;
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
-await page.setViewport({ width: 1600, height: 900, deviceScaleFactor: 2 });
+await page.setViewport({ width: 1600, height: 900, deviceScaleFactor: 4 });
 await page.goto(URL, { waitUntil: "networkidle0" });
 
 await mkdir(OUTPUT_DIR, { recursive: true });

@@ -100,7 +100,7 @@ export function OnboardingWizard({
         {step === 2 ? (
           <>
             <p className="type-logo onboarding-header">Welcome, {welcomeName}</p>
-            <p className="type-body onboarding-lede onboarding-birth-prompt">What stars were you born under?</p>
+            <p className="type-body-large onboarding-lede onboarding-birth-prompt">What stars were you born under?</p>
             <input
               id="birth-date"
               type="text"
@@ -122,7 +122,7 @@ export function OnboardingWizard({
         {step === 3 ? (
           <>
             <p className="type-logo onboarding-header">Ah, a {zodiacSign}.</p>
-            <p className="type-body onboarding-lede">Let's see your mettle. Allocate {remainingPoints} shards below</p>
+            <p className="type-body-large onboarding-lede">Let's see your mettle. Allocate {remainingPoints} shards below</p>
             {statKeys.map((statKey) => (
               <div key={statKey} className="stat-row">
                 <span className="type-caps stat-label">{statLabels[statKey] ?? statKey}:</span>
@@ -136,7 +136,7 @@ export function OnboardingWizard({
 
         {step === 4 ? (
           <>
-            <p className="type-body onboarding-concord-intro">
+            <p className="type-body-large onboarding-concord-intro">
               You are joining the <span className="concord-logo-word">CONCORD</span> of
             </p>
             {assignedConcordCard ? (
@@ -161,7 +161,7 @@ export function OnboardingWizard({
                 <p className="concord-card-desire">{assignedConcordCard.desire.toLowerCase()}</p>
               </div>
             ) : null}
-            <label className="onboarding-character-name-label type-body" htmlFor="character-name">Name your character (you can change this later)</label>
+            <label className="onboarding-character-name-label type-body-large" htmlFor="character-name">Name your character (you can change this later)</label>
             <input
               id="character-name"
               className="onboarding-input onboarding-input-character"
