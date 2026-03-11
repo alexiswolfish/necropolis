@@ -2014,7 +2014,7 @@ html.fonts-ready #root {
 
 @media (max-width: 620px) {
   .combat-layout {
-    padding: 32px 1rem 60px;
+    padding: 32px 0 60px;
     width: 100%;
     max-width: 100%;
   }
@@ -2093,4 +2093,21 @@ html.fonts-ready #root {
   color: var(--theme-body-color);
   margin: 0;
   padding-top: 8px;
+}
+
+@media (max-width: 620px) {
+  .manual-layout {
+    padding: 32px 0 80px;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .manual-entry-title {
+    font-size: 48px;
+  }
+
+  .manual-entry-byline {
+    font-size: 20px;
+    padding-top: 4px;
+  }
 }
