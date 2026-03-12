@@ -1,5 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { renderConcordWord } from "./ConcordsRoute";
+import { CLASSES_DATA } from "./ManualClassesRoute";
+
+const CLASS_LORE_BY_ID = Object.fromEntries(CLASSES_DATA.map((c) => [c.id, c.shortLore ?? c.lore]));
+const CLASS_DATA_BY_ID = Object.fromEntries(CLASSES_DATA.map((c) => [c.id, c]));
+const PEASANT_CLASS_ID = "peasant";
+
+function renderClassLore(text) {
+  const parts = text.split(/([A-Z]{2,}(?:'[A-Z]+)?)/g);
+  return parts.map((part, i) =>
+    /^[A-Z]{2,}/.test(part)
+      ? <span key={i} className="concord-logo-word">{part}</span>
+      : part
+  );
+}
 
 export const STAT_LABELS = {
   pulchritude: "Pulchritude",
@@ -354,8 +368,47 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
             ? <span className="type-caps public-character-realname"> ({character.realName})</span>
             : null}
         </p>
-        {characterClass && <p className="public-character-class">{characterClass.tag}</p>}
+        {characterClass && (
+          <p className="public-character-class">
+            <a
+              href={getPathFromRoute({ page: "manual-classes" })}
+              onClick={onNavigate({ page: "manual-classes" })}
+              className="public-character-class-link"
+            >
+              {characterClass.tag}
+            </a>
+            {CLASS_LORE_BY_ID[characterClass.id]
+              ? <span className="public-character-class-lore">{renderClassLore(CLASS_LORE_BY_ID[characterClass.id])}</span>
+              : null}
+          </p>
+        )}
         <StatsList character={character} />
+        {(() => {
+          const classData = characterClass ? CLASS_DATA_BY_ID[characterClass.id] : null;
+          const dumbLuck = Number(character.stats?.dumbLuck ?? 0);
+          const isPeasant = characterClass?.id === PEASANT_CLASS_ID;
+          const showClassPerk = classData?.perk && (!isPeasant || dumbLuck >= 4);
+          const hasFeelingLucky = !isPeasant && dumbLuck > 5;
+          const peasantData = CLASS_DATA_BY_ID[PEASANT_CLASS_ID];
+          if (!showClassPerk && !hasFeelingLucky) return null;
+          return (
+            <section className="public-character-perks" aria-label="Perks">
+              <p className="type-caps public-character-perks-heading">Perks</p>
+              {showClassPerk && (
+                <p className="type-body public-character-perk">
+                  <span className="type-caps public-character-perk-label">{classData.perkLabel ?? "Perk"}: </span>
+                  {classData.perk}
+                </p>
+              )}
+              {hasFeelingLucky && peasantData?.perk && (
+                <p className="type-body public-character-perk">
+                  <span className="type-caps public-character-perk-label">{peasantData.perkLabel ?? "Feeling Lucky"}: </span>
+                  {peasantData.perk}
+                </p>
+              )}
+            </section>
+          );
+        })()}
       </article>
     </main>
   );

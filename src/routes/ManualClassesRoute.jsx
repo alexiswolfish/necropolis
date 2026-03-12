@@ -1,47 +1,83 @@
 import React from "react";
 
-const CLASSES_DATA = [
+export const CLASSES_DATA = [
   {
     id: "mortuary-medium",
     label: "Bard",
     primaryStat: "Pulchritude",
-    lore: "Bards are the ones who already know your name. They arrived an hour ago, have met everyone present, and are somehow already at the center of whatever interesting thing is happening. Charming by profession and by temperament, they use this the way other classes use weapons: constantly, and with considerable effect.",
+    perk: "Start the game with 3 instances of NATURAL CHARM. Sacrifice one to avoid combat or a curse.",
+    shortLore: "Their beauty, their grace, BARDS might as well be Miss United States. Oozing with the kind of natural charisma that tends to lend a real shine to even the most incompetent, BARDS are jacks of all trades and top notch entertainers. A sparkling cocktail of interesting facts and impressive but not particularly high utility skills.",
+    lore: [
+      "The Bards of the ancient world were not merely entertainers — they were keepers of legend, speakers of truth, and profoundly excellent at parties. Their beauty, their grace: they might as well be Miss United States.",
+      "Oozing with the kind of natural PULCHRITUDE that tends to lend a real shine to even the most incompetent of endeavours, BARDS are jacks of all trades and top notch entertainers. A sparkling cocktail of interesting facts and impressive but not particularly high utility skills, deployed constantly and with considerable effect.",
+    ],
   },
   {
     id: "lantern-warden",
     label: "Fighter",
     primaryStat: "Brawn",
-    lore: "Fighters enjoy efficiency. Hitting your problems over the head with the nearest blunt object until they are no longer problems is a perfectly sound strategy, and one Fighters have refined to an art. Jacks of all trades, with the gleaming cut figures to match.",
+    perk: "Your intimidating muscles really make opponents want to back down. Twice during the game, choose to use your impressive BRAWN to instantly win a combat encounter.",
+    shortLore: "Who needs brains when you have BRAWN. Fighters love fixing problems in the most efficient way possible. Bashing it over the head until it is no longer a problem.",
+    lore: [
+      "In the great sagas, the heroes of brute BRAWN are rarely remembered for their speeches. They are remembered for what happened after the speeches, when things needed hitting.",
+      "Fighters are the load-bearing walls of any adventuring party: uncomplicated, reliable, and capable of absorbing a truly unreasonable amount of punishment before anyone needs to worry. They fix problems efficiently — locate problem, apply large blunt object, repeat until problem stops.",
+    ],
   },
   {
     id: "reliquarian",
     label: "Ranger",
     primaryStat: "Vigilance",
-    lore: "Rangers notice everything. The wrong shoes for the terrain, the exit nobody else clocked, the person who arrived knowing too much. Hypervigilant by nature and by habit, they are the first to realize something is wrong and, usually, the last to say so out loud.",
+    perk: "Gain initiative in every battle. For the first round of combat, after choosing your card and showing your opponent, you may flip one of their cards and take it out of play.",
+    shortLore: "Rugged, hot, RANGERS can taste dirt on the rain and lead you safely through dark forests. Their VIGILANCE lets them get the jump on opponents in any battle.",
+    lore: [
+      "The RANGERS of legend were the guardians of wild places, moving through dark forests and bitter mountains with the quiet certainty of those who have slept in significantly worse conditions and are fine about it.",
+      "They can taste weather on the wind, track a boot through frozen mud, and will notice the thing that is wrong before you have finished explaining that nothing is wrong. Their VIGILANCE is the product of a great many near-misses, all of which they will downplay considerably.",
+    ],
   },
   {
     id: "ossuary-monk",
     label: "Druid",
     primaryStat: "Grit",
-    lore: "Druids are the ones still going after everyone else has stopped. Endurance is their primary skill and their dominant personality trait. They have been cold, lost, and considerably worse, and they are fine. Always fine. Slightly baffled by people who aren't.",
+    perk: "Your immeasurable GRIT allows you to shrug off 3 lost combat encounters during the party. Retain your soul until these are worn away.",
+    shortLore: "Deeply attuned to physical planes, flowers bloom where a druid steps. Their extreme GRIT allows them to endure far past what those more feeble in mind and body could stand.",
+    lore: [
+      "Deeply attuned to the living world in ways that make for excellent company and occasionally alarming conversation, the Druids of old were known for outlasting everything: winters, sieges, philosophical arguments, and several civilizations that seemed quite confident at the time.",
+      "Flowers bloom where they step. So do, occasionally, rather aggressive fungi. Their GRIT is the kind that does not require announcing — they are fine, they are always fine, and they would appreciate it if you stopped asking.",
+    ],
   },
   {
     id: "tomb-runner",
     label: "Rogue",
     primaryStat: "Shenanigans",
-    lore: "Rogues know where everything is: the exits, the valuables, who owes whom a favor, and which guard is having a bad night. Light on their feet and lighter on explanations, they are genuinely excellent company if you can keep track of them. Which you probably cannot.",
+    perk: "Start the game with 3 curse cards to give to any player of your choice. All completely above board, naturally.",
+    shortLore: "Quick on their feet, and constantly skulking in shadow at the periphery of your vision, the party's ROGUE is the perfect player to sow some chaos covertly amongst enemy ranks.",
+    lore: [
+      "The great thieves, spies, and professional skulkers of every age shared one common trait: they were never quite where you were looking.",
+      "The ROGUE moves through the world with the quiet efficiency of someone who mapped every exit before they sat down, knows three things about you that you have not said aloud, and considers chaos a legitimate tactical option. Their SHENANIGANS are not random — they are precisely targeted, beautifully timed, and extremely difficult to explain to the authorities afterward.",
+    ],
   },
   {
     id: "sepulchral-mage",
     label: "Wizard",
     primaryStat: "Mystery",
-    lore: "Wizards have done the reading. All of it. They arrive with three specific questions they need answered and the social patience of someone who came for the information, not the wine. Extremely useful in a crisis. Slightly exhausting at dinner.",
+    perk: "Wizards cannot be challenged to combat, and thus cannot be compelled to give you a shard of their soul. It's very convenient for them. There are, however, rumours. And this is a party.",
+    shortLore: "Wizards are masters of MYSTERY, and wield it quite effectively to avoid DEATH's nastier consequences. Extremely useful in a crisis. Slightly exhausting at dinner.",
+    lore: [
+      "In the oldest traditions, the great sorcerers did not choose MYSTERY — MYSTERY chose them, usually at considerable inconvenience to their social calendar. Wizards arrive with three specific questions that need answering and the patience of someone who came for the information, not the wine.",
+      "They wield arcane forces with clinical precision, primarily to sidestep DEATH's more inconvenient appointments, which works more often than it should. Extremely useful in a crisis. Slightly exhausting at dinner.",
+    ],
   },
   {
     id: "peasant",
     label: "Peasant",
     primaryStat: null,
-    lore: "No particular gifts. No ancient training. No destiny to speak of. The Peasant is here anyway, which, depending on how the night goes, may turn out to be the most remarkable thing about them.",
+    perkLabel: "Feeling Lucky",
+    perk: "Upon failing a shrine challenge, if available, roll a lucky dice. On a 3, whatever terrible outcome was about to befall you is avoided, and maybe, you even just succeed.",
+    shortLore: "No particular gifts. No ancient training. No destiny to speak of. The Peasant is here anyway.",
+    lore: [
+      "No particular gifts. No ancient training. No destiny to speak of.",
+      "The Peasant is here anyway, which, depending on how the night goes, may turn out to be the most remarkable thing about them.",
+    ],
   },
 ];
 
@@ -55,15 +91,24 @@ export function ManualClassesRoute({ getPathFromRoute, onNavigate }) {
       >
         <span className="type-logo page-back-arrow">‹</span>Handbook
       </a>
-      <p className="type-logo header-accent">Player Classes</p>
+      <h1 className="classes-page-heading">Player Classes</h1>
+      <p className="type-body classes-page-subtitle">Heroes of the grand tournament are often specialized in particular skills. The most notable of which are listed below.</p>
       <div className="classes-entries">
         {CLASSES_DATA.map((cls) => (
           <section key={cls.id} className="classes-entry">
             {cls.primaryStat && (
-              <p className="type-caps classes-entry-stat">{cls.primaryStat}</p>
+              <p className="type-caps classes-entry-stat"><span className="classes-entry-stat-label">Primary Stat:</span> <span className="classes-entry-stat-value">{cls.primaryStat}</span></p>
             )}
             <h2 className="classes-entry-title">{cls.label}</h2>
-            <p className="type-body classes-entry-body">{cls.lore}</p>
+            {cls.lore.map((paragraph, i) => (
+              <p key={i} className="type-body classes-entry-body">{paragraph}</p>
+            ))}
+            {cls.perk && (
+              <p className="type-body classes-entry-perk">
+                <span className="type-caps classes-entry-perk-label">{cls.perkLabel ?? "Perk"}: </span>
+                {cls.perk}
+              </p>
+            )}
           </section>
         ))}
       </div>
