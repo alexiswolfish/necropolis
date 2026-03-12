@@ -790,6 +790,17 @@ html.fonts-ready #root {
   border: 1px solid color-mix(in srgb, var(--concord-tertiary, currentColor) 22%, transparent 78%);
 }
 
+.concord-player-card-link-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.concord-player-card > *:not(.concord-player-card-link-overlay) {
+  position: relative;
+  z-index: 1;
+}
+
 .concord-player-card-name {
   margin: 0;
   font-family: "Lohengrin", serif;
@@ -1487,12 +1498,6 @@ html.fonts-ready #root {
 .concord-player-link {
   color: inherit;
   text-decoration: none;
-}
-
-.concord-player-card .concord-player-link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
 }
 
 .concord-player-card:hover {

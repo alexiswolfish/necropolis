@@ -25,20 +25,18 @@ function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
   }));
   return (
     <article className="concord-player-card">
+      <a
+        href={getPathFromRoute({ page: "player-detail", characterId: entry.id })}
+        onClick={onNavigate({ page: "player-detail", characterId: entry.id })}
+        className="concord-player-card-link-overlay"
+        aria-label={`Open ${entry.characterName ?? entry.realName}`}
+      />
       <div className="concord-player-card-header">
         <div className="concord-player-card-names">
           {entry.characterName && entry.characterName !== entry.realName
             ? <span className="concord-player-card-realname">{entry.realName}</span>
             : null}
-          <p className="concord-player-card-name">
-            <a
-              href={getPathFromRoute({ page: "player-detail", characterId: entry.id })}
-              onClick={onNavigate({ page: "player-detail", characterId: entry.id })}
-              className="concord-player-link"
-            >
-              {entry.characterName ?? entry.realName}
-            </a>
-          </p>
+          <p className="concord-player-card-name">{entry.characterName ?? entry.realName}</p>
         </div>
         {entry.className
           ? <span className="concord-player-card-class">{entry.className}</span>
