@@ -25,6 +25,9 @@ function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
   }));
   return (
     <article className="concord-player-card">
+      {entry.characterName && entry.characterName !== entry.realName
+        ? <p className="players-real-name type-caps concord-player-card-realname">{entry.realName}</p>
+        : null}
       <p className="concord-player-card-name">
         <a
           href={getPathFromRoute({ page: "player-detail", characterId: entry.id })}
@@ -33,9 +36,6 @@ function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
         >
           {entry.characterName ?? entry.realName}
         </a>
-        {entry.characterName && entry.characterName !== entry.realName
-          ? <span className="players-real-name type-caps"> ({entry.realName})</span>
-          : null}
       </p>
       <div className="concord-player-card-stats">
         {statEntries.map((stat) => (

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { renderConcordWord } from "./ConcordsRoute";
 
-const STAT_LABELS = {
+export const STAT_LABELS = {
   pulchritude: "Pulchritude",
   grit: "Grit",
   brawn: "Brawn",

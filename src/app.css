@@ -781,13 +781,13 @@ html.fonts-ready #root {
 .concord-player-card-name {
   margin: 0 0 8px;
   font-family: "Lohengrin", serif;
-  font-size: 24px;
+  font-size: 28px;
   line-height: 1.1;
   color: var(--concord-tertiary);
 }
 
-.concord-player-card-name .players-real-name {
-  font-size: 10px;
+.concord-player-card-realname {
+  margin: 0 0 2px;
 }
 
 .concord-player-card-stats {
@@ -1431,10 +1431,9 @@ html.fonts-ready #root {
 }
 
 .players-real-name {
-  font-size: 0.42em;
+  font-size: 0.42em !important;
   color: inherit !important;
   opacity: 0.92;
-  margin-left: 8px;
 }
 
 
