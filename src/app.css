@@ -765,6 +765,65 @@ html.fonts-ready #root {
   gap: 4px;
 }
 
+.concord-player-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.concord-player-card {
+  min-width: 230px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--concord-tertiary, currentColor) 22%, transparent 78%);
+}
+
+.concord-player-card-name {
+  margin: 0 0 8px;
+  font-family: "Lohengrin", serif;
+  font-size: 24px;
+  line-height: 1.1;
+  color: var(--concord-tertiary);
+}
+
+.concord-player-card-name .players-real-name {
+  font-size: 10px;
+}
+
+.concord-player-card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.concord-player-card-stat-row {
+  display: grid;
+  grid-template-columns: 95px 1fr;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.concord-player-card-stat-label {
+  font-family: var(--font-caps);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--theme-nav-color);
+  line-height: 1.5;
+}
+
+.concord-player-card-stat-value {
+  font-family: var(--font-logo);
+  font-size: 17px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--concord-tertiary);
+  padding-left: 12px;
+  position: relative;
+  top: 3px;
+}
+
 .players-admin-stats {
   margin-left: 2px;
 }
@@ -2071,8 +2130,7 @@ html.fonts-ready #root {
 
 /* Manual / Handbook landing */
 .manual-layout {
-  max-width: 780px;
-  margin: 0 auto;
+  width: min(780px, 100%);
   padding: 60px 24px 100px;
 }
 
@@ -2086,7 +2144,7 @@ html.fonts-ready #root {
 .manual-entries {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 60px;
 }
 
 .manual-entry {
@@ -2119,8 +2177,10 @@ html.fonts-ready #root {
 @media (max-width: 620px) {
   .manual-layout {
     padding: 32px 0 80px;
-    max-width: 100%;
-    width: 100%;
+  }
+
+  .manual-entries {
+    gap: 40px;
   }
 
   .manual-entry-title {
@@ -2135,9 +2195,8 @@ html.fonts-ready #root {
 
 /* ---- Manual: Classes ---- */
 .classes-layout {
-  max-width: 680px;
-  width: 100%;
-  padding: 40px 24px 100px;
+  width: min(780px, 100%);
+  padding: 60px 24px 100px;
 }
 
 .classes-entries {
@@ -2169,7 +2228,6 @@ html.fonts-ready #root {
 @media (max-width: 620px) {
   .classes-layout {
     padding: 32px 0 80px;
-    max-width: 100%;
   }
 
   .classes-entry-title {

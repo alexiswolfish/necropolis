@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { STAT_LABELS } from "./PlayersRoute";
 
 function toFirstWordCapital(text) {
   const lower = text.toLowerCase();
@@ -13,6 +14,39 @@ export function renderConcordWord(text) {
     }
     return <React.Fragment key={`concord-text-${index}`}>{part}</React.Fragment>;
   });
+}
+
+function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
+  const stats = entry.stats ?? {};
+  const statEntries = Object.entries(STAT_LABELS).map(([key, label]) => ({
+    key,
+    label,
+    value: Number(stats[key] ?? 0)
+  }));
+  return (
+    <article className="concord-player-card">
+      <p className="concord-player-card-name">
+        <a
+          href={getPathFromRoute({ page: "player-detail", characterId: entry.id })}
+          onClick={onNavigate({ page: "player-detail", characterId: entry.id })}
+          className="concord-player-link"
+        >
+          {entry.characterName ?? entry.realName}
+        </a>
+        {entry.characterName && entry.characterName !== entry.realName
+          ? <span className="players-real-name type-caps"> ({entry.realName})</span>
+          : null}
+      </p>
+      <div className="concord-player-card-stats">
+        {statEntries.map((stat) => (
+          <div key={stat.key} className="concord-player-card-stat-row">
+            <span className="concord-player-card-stat-label">{stat.label}:</span>
+            <span className="concord-player-card-stat-value">{"+".repeat(Math.max(0, stat.value)) || "\u00a0"}</span>
+          </div>
+        ))}
+      </div>
+    </article>
+  );
 }
 
 export function ConcordsPage({ onOpenConcord, onHoverConcord, cards }) {
@@ -156,14 +190,14 @@ export function ConcordDetailPage({
             ))}
           </section>
         ) : detailTab === "players" ? (
-          <section className="concord-players-list" aria-label={`${concord.label} players`}>
+          <section className="concord-player-cards" aria-label={`${concord.label} players`}>
             {teamMembers.map((entry) => (
-              <p key={`${concord.id}-${entry.realName}`} className="concord-player-name">
-                <a href={getPathFromRoute({ page: "player-detail", characterId: entry.id })} onClick={onNavigate({ page: "player-detail", characterId: entry.id })} className="concord-player-link">
-                  {entry.characterName ?? entry.realName}
-                </a>
-                {entry.characterName && entry.characterName !== entry.realName ? <span className="players-real-name type-caps"> ({entry.realName})</span> : null}
-              </p>
+              <ConcordPlayerCard
+                key={`${concord.id}-${entry.realName}`}
+                entry={entry}
+                getPathFromRoute={getPathFromRoute}
+                onNavigate={onNavigate}
+              />
             ))}
           </section>
         ) : (
