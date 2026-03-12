@@ -11,14 +11,14 @@
     "label": "Lantern Warden",
     "tag": "fighter",
     "primaryStat": "brawn",
-    "secondaryStats": ["vigilance"]
+    "secondaryStats": ["grit"]
   },
   {
     "id": "reliquarian",
     "label": "Reliquarian",
-    "tag": "monk",
+    "tag": "cleric",
     "primaryStat": "vigilance",
-    "secondaryStats": ["grit"]
+    "secondaryStats": ["brawn"]
   },
   {
     "id": "ossuary-monk",

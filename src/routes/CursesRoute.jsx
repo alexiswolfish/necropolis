@@ -174,7 +174,7 @@ export const CURSE_CARDS = [
     difficulty: "xx",
     body: [
       { text: "Every promise you make echoes back twice as loud. Speak only when spoken to, until a " },
-      { spinosa: "MONK" },
+      { spinosa: "CLERIC" },
       { text: " grants you permission to begin again." },
     ],
   },
@@ -213,13 +213,64 @@ export const CURSE_CARDS = [
     ],
   },
   {
-    id: "curse-haunted",
+    id: "curse-void",
     header: "VOID CURSE",
     difficulty: "xx",
     body: [
-      { text: "Hand this card to another playing. If they are currently" },
+      { text: "Hand this card to another player. If they are currently " },
       { spinosa: "BLESSED" },
-      { text: "they must give you their BLESSING." },
+      { text: " they must give you their BLESSING." },
+    ],
+  },
+  {
+    id: "curse-mourning",
+    header: "MOURNING",
+    difficulty: "xx",
+    body: [
+      { text: "A heavy weight burdens your soul, sapping your " },
+      { spinosa: "GRIT" },
+      { text: ". Hand over a " },
+      { spinosa: "Soul Shard" },
+      { text: " to whomever gave you this card." },
+    ],
+  },
+  {
+    id: "curse-stutter",
+    header: "STUTTERING TONGUE",
+    difficulty: "xx",
+    body: [
+      { text: "Your words arrive out of order and full of betrayal." },
+      { text: " During your next duel, you must announce your weapon choice out loud before the flip." },
+    ],
+  },
+  {
+    id: "curse-veiled",
+    header: "VEILED COMBAT",
+    difficulty: "xx",
+    body: [
+      { text: "The shadows overcorrect and now they are helping far too much." },
+      { text: " During your next duel, you must play the top remaining card blindly." },
+    ],
+  },
+  {
+    id: "curse-toll",
+    header: "BRUTAL TOLL",
+    difficulty: "xxx",
+    body: [
+      { text: "A skeletal hand demands payment and refuses to explain the fee schedule. Surrender " },
+      { spinosa: "ONE relic-related item, contract, or shard " },
+      { text: "to a Minion of Death for temporary confiscation." },
+    ],
+  },
+  {
+    id: "curse-chill",
+    header: "VEILED COMBAT",
+    difficulty: "xx",
+    body: [
+      { text: "The cold here is less temperature than the foul weight of judgement." },
+      { text: " Suffer " },
+      { spinosa: "-2 " },
+      { text: "to the outcome of your next Duel." },
     ],
   },
 ];
@@ -238,7 +289,7 @@ function CurseCard({ card }) {
         backgroundColor: "#111314",
       });
       const link = document.createElement("a");
-      link.download = `curse-card-${card.id}.png`;
+      link.download = `${card.id}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (err) {

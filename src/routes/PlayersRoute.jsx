@@ -146,7 +146,6 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
             </h2>
             <div className="concord-players-list">
               {group.members.map((member) => {
-                const { statEntries, highestValue, highestStat } = getPlayerStatSummary(member);
                 return (
                   <div key={`${group.concordId}-${member.realName}`} className="players-member">
                     <p className="concord-player-name" style={{ color: member.excludedFromCount ? "#000000" : group.memberColor }}>
@@ -165,27 +164,6 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
                         </button>
                       ) : null}
                     </p>
-                    {adminMode ? (
-                      <section className="players-admin-stats" aria-label={`${member.characterName ?? member.realName} stats`}>
-                        <p className="players-admin-stat-list type-caps">
-                          {statEntries.map((entry) => (
-                            <span
-                              key={`${member.id}-${entry.key}`}
-                              className={[
-                                "players-admin-stat",
-                                entry.value === highestValue ? "players-admin-stat-highest" : "",
-                                entry.key === "mystery" && entry.value === group.teamHighestMystery ? "players-admin-stat-team-mystery-highest" : ""
-                              ].filter(Boolean).join(" ")}
-                            >
-                              {entry.label}: {entry.value}
-                            </span>
-                          ))}
-                        </p>
-                        <p className="players-admin-highest type-caps">
-                          Highest: <span className="players-admin-stat-highest">{highestStat.label}: {highestValue}</span>
-                        </p>
-                      </section>
-                    ) : null}
                   </div>
                 );
               })}

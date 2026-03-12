@@ -2132,3 +2132,51 @@ html.fonts-ready #root {
     padding-top: 4px;
   }
 }
+
+/* ---- Manual: Classes ---- */
+.classes-layout {
+  max-width: 680px;
+  width: 100%;
+  padding: 40px 24px 100px;
+}
+
+.classes-entries {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+.classes-entry-stat {
+  margin: 0 0 6px;
+  opacity: 0.55;
+}
+
+.classes-entry-title {
+  font-family: var(--font-display);
+  font-size: 52px;
+  line-height: 1;
+  font-weight: 400;
+  margin: 0 0 14px;
+  color: var(--theme-heading-color);
+}
+
+.classes-entry-body {
+  margin: 0;
+  max-width: 520px;
+}
+
+@media (max-width: 620px) {
+  .classes-layout {
+    padding: 32px 0 80px;
+    max-width: 100%;
+  }
+
+  .classes-entry-title {
+    font-size: 40px;
+  }
+
+  .classes-entries {
+    gap: 44px;
+  }
+}

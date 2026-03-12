@@ -7,6 +7,7 @@ import { CharacterPage, PlayersPage, PublicCharacterPage } from "./routes/Player
 import { CursesRoute } from "./routes/CursesRoute";
 import { CombatRoute } from "./routes/CombatRoute";
 import { ManualRoute } from "./routes/ManualRoute";
+import { ManualClassesRoute } from "./routes/ManualClassesRoute";
 import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterById } from "./data/charactersApi";
 import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
 
@@ -865,6 +866,7 @@ function getRouteFromPath(pathname) {
   if (appPath === "/curses") return { page: "curses" };
   if (appPath === "/manual") return { page: "manual" };
   if (appPath === "/manual/combat") return { page: "manual-combat" };
+  if (appPath === "/manual/classes") return { page: "manual-classes" };
   if (appPath === "/concords") return { page: "concords" };
   if (appPath === "/concords/spare") return { page: "concords-spare" };
   if (appPath === "/players") return { page: "players" };
@@ -886,6 +888,7 @@ function getPathFromRoute(route) {
   if (route.page === "curses") return withBase("/curses");
   if (route.page === "manual") return withBase("/manual");
   if (route.page === "manual-combat") return withBase("/manual/combat");
+  if (route.page === "manual-classes") return withBase("/manual/classes");
   if (route.page === "concords") return withBase("/concords");
   if (route.page === "concords-spare") return withBase("/concords/spare");
   if (route.page === "players") return withBase("/players");
@@ -1521,6 +1524,9 @@ export default function App() {
   if (route.page === "manual-combat") {
     pageContent = <CombatRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
   }
+  if (route.page === "manual-classes") {
+    pageContent = <ManualClassesRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
   if (route.page === "not-found") {
     pageContent = <NotFoundPage onReturnHome={navigate({ page: "home" })} />;
   }
@@ -1528,7 +1534,7 @@ export default function App() {
   const inConcordsSection = concordsVisible;
   const inPlayersSection = route.page === "players" || route.page === "player-detail";
   const inCharacterSection = route.page === "character";
-  const inManualSection = route.page === "manual" || route.page === "manual-combat";
+  const inManualSection = route.page === "manual" || route.page === "manual-combat" || route.page === "manual-classes";
 
   return (
     <div className="page-shell" data-page={route.page} data-concord={themedConcord ? themedConcord.id : undefined}>
