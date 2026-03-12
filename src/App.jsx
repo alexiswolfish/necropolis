@@ -1388,9 +1388,6 @@ export default function App() {
   }
   if (route.page === "player-detail") {
     const profileCharacter = allCharacters.find((c) => c.id === route.characterId) ?? null;
-    const backRoute = navigationState?.fromRoute?.page === "concord-detail" || navigationState?.fromRoute?.page === "players"
-      ? navigationState.fromRoute
-      : { page: "players" };
     pageContent = (
       <PublicCharacterPage
         character={profileCharacter}
@@ -1398,7 +1395,6 @@ export default function App() {
         teamBlueprint={TEAM_BLUEPRINT}
         concord={profileCharacter?.concordId ? (CONCORDS_BY_ID.get(profileCharacter.concordId) ?? null) : null}
         characterClass={profileCharacter ? (characterClassMap.get(profileCharacter.id) ?? null) : null}
-        backRoute={backRoute}
         getPathFromRoute={getPathFromRoute}
         onNavigate={navigate}
       />

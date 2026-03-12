@@ -33,7 +33,11 @@ function renderClassLore(text) {
   );
 }
 
-function CharacterClassSection({ characterClass, getPathFromRoute, onNavigate }) {
+function CharacterClassSection({ characterClass, rawClassName, getPathFromRoute, onNavigate }) {
+  const normalizedRawClassName = String(rawClassName ?? "").trim().toLowerCase();
+  const shouldUseNpcFallback = !normalizedRawClassName || normalizedRawClassName === "npc";
+  if (!characterClass && !shouldUseNpcFallback) return null;
+
   const displayClass = characterClass ?? NPC_CLASS;
   const displayClassName = displayClass.tag ?? displayClass.label;
   const classLore = characterClass ? CLASS_LORE_BY_ID[characterClass.id] : NPC_CLASS_LORE;
@@ -385,7 +389,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
           placeholder={bioPlaceholder}
         />
         {profileSaveMessage ? <p className="type-caps character-name-save-msg">{profileSaveMessage}</p> : null}
-        <CharacterClassSection characterClass={characterClass} />
+        <CharacterClassSection characterClass={characterClass} rawClassName={character.className} />
         <nav className="concord-subnav character-subnav" aria-label="Character details">
           <a
             href={getPathFromRoute({ page: "character", detailTab: "stats" })}
@@ -458,7 +462,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
   );
 }
 
-export function PublicCharacterPage({ character, charactersLoaded, characterClass, teamBlueprint, concord, backRoute, getPathFromRoute, onNavigate }) {
+export function PublicCharacterPage({ character, charactersLoaded, characterClass, teamBlueprint, concord, getPathFromRoute, onNavigate }) {
   if (!character) {
     return (
       <main className="concord-detail-layout character-detail-layout">
@@ -473,18 +477,9 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
   const teamData = teamBlueprint[character.concordId] ?? null;
   return (
     <main className="concord-detail-layout character-detail-layout public-character-layout">
-      <a
-        href={getPathFromRoute(backRoute ?? { page: "players" })}
-        onClick={onNavigate(backRoute ?? { page: "players" })}
-        className="type-caps public-character-back"
-      >
-        ← Players
-      </a>
+      <p className="character-player-label type-caps">Player Name: {character.realName}</p>
       <p className="character-name-hero-display public-character-name">
         {character.characterName ?? character.realName}
-        {character.characterName && character.characterName !== character.realName
-          ? <span className="type-caps public-character-realname"> ({character.realName})</span>
-          : null}
       </p>
       {character.characterBio ? <p className="public-character-bio">{character.characterBio}</p> : null}
       <p className="type-caps mobile-concord-heading">Concord</p>
@@ -495,7 +490,7 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
         getPathFromRoute={getPathFromRoute}
         onOpenConcord={(concordId) => onNavigate({ page: "concord-detail", concordId, detailTab: "players" })}
       />
-      <CharacterClassSection characterClass={characterClass} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
+      <CharacterClassSection characterClass={characterClass} rawClassName={character.className} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
       <StatsList character={character} />
       <CharacterPerksSection character={character} characterClass={characterClass} />
     </main>

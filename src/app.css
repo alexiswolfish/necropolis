@@ -626,7 +626,7 @@ html.fonts-ready #root {
 .concord-detail-layout {
   display: grid;
   grid-template-columns: minmax(260px, 320px) minmax(420px, 880px);
-  gap: 24px;
+  gap: 40px;
   align-items: start;
   max-width: 1320px;
 }
@@ -1557,19 +1557,13 @@ html.fonts-ready #root {
   color: var(--concord-title);
 }
 
-.public-character-back {
-  display: inline-block;
-  margin-bottom: 4px;
-  color: var(--concord-tertiary);
-  text-decoration: none;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  opacity: 0.7;
-}
-
 .public-character-name {
   grid-row: 2;
   margin-bottom: 4px;
+}
+
+.public-character-layout > .character-player-label {
+  margin-bottom: 8px;
 }
 
 .public-character-layout > .public-character-bio {
