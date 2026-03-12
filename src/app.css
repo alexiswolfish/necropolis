@@ -779,15 +779,42 @@ html.fonts-ready #root {
 }
 
 .concord-player-card-name {
-  margin: 0 0 8px;
+  margin: 0;
   font-family: "Lohengrin", serif;
   font-size: 28px;
   line-height: 1.1;
   color: var(--concord-tertiary);
 }
 
+.concord-player-card-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.concord-player-card-names {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
 .concord-player-card-realname {
-  margin: 0 0 2px;
+  font-family: var(--font-caps);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--concord-nav);
+  line-height: 1.5;
+}
+
+.concord-player-card-class {
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  font-size: 18px;
+  line-height: 1.2;
+  color: var(--concord-title);
 }
 
 .concord-player-card-stats {

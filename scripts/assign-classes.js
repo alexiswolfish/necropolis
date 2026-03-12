@@ -1,0 +1,229 @@
+/**
+ * Assigns character classes to all players and writes to the database.
+ *
+ * Usage:
+ *   node scripts/assign-classes.js             # assign and write
+ *   node scripts/assign-classes.js --dry-run   # preview only
+ */
+
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// ---------------------------------------------------------------------------
+// Config
+// ---------------------------------------------------------------------------
+
+function loadEnv() {
+  const envPath = path.join(__dirname, "../.env.local");
+  const env = {};
+  for (const line of readFileSync(envPath, "utf8").split("\n")) {
+    const match = line.match(/^([^#=][^=]*)=(.*)$/);
+    if (match) env[match[1].trim()] = match[2].trim();
+  }
+  return env;
+}
+
+const env = loadEnv();
+const SUPABASE_URL = env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+const NECROPOLIS_CLASSES = JSON.parse(
+  readFileSync(path.join(__dirname, "../src/data/necropolisClasses.json"), "utf8")
+);
+
+const COMPETITIVE_CLASSES = NECROPOLIS_CLASSES.filter((c) => c.primaryStat !== null);
+const PEASANT_TAG = "peasant";
+const NPC_TAG = "npc";
+const WIZARD_TAG = "wizard";
+const WIZARD_CLASS_ID = "sepulchral-mage";
+
+// Manually pre-assigned wizards — one per concord, by player ID.
+// These players skip the competitive algorithm and always get wizard.
+const WIZARD_IDS = new Set([
+  "7f6ff7d4-b37e-4ab5-a59c-1bf714ce1cfd", // Gianni          — desire-conspire
+  "9c8ddcf2-b817-4444-a8a3-8200389032da", // Marco Dyer      — pleasure-treasure
+  "e4eb9a96-c793-4eb0-9942-bd5f51267981", // Jonas           — brood-feud
+  "af757a0f-66a2-46a1-8695-f32a9ba4c6b7", // Aaron Hubbard   — zeal-steel
+  "36bea25c-9732-45c9-abe1-fbac7dab74b1", // Ruby            — tears-spears
+  "c24d2804-69b0-4214-adc8-ba0a1f734dd9", // Jared           — veils-sails
+  "8b79ffc4-7ea4-40ce-9175-dc75def04ae2", // Diana           — laurels-quarrels
+  "98ced73b-7477-4c02-a53d-680f2aad1fbe", // Kelly Wong      — wit-spit
+]);
+
+// ---------------------------------------------------------------------------
+// Supabase REST helper
+// ---------------------------------------------------------------------------
+
+async function supabaseRequest(table, { method = "GET", query, body, headers } = {}) {
+  const url = new URL(`${SUPABASE_URL}/rest/v1/${table}`);
+  if (query) {
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && value !== null) url.searchParams.set(key, value);
+    }
+  }
+  const response = await fetch(url.toString(), {
+    method,
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      ...(headers ?? {})
+    },
+    body: body === undefined ? undefined : JSON.stringify(body)
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    throw new Error(`Supabase error (${response.status}): ${payload?.message ?? response.statusText}`);
+  }
+  if (response.status === 204) return null;
+  return response.json();
+}
+
+async function fetchAllCharacters() {
+  const rows = await supabaseRequest("characters", {
+    query: {
+      select: "id,real_name,concord_id,class_name,stats,excluded_from_count,completed_at",
+      order: "completed_at.asc"
+    }
+  });
+  return rows.map((row) => ({
+    id: row.id,
+    realName: row.real_name,
+    concordId: row.concord_id,
+    className: row.class_name,
+    stats: row.stats,
+    excludedFromCount: row.excluded_from_count ?? false,
+    completedAt: row.completed_at ?? null
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Assignment logic
+// ---------------------------------------------------------------------------
+
+function assignNecroClasses(members) {
+  const result = new Map(); // id → tag string
+  const competitive = [];
+
+  // Pre-claim the wizard slot so the greedy algorithm can't assign it to anyone else
+  const assignedClasses = new Set();
+  const assignedPlayers = new Set();
+
+  for (const member of members) {
+    // Manually marked NPCs — excluded from everything
+    if (member.excludedFromCount) {
+      result.set(member.id, NPC_TAG);
+      continue;
+    }
+
+    // Pre-assigned wizards — skip the algorithm entirely
+    if (WIZARD_IDS.has(member.id)) {
+      result.set(member.id, WIZARD_TAG);
+      assignedClasses.add(WIZARD_CLASS_ID);
+      assignedPlayers.add(member.id);
+      continue;
+    }
+
+    const stats = member.stats ?? {};
+    const vals = Object.entries(stats).map(([, v]) => Number(v ?? 0));
+    const maxVal = Math.max(0, ...vals);
+    const topCount = vals.filter((v) => v === maxVal).length;
+
+    // No points or 3+ stats tied at top → Peasant
+    if (maxVal === 0 || topCount >= 3) {
+      result.set(member.id, PEASANT_TAG);
+      continue;
+    }
+
+    competitive.push(member);
+  }
+
+  // Score each (player, class) pair: primary * 10 + secondaries + dumbLuck * 0.5
+  const pairs = [];
+  for (const member of competitive) {
+    const stats = member.stats ?? {};
+    const dumbLuck = Number(stats.dumbLuck ?? 0);
+    for (const cls of COMPETITIVE_CLASSES) {
+      const primary = Number(stats[cls.primaryStat] ?? 0);
+      const secondary = cls.secondaryStats.reduce((sum, s) => sum + Number(stats[s] ?? 0), 0);
+      const score = primary * 10 + secondary + dumbLuck * 0.5;
+      pairs.push({ memberId: member.id, cls, score });
+    }
+  }
+
+  // Greedy assignment: best score first; each class and player assigned at most once.
+  // assignedClasses already contains the wizard slot, so it won't be re-assigned.
+  pairs.sort((a, b) => b.score - a.score || a.cls.id.localeCompare(b.cls.id));
+
+  for (const { memberId, cls } of pairs) {
+    if (assignedPlayers.has(memberId) || assignedClasses.has(cls.id)) continue;
+    result.set(memberId, cls.tag);
+    assignedPlayers.add(memberId);
+    assignedClasses.add(cls.id);
+  }
+
+  // Anyone competitive who didn't win a class slot → Peasant
+  for (const member of competitive) {
+    if (!result.has(member.id)) result.set(member.id, PEASANT_TAG);
+  }
+
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Main
+// ---------------------------------------------------------------------------
+
+const dryRun = process.argv.includes("--dry-run");
+
+console.log(`Fetching characters…`);
+const characters = await fetchAllCharacters();
+console.log(`${characters.length} characters found.\n`);
+
+// Group by concord and assign
+const byConcord = {};
+for (const c of characters) {
+  if (!byConcord[c.concordId]) byConcord[c.concordId] = [];
+  byConcord[c.concordId].push(c);
+}
+
+const assignments = new Map(); // id → tag
+for (const members of Object.values(byConcord)) {
+  for (const [id, tag] of assignNecroClasses(members)) {
+    assignments.set(id, tag);
+  }
+}
+
+// Diff against current DB values
+const changes = characters.filter((c) => assignments.get(c.id) !== c.className);
+
+if (changes.length === 0) {
+  console.log("All classes are already up to date.");
+  process.exit(0);
+}
+
+console.log(`${changes.length} change${changes.length === 1 ? "" : "s"}:`);
+for (const c of changes) {
+  const oldTag = c.className ?? "(none)";
+  const newTag = assignments.get(c.id);
+  console.log(`  ${c.realName.padEnd(30)} ${oldTag.padEnd(12)} → ${newTag}`);
+}
+
+if (dryRun) {
+  console.log("\nDry run — nothing written.");
+  process.exit(0);
+}
+
+console.log("\nWriting…");
+for (const c of changes) {
+  await supabaseRequest("characters", {
+    method: "PATCH",
+    query: { id: `eq.${c.id}` },
+    headers: { Prefer: "return=minimal" },
+    body: { class_name: assignments.get(c.id) }
+  });
+}
+console.log("Done.");

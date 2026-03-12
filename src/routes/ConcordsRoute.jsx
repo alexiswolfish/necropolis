@@ -25,18 +25,25 @@ function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
   }));
   return (
     <article className="concord-player-card">
-      {entry.characterName && entry.characterName !== entry.realName
-        ? <p className="players-real-name type-caps concord-player-card-realname">{entry.realName}</p>
-        : null}
-      <p className="concord-player-card-name">
-        <a
-          href={getPathFromRoute({ page: "player-detail", characterId: entry.id })}
-          onClick={onNavigate({ page: "player-detail", characterId: entry.id })}
-          className="concord-player-link"
-        >
-          {entry.characterName ?? entry.realName}
-        </a>
-      </p>
+      <div className="concord-player-card-header">
+        <div className="concord-player-card-names">
+          {entry.characterName && entry.characterName !== entry.realName
+            ? <span className="concord-player-card-realname">{entry.realName}</span>
+            : null}
+          <p className="concord-player-card-name">
+            <a
+              href={getPathFromRoute({ page: "player-detail", characterId: entry.id })}
+              onClick={onNavigate({ page: "player-detail", characterId: entry.id })}
+              className="concord-player-link"
+            >
+              {entry.characterName ?? entry.realName}
+            </a>
+          </p>
+        </div>
+        {entry.className
+          ? <span className="concord-player-card-class">{entry.className}</span>
+          : null}
+      </div>
       <div className="concord-player-card-stats">
         {statEntries.map((stat) => (
           <div key={stat.key} className="concord-player-card-stat-row">
@@ -110,9 +117,23 @@ export function ConcordDetailPage({
     )
     : concord.label;
   const costumeImages = costumeImagesByConcord[concord.id] ?? [];
+  function classOrder(entry) {
+    const cls = (entry.className ?? "").toLowerCase();
+    if (cls === "npc") return 2;
+    if (cls === "peasant") return 1;
+    return 0;
+  }
   const teamMembers = (characters ?? [])
     .filter((entry) => entry?.concordId === concord.id)
-    .sort((a, b) => (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? ""));
+    .sort((a, b) => {
+      const orderDiff = classOrder(a) - classOrder(b);
+      if (orderDiff !== 0) return orderDiff;
+      const classA = (a.className ?? "").toLowerCase();
+      const classB = (b.className ?? "").toLowerCase();
+      const classDiff = classA.localeCompare(classB);
+      if (classDiff !== 0) return classDiff;
+      return (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? "");
+    });
   const teamData = teamBlueprint[concord.id] ?? null;
 
   return (
