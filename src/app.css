@@ -1335,8 +1335,66 @@ html.fonts-ready #root {
   overflow: visible;
 }
 
+.character-name-hero-input::placeholder {
+  color: currentColor;
+  opacity: 0.38;
+}
+
 .character-name-hero-display {
   word-break: break-word;
+}
+
+.character-bio-input {
+  width: 100%;
+  max-width: 760px;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  resize: vertical;
+  color: var(--concord-tertiary);
+  font-family: var(--font-body);
+  font-size: clamp(1.2rem, 1rem + 0.8vw, 1.6rem);
+  line-height: 1.25;
+}
+
+.character-bio-input::placeholder {
+  color: currentColor;
+  opacity: 0.42;
+}
+
+.character-class-section {
+  margin-top: 1.1rem;
+}
+
+.character-class-heading {
+  margin: 0;
+}
+
+.character-class-label {
+  color: var(--concord-nav);
+  padding-right: 20px;
+}
+
+.character-class-value {
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  font-size: clamp(1.8rem, 1.4rem + 1.2vw, 2rem);
+  line-height: 1;
+  color: var(--concord-title);
+}
+
+.character-class-lore,
+.public-character-bio {
+  max-width: 780px;
+  margin: 0.55rem 0 0;
+  font-family: var(--font-body);
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--theme-body-color);
+  opacity: 0.85;
+  white-space: pre-wrap;
 }
 
 .character-subnav {
@@ -1411,25 +1469,6 @@ html.fonts-ready #root {
   margin-left: 12px;
 }
 
-.public-character-class {
-  margin-top: 20px;
-  margin-bottom: 0px;
-  font-family: "Darksame Regular", "Lohengrin", serif;
-  font-size: clamp(1.8rem, 1.4rem + 1.2vw, 2rem);
-  line-height: 1;
-  color: var(--concord-title);
-}
-
-.public-character-class-lore {
-  font-family: var(--font-body);
-  font-size: 20px;
-  letter-spacing: 0.01em;
-  color: var(--theme-body-color);
-  opacity: 0.85;
-  margin-left: 12px;
-  vertical-align: bottom;
-}
-
 .public-character-class-link {
   color: inherit;
   text-decoration: none;
@@ -1457,8 +1496,8 @@ html.fonts-ready #root {
   margin-top: 8px;
 }
 
-.public-character-perk-label {
-  color: #FFA6D9;
+.type-caps.public-character-perk-label {
+  color: var(--concord-title);
 }
 
 .public-character-back {

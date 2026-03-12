@@ -5,6 +5,15 @@ import { CLASSES_DATA } from "./ManualClassesRoute";
 const CLASS_LORE_BY_ID = Object.fromEntries(CLASSES_DATA.map((c) => [c.id, c.shortLore ?? c.lore]));
 const CLASS_DATA_BY_ID = Object.fromEntries(CLASSES_DATA.map((c) => [c.id, c]));
 const PEASANT_CLASS_ID = "peasant";
+const CLASS_BIO_PLACEHOLDERS = {
+  "sepulchral-mage": "Tell us more about yourself.\nYour magical education began in circumstances that most respectable academies prefer not to discuss, namely…",
+  "tomb-runner": "Tell us more about yourself.\nYour reputation for light fingers dates back to an incident involving…",
+  "mortuary-medium": "Tell us more about yourself.\nYou once wrote a song about a certain incident, though the authorities insist it was really about…",
+  reliquarian: "Tell us more about yourself.\nYou have been more comfortable in the wilderness ever since the unfortunate business with…",
+  "lantern-warden": "Tell us more about yourself.\nYou earned your reputation during an altercation that historians now politely describe as…",
+  "ossuary-monk": "Tell us more about yourself.\nThe forest first took an interest in you when…",
+  peasant: "Tell us more about yourself.\nWow it is a lovely day."
+};
 
 function renderClassLore(text) {
   const parts = text.split(/([A-Z]{2,}(?:'[A-Z]+)?)/g);
@@ -12,6 +21,35 @@ function renderClassLore(text) {
     /^[A-Z]{2,}/.test(part)
       ? <span key={i} className="concord-logo-word">{part}</span>
       : part
+  );
+}
+
+function CharacterClassSection({ characterClass, getPathFromRoute, onNavigate }) {
+  if (!characterClass) return null;
+  const displayClassName = characterClass.tag ?? characterClass.label;
+
+  const className = getPathFromRoute && onNavigate
+    ? (
+      <a
+        href={getPathFromRoute({ page: "manual-classes", anchor: characterClass.id })}
+        onClick={onNavigate({ page: "manual-classes", anchor: characterClass.id })}
+        className="public-character-class-link"
+      >
+        {displayClassName}
+      </a>
+    )
+    : displayClassName;
+
+  return (
+    <section className="character-class-section" aria-label="Class">
+      <p className="character-class-heading">
+        <span className="type-caps character-class-label">Class:</span>{" "}
+        <span className="character-class-value">{className}</span>
+      </p>
+      {CLASS_LORE_BY_ID[characterClass.id]
+        ? <p className="character-class-lore">{renderClassLore(CLASS_LORE_BY_ID[characterClass.id])}</p>
+        : null}
+    </section>
   );
 }
 
@@ -189,16 +227,18 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
   );
 }
 
-export function CharacterPage({ character, characterClass, teamBlueprint, concord, shortConcordLore, costumeImagesByConcord, detailTab, onOpenTab, onOpenConcord, getPathFromRoute, onSaveCharacterName }) {
+export function CharacterPage({ character, characterClass, teamBlueprint, concord, shortConcordLore, costumeImagesByConcord, detailTab, onOpenTab, onOpenConcord, getPathFromRoute, onSaveCharacterName, onSaveCharacterBio }) {
   const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
   const [nameDraft, setNameDraft] = useState(character?.characterName ?? "");
-  const [isSavingName, setIsSavingName] = useState(false);
-  const [nameSaveMessage, setNameSaveMessage] = useState("");
+  const [bioDraft, setBioDraft] = useState(character?.characterBio ?? "");
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileSaveMessage, setProfileSaveMessage] = useState("");
 
   useEffect(() => {
     setNameDraft(character?.characterName ?? "");
-    setNameSaveMessage("");
-  }, [character?.id, character?.realName, character?.characterName]);
+    setBioDraft(character?.characterBio ?? "");
+    setProfileSaveMessage("");
+  }, [character?.id, character?.realName, character?.characterName, character?.characterBio]);
 
   if (!character) {
     return (
@@ -214,6 +254,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
   const teamData = teamBlueprint[character.concordId] ?? null;
   const concordName = teamData?.concordName ?? character.concordId;
   const costumeImages = (costumeImagesByConcord ?? {})[character.concordId] ?? [];
+  const bioPlaceholder = characterClass ? (CLASS_BIO_PLACEHOLDERS[characterClass.id] ?? "Tell us more about yourself.") : "Tell us more about yourself.";
   const concordBody = useMemo(() => {
     if (!concord) return [];
     return concord.bodyParagraphs ?? (concord.body ? [concord.body] : []);
@@ -221,12 +262,21 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
 
   const canSaveName = nameDraft.trim().length > 0 && (nameDraft.trim() !== (character.characterName ?? character.realName));
   const commitCharacterName = async () => {
-    if (!canSaveName || isSavingName) return;
-    setIsSavingName(true);
-    setNameSaveMessage("");
+    if (!canSaveName || isSavingProfile) return;
+    setIsSavingProfile(true);
+    setProfileSaveMessage("");
     const ok = await onSaveCharacterName(nameDraft.trim());
-    setIsSavingName(false);
-    setNameSaveMessage(ok ? "Saved" : "Could not save");
+    setIsSavingProfile(false);
+    setProfileSaveMessage(ok ? "Saved" : "Could not save");
+  };
+  const canSaveBio = bioDraft.trim() !== (character.characterBio ?? "");
+  const commitCharacterBio = async () => {
+    if (!canSaveBio || isSavingProfile) return;
+    setIsSavingProfile(true);
+    setProfileSaveMessage("");
+    const ok = await onSaveCharacterBio(bioDraft.trim());
+    setIsSavingProfile(false);
+    setProfileSaveMessage(ok ? "Saved" : "Could not save");
   };
 
   return (
@@ -247,7 +297,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
           value={nameDraft}
           onChange={(event) => {
             setNameDraft(event.target.value);
-            setNameSaveMessage("");
+            setProfileSaveMessage("");
           }}
           onBlur={() => { void commitCharacterName(); }}
           onKeyDown={(event) => {
@@ -260,7 +310,21 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
           autoComplete="off"
           placeholder="Character Name"
         />
-        {nameSaveMessage ? <p className="type-caps character-name-save-msg">{nameSaveMessage}</p> : null}
+        <textarea
+          id="character-bio-editor-input"
+          className="character-bio-input"
+          value={bioDraft}
+          onChange={(event) => {
+            setBioDraft(event.target.value);
+            setProfileSaveMessage("");
+          }}
+          onBlur={() => { void commitCharacterBio(); }}
+          maxLength={280}
+          rows={3}
+          placeholder={bioPlaceholder}
+        />
+        {profileSaveMessage ? <p className="type-caps character-name-save-msg">{profileSaveMessage}</p> : null}
+        <CharacterClassSection characterClass={characterClass} />
         <nav className="concord-subnav character-subnav" aria-label="Character details">
           <a
             href={getPathFromRoute({ page: "character", detailTab: "stats" })}
@@ -368,20 +432,8 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
             ? <span className="type-caps public-character-realname"> ({character.realName})</span>
             : null}
         </p>
-        {characterClass && (
-          <p className="public-character-class">
-            <a
-              href={getPathFromRoute({ page: "manual-classes", anchor: characterClass.id })}
-              onClick={onNavigate({ page: "manual-classes", anchor: characterClass.id })}
-              className="public-character-class-link"
-            >
-              {characterClass.tag}
-            </a>
-            {CLASS_LORE_BY_ID[characterClass.id]
-              ? <span className="public-character-class-lore">{renderClassLore(CLASS_LORE_BY_ID[characterClass.id])}</span>
-              : null}
-          </p>
-        )}
+        {character.characterBio ? <p className="public-character-bio">{character.characterBio}</p> : null}
+        <CharacterClassSection characterClass={characterClass} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
         <StatsList character={character} />
         {(() => {
           const classData = characterClass ? CLASS_DATA_BY_ID[characterClass.id] : null;

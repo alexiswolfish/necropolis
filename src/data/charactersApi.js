@@ -12,6 +12,7 @@ function toDbCharacter(character) {
   return {
     real_name: character.realName?.trim() ?? "",
     character_name: character.characterName?.trim() || null,
+    character_bio: character.characterBio?.trim() || null,
     rsvp_matched: character.rsvpMatched ?? true,
     real_name_normalized: normalizeName(character.realName),
     birth_date: character.birthDate ?? null,
@@ -33,6 +34,7 @@ function fromDbCharacter(row) {
     id: row.id,
     realName: row.real_name,
     characterName: row.character_name ?? null,
+    characterBio: row.character_bio ?? null,
     rsvpMatched: row.rsvp_matched ?? true,
     excludedFromCount: row.excluded_from_count ?? false,
     birthDate: row.birth_date,
@@ -44,7 +46,7 @@ function fromDbCharacter(row) {
   };
 }
 
-const CHARACTER_SELECT = "id,real_name,character_name,rsvp_matched,excluded_from_count,birth_date,zodiac_sign,concord_id,class_name,stats,completed_at";
+const CHARACTER_SELECT = "id,real_name,character_name,character_bio,rsvp_matched,excluded_from_count,birth_date,zodiac_sign,concord_id,class_name,stats,completed_at";
 
 export async function fetchAllCharacters() {
   const rows = await supabaseRequest("characters", {
@@ -94,6 +96,9 @@ export async function updateCharacterById(id, patch) {
   const payload = {};
   if (Object.prototype.hasOwnProperty.call(patch, "characterName")) {
     payload.character_name = patch.characterName?.trim() || null;
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, "characterBio")) {
+    payload.character_bio = patch.characterBio?.trim() || null;
   }
   if (Object.prototype.hasOwnProperty.call(patch, "className")) {
     payload.class_name = patch.className ?? null;

@@ -1432,6 +1432,33 @@ export default function App() {
               return false;
             }
           }}
+          onSaveCharacterBio={async (characterBio) => {
+            if (!character) return false;
+            try {
+              let updatedCharacter = null;
+              if (character.id) {
+                updatedCharacter = await updateCharacterById(character.id, { characterBio });
+              }
+
+              if (!updatedCharacter) {
+                const refreshed = await fetchAllCharacters();
+                updatedCharacter = refreshed.find((entry) => normalizeName(entry.realName) === normalizeName(character.realName)) ?? null;
+              }
+              if (!updatedCharacter) return false;
+
+              setCharacter(updatedCharacter);
+              setStoredCharacter(updatedCharacter);
+              setAllCharacters((current) => current.map((entry) => {
+                if (updatedCharacter.id && entry.id === updatedCharacter.id) return updatedCharacter;
+                if (!updatedCharacter.id && normalizeName(entry.realName) === normalizeName(updatedCharacter.realName)) return updatedCharacter;
+                return entry;
+              }));
+              return true;
+            } catch (error) {
+              console.error("Failed to save character bio.", error);
+              return false;
+            }
+          }}
         />
       )
       : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
