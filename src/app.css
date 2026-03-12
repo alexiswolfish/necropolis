@@ -1511,6 +1511,10 @@ html.fonts-ready #root {
   text-decoration: none;
 }
 
+.character-class-heading-link {
+  display: inline-block;
+}
+
 .public-character-class-link:hover {
   opacity: 0.7;
 }

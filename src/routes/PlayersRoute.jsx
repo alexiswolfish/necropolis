@@ -39,26 +39,31 @@ function CharacterClassSection({ character, characterClass, getPathFromRoute, on
 
   const displayClass = isNpc ? NPC_CLASS : characterClass;
   const displayClassName = displayClass.tag ?? displayClass.label;
+  const classAnchor = displayClass.tag ?? displayClass.label.toLowerCase();
   const classLore = isNpc ? NPC_CLASS_LORE : CLASS_LORE_BY_ID[characterClass.id];
 
-  const className = !isNpc && characterClass && getPathFromRoute && onNavigate
+  const classHeadingContent = (
+    <>
+      <span className="type-caps character-class-label">Class:</span>{" "}
+      <span className="character-class-value">{displayClassName}</span>
+    </>
+  );
+
+  const classHeading = !isNpc && characterClass && getPathFromRoute && onNavigate
     ? (
       <a
-        href={getPathFromRoute({ page: "manual-classes", anchor: characterClass.id })}
-        onClick={onNavigate({ page: "manual-classes", anchor: characterClass.id })}
-        className="public-character-class-link"
+        href={getPathFromRoute({ page: "manual-classes", anchor: classAnchor })}
+        onClick={onNavigate({ page: "manual-classes", anchor: classAnchor })}
+        className="public-character-class-link character-class-heading-link"
       >
-        {displayClassName}
+        {classHeadingContent}
       </a>
     )
-    : displayClassName;
+    : classHeadingContent;
 
   return (
     <section className="character-class-section" aria-label="Class">
-      <p className="character-class-heading">
-        <span className="type-caps character-class-label">Class:</span>{" "}
-        <span className="character-class-value">{className}</span>
-      </p>
+      <p className="character-class-heading">{classHeading}</p>
       {classLore
         ? <p className="type-body character-class-lore">{characterClass ? renderClassLore(classLore) : classLore}</p>
         : null}
