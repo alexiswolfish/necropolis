@@ -1394,7 +1394,7 @@ html.fonts-ready #root {
   text-decoration: none;
 }
 
-.concord-player-link::after {
+.concord-player-card .concord-player-link::after {
   content: "";
   position: absolute;
   inset: 0;
