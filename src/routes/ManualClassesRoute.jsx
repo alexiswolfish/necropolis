@@ -66,7 +66,7 @@ export const CLASSES_DATA = [
     label: "Wizard",
     primaryStat: "Mystery",
     perkLabel: "Sanctuary",
-    perk: "Wizards cannot be challenged to combat, and thus cannot be compelled to give you a shard of their soul. It's very convenient for them. There are, however, rumours. And this is a party.",
+    perk: "Wizards cannot be challenged to combat and therefore cannot be compelled to surrender a shard of their soul. This arrangement suits them perfectly. Of course, every sanctuary has its obscure clauses, and parties have a remarkable habit of uncovering them.",
     shortLore: "Wizards are masters of MYSTERY, and wield it quite effectively to avoid DEATH's nastier consequences. Extremely useful in a crisis. Slightly exhausting at dinner.",
     lore: [
       "In the oldest traditions, the great sorcerers did not choose MYSTERY — MYSTERY chose them, usually at considerable inconvenience to their social calendar. Wizards arrive with three specific questions that need answering and the patience of someone who came for the information, not the wine.",
@@ -118,7 +118,7 @@ export function ManualClassesRoute({ getPathFromRoute, onNavigate }) {
             ))}
             {cls.perk && (
               <p className="type-body classes-entry-perk">
-                <span className="type-caps classes-entry-perk-label">Perk{cls.perkLabel ? `: ${cls.perkLabel}` : ""}: </span>
+                <span className="type-caps classes-entry-perk-label">Perk{cls.perkLabel ? `: ${cls.perkLabel}` : ""} </span>
                 {cls.perk}
               </p>
             )}
