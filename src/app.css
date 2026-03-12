@@ -1578,6 +1578,24 @@ html.fonts-ready #root {
   margin-top: 20px;
 }
 
+@media (min-width: 981px) {
+  .character-name-hero-input-private,
+  .public-character-name {
+    margin-bottom: 36px;
+  }
+
+  .public-character-layout .character-concord-link {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+  }
+
+  .public-character-layout .concord-detail-name {
+    text-align: center;
+  }
+}
+
 .public-character-back:hover {
   opacity: 1;
 }

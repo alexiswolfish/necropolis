@@ -362,7 +362,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
         <p className="character-player-label type-caps">Player Name: {character.realName}</p>
         <input
           id="character-name-editor-input"
-          className="character-name-hero-input"
+          className="character-name-hero-input character-name-hero-input-private"
           value={nameDraft}
           onChange={(event) => {
             setNameDraft(event.target.value);
