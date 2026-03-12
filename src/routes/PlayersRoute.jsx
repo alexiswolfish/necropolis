@@ -60,7 +60,7 @@ function CharacterClassSection({ character, characterClass, getPathFromRoute, on
         <span className="character-class-value">{className}</span>
       </p>
       {classLore
-        ? <p className="character-class-lore">{characterClass ? renderClassLore(classLore) : classLore}</p>
+        ? <p className="type-body character-class-lore">{characterClass ? renderClassLore(classLore) : classLore}</p>
         : null}
     </section>
   );

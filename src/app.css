@@ -1418,12 +1418,6 @@ html.fonts-ready #root {
 .character-class-lore {
   max-width: 780px;
   margin: 0.55rem 0 0;
-  font-family: var(--font-body);
-  font-size: 20px;
-  line-height: 1.2;
-  letter-spacing: 0.01em;
-  color: var(--theme-body-color);
-  opacity: 0.85;
   white-space: pre-wrap;
 }
 
