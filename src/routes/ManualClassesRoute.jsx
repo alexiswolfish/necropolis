@@ -15,9 +15,9 @@ const CLASSES_DATA = [
   },
   {
     id: "reliquarian",
-    label: "Cleric",
+    label: "Ranger",
     primaryStat: "Vigilance",
-    lore: "Clerics are devoted to a higher power. Which one is largely beside the point. What matters is the quality of the faith — a god with one true believer is still a god, and the Cleric believes absolutely. They can, and occasionally do, summon something from the ether to prove it. This tends to end the argument.",
+    lore: "Rangers notice everything. The wrong shoes for the terrain, the exit nobody else clocked, the person who arrived knowing too much. Hypervigilant by nature and by habit, they are the first to realize something is wrong and, usually, the last to say so out loud.",
   },
   {
     id: "ossuary-monk",

@@ -817,6 +817,10 @@ html.fonts-ready #root {
   color: var(--concord-title);
 }
 
+.page-shell[data-concord="brood-feud"] .concord-player-card-class {
+  color: #ffffff;
+}
+
 .concord-player-card-stats {
   display: flex;
   flex-direction: column;

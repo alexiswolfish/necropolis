@@ -174,7 +174,7 @@ export const CURSE_CARDS = [
     difficulty: "xx",
     body: [
       { text: "Every promise you make echoes back twice as loud. Speak only when spoken to, until a " },
-      { spinosa: "CLERIC" },
+      { spinosa: "RANGER" },
       { text: " grants you permission to begin again." },
     ],
   },

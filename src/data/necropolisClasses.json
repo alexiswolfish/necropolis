@@ -16,7 +16,7 @@
   {
     "id": "reliquarian",
     "label": "Reliquarian",
-    "tag": "cleric",
+    "tag": "ranger",
     "primaryStat": "vigilance",
     "secondaryStats": ["brawn"]
   },

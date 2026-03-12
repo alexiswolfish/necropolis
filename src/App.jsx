@@ -741,100 +741,8 @@ function getAssignedClass(stats) {
   return "Doom Herald";
 }
 
-const COMPETITIVE_CLASSES = NECROPOLIS_CLASSES.filter((c) => c.primaryStat !== null);
-const PEASANT_CLASS = NECROPOLIS_CLASSES.find((c) => c.id === "peasant");
-const NPC_CLASS = NECROPOLIS_CLASSES.find((c) => c.id === "npc");
-const WIZARD_CLASS = NECROPOLIS_CLASSES.find((c) => c.id === "sepulchral-mage");
+const CLASS_BY_TAG = Object.fromEntries(NECROPOLIS_CLASSES.map((c) => [c.tag, c]));
 
-const WIZARD_IDS = new Set([
-  "7f6ff7d4-b37e-4ab5-a59c-1bf714ce1cfd", // Gianni          — desire-conspire
-  "9c8ddcf2-b817-4444-a8a3-8200389032da", // Marco Dyer      — pleasure-treasure
-  "e4eb9a96-c793-4eb0-9942-bd5f51267981", // Jonas           — brood-feud
-  "af757a0f-66a2-46a1-8695-f32a9ba4c6b7", // Aaron Hubbard   — zeal-steel
-  "36bea25c-9732-45c9-abe1-fbac7dab74b1", // Ruby            — tears-spears
-  "c24d2804-69b0-4214-adc8-ba0a1f734dd9", // Jared           — veils-sails
-  "8b79ffc4-7ea4-40ce-9175-dc75def04ae2", // Diana           — laurels-quarrels
-  "98ced73b-7477-4c02-a53d-680f2aad1fbe", // Kelly Wong      — wit-spit
-]);
-
-function assignNecroClasses(members) {
-  const result = new Map();
-  if (!members || members.length === 0) return result;
-
-  const competitive = [];
-
-  // Pre-claim the wizard slot so the greedy algorithm can't assign it to anyone else
-  const assignedClasses = new Set();
-  const assignedPlayers = new Set();
-
-  for (const member of members) {
-    // Manually marked NPCs — excluded from everything
-    if (member.excludedFromCount) {
-      result.set(member.id, NPC_CLASS);
-      continue;
-    }
-
-    // Pre-assigned wizards — skip the algorithm entirely
-    if (WIZARD_IDS.has(member.id)) {
-      result.set(member.id, WIZARD_CLASS);
-      assignedClasses.add(WIZARD_CLASS.id);
-      assignedPlayers.add(member.id);
-      continue;
-    }
-
-    const stats = member.stats ?? {};
-    const vals = Object.entries(stats).map(([, v]) => Number(v ?? 0));
-    const maxVal = Math.max(0, ...vals);
-    const topCount = vals.filter((v) => v === maxVal).length;
-
-    // No points or 3+ stats tied at top → Peasant
-    if (maxVal === 0 || topCount >= 3) {
-      result.set(member.id, PEASANT_CLASS);
-      continue;
-    }
-
-    competitive.push(member);
-  }
-
-  // Score each (player, class) pair — primary * 10 + secondary + dumb luck bonus.
-  // assignedClasses already contains the wizard slot, so it won't be re-assigned.
-  const completedAtById = new Map(competitive.map((m) => [m.id, m.completedAt ?? ""]));
-  const pairs = [];
-  for (const member of competitive) {
-    const stats = member.stats ?? {};
-    const dumbLuck = Number(stats.dumbLuck ?? 0);
-    for (const cls of COMPETITIVE_CLASSES) {
-      const primary = Number(stats[cls.primaryStat] ?? 0);
-      const secondary = cls.secondaryStats.reduce((sum, s) => sum + Number(stats[s] ?? 0), 0);
-      const score = primary * 10 + secondary + dumbLuck * 0.5;
-      pairs.push({ memberId: member.id, cls, score });
-    }
-  }
-
-  // Tiebreak: earlier character creation (first RSVP) wins
-  pairs.sort((a, b) => {
-    const scoreDiff = b.score - a.score;
-    if (scoreDiff !== 0) return scoreDiff;
-    const timeDiff = (completedAtById.get(a.memberId) ?? "").localeCompare(completedAtById.get(b.memberId) ?? "");
-    if (timeDiff !== 0) return timeDiff;
-    return a.cls.id.localeCompare(b.cls.id);
-  });
-
-  for (const pair of pairs) {
-    if (assignedPlayers.has(pair.memberId) || assignedClasses.has(pair.cls.id)) continue;
-    result.set(pair.memberId, pair.cls);
-    assignedPlayers.add(pair.memberId);
-    assignedClasses.add(pair.cls.id);
-  }
-
-  for (const member of competitive) {
-    if (!result.has(member.id)) {
-      result.set(member.id, PEASANT_CLASS);
-    }
-  }
-
-  return result;
-}
 
 function playGongTone(audioContext, frequency) {
   const now = audioContext.currentTime;
@@ -1007,30 +915,14 @@ export default function App() {
   }, [character, onboardingStep, onboardingForm]);
 
   const characterClassMap = useMemo(() => {
-    if (allCharacters.length === 0) return new Map();
-    const byConcord = {};
-    for (const c of allCharacters) {
-      if (!byConcord[c.concordId]) byConcord[c.concordId] = [];
-      byConcord[c.concordId].push(c);
-    }
     const result = new Map();
-    for (const members of Object.values(byConcord)) {
-      const teamAssignment = assignNecroClasses(members);
-      for (const [id, cls] of teamAssignment) result.set(id, cls);
+    for (const c of allCharacters) {
+      if (!c.className) continue;
+      const cls = CLASS_BY_TAG[c.className] ?? null;
+      if (cls) result.set(c.id, cls);
     }
     return result;
   }, [allCharacters]);
-
-  useEffect(() => {
-    if (characterClassMap.size === 0) return;
-    for (const char of allCharacters) {
-      if (!char.id) continue;
-      const computed = characterClassMap.get(char.id);
-      if (computed && char.className !== computed.tag) {
-        updateCharacterById(char.id, { className: computed.tag }).catch(() => {});
-      }
-    }
-  }, [characterClassMap]);
 
   const selectedConcord = useMemo(() => {
     if (route.page !== "concord-detail") return null;

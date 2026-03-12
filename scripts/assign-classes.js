@@ -85,7 +85,7 @@ async function supabaseRequest(table, { method = "GET", query, body, headers } =
 async function fetchAllCharacters() {
   const rows = await supabaseRequest("characters", {
     query: {
-      select: "id,real_name,concord_id,class_name,stats,excluded_from_count,completed_at",
+      select: "id,real_name,concord_id,class_name,stats,excluded_from_count,rsvp_matched,completed_at",
       order: "completed_at.asc"
     }
   });
@@ -96,6 +96,7 @@ async function fetchAllCharacters() {
     className: row.class_name,
     stats: row.stats,
     excludedFromCount: row.excluded_from_count ?? false,
+    rsvpMatched: row.rsvp_matched ?? true,
     completedAt: row.completed_at ?? null
   }));
 }
@@ -142,6 +143,7 @@ function assignNecroClasses(members) {
   }
 
   // Score each (player, class) pair: primary * 10 + secondaries + dumbLuck * 0.5
+  const completedAtById = new Map(competitive.map((m) => [m.id, m.completedAt ?? ""]));
   const pairs = [];
   for (const member of competitive) {
     const stats = member.stats ?? {};
@@ -156,7 +158,14 @@ function assignNecroClasses(members) {
 
   // Greedy assignment: best score first; each class and player assigned at most once.
   // assignedClasses already contains the wizard slot, so it won't be re-assigned.
-  pairs.sort((a, b) => b.score - a.score || a.cls.id.localeCompare(b.cls.id));
+  // Tiebreak: earlier character creation (first RSVP) wins
+  pairs.sort((a, b) => {
+    const scoreDiff = b.score - a.score;
+    if (scoreDiff !== 0) return scoreDiff;
+    const timeDiff = (completedAtById.get(a.memberId) ?? "").localeCompare(completedAtById.get(b.memberId) ?? "");
+    if (timeDiff !== 0) return timeDiff;
+    return a.cls.id.localeCompare(b.cls.id);
+  });
 
   for (const { memberId, cls } of pairs) {
     if (assignedPlayers.has(memberId) || assignedClasses.has(cls.id)) continue;
@@ -168,6 +177,27 @@ function assignNecroClasses(members) {
   // Anyone competitive who didn't win a class slot → Peasant
   for (const member of competitive) {
     if (!result.has(member.id)) result.set(member.id, PEASANT_TAG);
+  }
+
+  // Second pass: any peasant with a max stat >= 5 gets a duplicate class.
+  // Wizard is excluded — there can only be one wizard per team.
+  const nonWizardClasses = COMPETITIVE_CLASSES.filter((c) => c.id !== WIZARD_CLASS_ID);
+  for (const member of members) {
+    if (result.get(member.id) !== PEASANT_TAG) continue;
+    if (!member.rsvpMatched) continue;
+    const stats = member.stats ?? {};
+    const vals = Object.entries(stats).map(([, v]) => Number(v ?? 0));
+    if (Math.max(0, ...vals) < 4) continue;
+    const dumbLuck = Number(stats.dumbLuck ?? 0);
+    let bestCls = null;
+    let bestScore = -Infinity;
+    for (const cls of nonWizardClasses) {
+      const primary = Number(stats[cls.primaryStat] ?? 0);
+      const secondary = cls.secondaryStats.reduce((sum, s) => sum + Number(stats[s] ?? 0), 0);
+      const score = primary * 10 + secondary + dumbLuck * 0.5;
+      if (score > bestScore) { bestScore = score; bestCls = cls; }
+    }
+    if (bestCls) result.set(member.id, bestCls.tag);
   }
 
   return result;
