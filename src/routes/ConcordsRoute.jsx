@@ -169,7 +169,7 @@ export function ConcordDetailPage({
             href={getPathFromRoute({ page: "concord-detail", concordId: concord.id, detailTab: "backstory" })}
             onClick={onOpenTab("backstory")}
             className="type-caps concord-subnav-link"
-            aria-current={detailTab !== "costumes" ? "page" : undefined}
+            aria-current={detailTab === "backstory" ? "page" : undefined}
           >
             Backstory
           </a>

@@ -1,5 +1,8 @@
 import React, { useEffect } from "react";
 
+const COMBAT_RULES_URL = "https://alexiswolfish.github.io/necropolis/manual/combat";
+const COMBAT_LINK_CLASS_IDS = new Set(["reliquarian", "ossuary-monk"]);
+
 export const CLASSES_DATA = [
   {
     id: "mortuary-medium",
@@ -120,6 +123,12 @@ export function ManualClassesRoute({ getPathFromRoute, onNavigate }) {
               <p className="type-body classes-entry-perk">
                 <span className="type-caps classes-entry-perk-label">Perk{cls.perkLabel ? `: ${cls.perkLabel}` : ""} </span>
                 {cls.perk}
+                {COMBAT_LINK_CLASS_IDS.has(cls.id) ? (
+                  <>
+                    {" "}
+                    <a href={COMBAT_RULES_URL} className="classes-entry-perk-link">Freshen up on Combat</a>
+                  </>
+                ) : null}
               </p>
             )}
           </section>

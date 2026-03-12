@@ -626,7 +626,7 @@ html.fonts-ready #root {
 .concord-detail-layout {
   display: grid;
   grid-template-columns: minmax(260px, 320px) minmax(420px, 880px);
-  gap: 4rem;
+  gap: 24px;
   align-items: start;
   max-width: 1320px;
 }
@@ -656,6 +656,11 @@ html.fonts-ready #root {
   display: inline-block;
   width: 100%;
   text-align: center;
+}
+
+.mobile-concord-heading {
+  display: none;
+  margin: 0;
 }
 
 .concord-meta {
@@ -1287,6 +1292,25 @@ html.fonts-ready #root {
   max-width: 1320px;
 }
 
+.public-character-layout {
+  row-gap: 0;
+}
+
+.public-character-layout > .public-character-back,
+.public-character-layout > .public-character-name,
+.public-character-layout > .public-character-bio,
+.public-character-layout > .mobile-concord-heading,
+.public-character-layout > .character-class-section,
+.public-character-layout > .character-stats,
+.public-character-layout > .public-character-perks {
+  grid-column: 2;
+}
+
+.public-character-layout > .concord-detail-left {
+  grid-column: 1;
+  grid-row: 1 / span 6;
+}
+
 .character-concord-link {
   text-decoration: none;
   color: inherit;
@@ -1390,8 +1414,7 @@ html.fonts-ready #root {
   color: var(--concord-title);
 }
 
-.character-class-lore,
-.public-character-bio {
+.character-class-lore {
   max-width: 780px;
   margin: 0.55rem 0 0;
   font-family: var(--font-body);
@@ -1404,7 +1427,15 @@ html.fonts-ready #root {
 }
 
 .public-character-bio {
-  padding-top: 8px;
+  max-width: 780px;
+  margin: 0;
+  padding: 0 0 20px;
+  font-family: var(--font-body);
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: var(--concord-tertiary);
+  white-space: pre-wrap;
 }
 
 .character-subnav {
@@ -1423,6 +1454,11 @@ html.fonts-ready #root {
   max-width: 540px;
   border-top: 1px solid color-mix(in srgb, var(--concord-tertiary, currentColor) 22%, transparent 78%);
   padding-top: 1.2rem;
+}
+
+.page-shell[data-page="character"] .character-stats {
+  border-top: 0;
+  padding-top: 0;
 }
 
 .character-stat-row {
@@ -1506,18 +1542,51 @@ html.fonts-ready #root {
   margin-top: 8px;
 }
 
+.public-character-perk-link,
+.classes-entry-perk-link {
+  color: var(--concord-title, var(--theme-heading-color));
+  text-decoration: underline;
+}
+
+.public-character-perk-link:hover,
+.classes-entry-perk-link:hover {
+  opacity: 0.72;
+}
+
 .type-caps.public-character-perk-label {
   color: var(--concord-title);
 }
 
 .public-character-back {
   display: inline-block;
-  margin-bottom: 1.4rem;
+  margin-bottom: 4px;
   color: var(--concord-tertiary);
   text-decoration: none;
   font-size: 13px;
   letter-spacing: 0.08em;
   opacity: 0.7;
+}
+
+.public-character-name {
+  grid-row: 2;
+  margin-bottom: 4px;
+}
+
+.public-character-layout > .public-character-bio {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.public-character-layout > .character-class-section {
+  margin-top: 0;
+}
+
+.public-character-layout > .character-stats {
+  margin-top: 20px;
+}
+
+.public-character-layout > .public-character-perks {
+  margin-top: 20px;
 }
 
 .public-character-back:hover {
@@ -1797,7 +1866,19 @@ html.fonts-ready #root {
 
   .concord-detail-layout {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 20px;
+  }
+
+  .public-character-layout > .public-character-back,
+  .public-character-layout > .public-character-name,
+  .public-character-layout > .public-character-bio,
+  .public-character-layout > .mobile-concord-heading,
+  .public-character-layout > .concord-detail-left,
+  .public-character-layout > .character-class-section,
+  .public-character-layout > .character-stats,
+  .public-character-layout > .public-character-perks {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .concord-detail-left {
@@ -1805,6 +1886,11 @@ html.fonts-ready #root {
     align-items: stretch;
     gap: 16px;
     padding-top: 0;
+  }
+
+  .mobile-concord-heading {
+    display: block;
+    margin: 0 0 -6px;
   }
 
   .character-concord-link {

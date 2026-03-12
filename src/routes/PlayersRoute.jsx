@@ -5,6 +5,15 @@ import { CLASSES_DATA } from "./ManualClassesRoute";
 const CLASS_LORE_BY_ID = Object.fromEntries(CLASSES_DATA.map((c) => [c.id, c.shortLore ?? c.lore]));
 const CLASS_DATA_BY_ID = Object.fromEntries(CLASSES_DATA.map((c) => [c.id, c]));
 const PEASANT_CLASS_ID = "peasant";
+const NPC_CLASS_LORE = "A key denizen of the city of Necropolis. Do they mean you ill or well?";
+const NPC_CLASS = {
+  id: "npc",
+  label: "NPC",
+  tag: "NPC",
+  shortLore: NPC_CLASS_LORE
+};
+const COMBAT_RULES_URL = "https://alexiswolfish.github.io/necropolis/manual/combat";
+const COMBAT_LINK_CLASS_IDS = new Set(["reliquarian", "ossuary-monk"]);
 const CLASS_BIO_PLACEHOLDERS = {
   "sepulchral-mage": "Tell us more about yourself.\nYour magical education began in circumstances that most respectable academies prefer not to discuss, namely…",
   "tomb-runner": "Tell us more about yourself.\nYour reputation for light fingers dates back to an incident involving…",
@@ -25,10 +34,11 @@ function renderClassLore(text) {
 }
 
 function CharacterClassSection({ characterClass, getPathFromRoute, onNavigate }) {
-  if (!characterClass) return null;
-  const displayClassName = characterClass.tag ?? characterClass.label;
+  const displayClass = characterClass ?? NPC_CLASS;
+  const displayClassName = displayClass.tag ?? displayClass.label;
+  const classLore = characterClass ? CLASS_LORE_BY_ID[characterClass.id] : NPC_CLASS_LORE;
 
-  const className = getPathFromRoute && onNavigate
+  const className = characterClass && getPathFromRoute && onNavigate
     ? (
       <a
         href={getPathFromRoute({ page: "manual-classes", anchor: characterClass.id })}
@@ -46,9 +56,52 @@ function CharacterClassSection({ characterClass, getPathFromRoute, onNavigate })
         <span className="type-caps character-class-label">Class:</span>{" "}
         <span className="character-class-value">{className}</span>
       </p>
-      {CLASS_LORE_BY_ID[characterClass.id]
-        ? <p className="character-class-lore">{renderClassLore(CLASS_LORE_BY_ID[characterClass.id])}</p>
+      {classLore
+        ? <p className="character-class-lore">{characterClass ? renderClassLore(classLore) : classLore}</p>
         : null}
+    </section>
+  );
+}
+
+function PerkCombatLink() {
+  return (
+    <>
+      {" "}
+      <a href={COMBAT_RULES_URL} className="public-character-perk-link">Freshen up on Combat</a>
+    </>
+  );
+}
+
+function shouldAppendCombatLink(classId) {
+  return COMBAT_LINK_CLASS_IDS.has(classId);
+}
+
+function CharacterPerksSection({ character, characterClass, className = "public-character-perks" }) {
+  const classData = characterClass ? CLASS_DATA_BY_ID[characterClass.id] : null;
+  const dumbLuck = Number(character.stats?.dumbLuck ?? 0);
+  const isPeasant = characterClass?.id === PEASANT_CLASS_ID;
+  const showClassPerk = classData?.perk && (!isPeasant || dumbLuck >= 4);
+  const hasFeelingLucky = !isPeasant && dumbLuck >= 5;
+  const peasantData = CLASS_DATA_BY_ID[PEASANT_CLASS_ID];
+
+  if (!showClassPerk && !hasFeelingLucky) return null;
+
+  return (
+    <section className={className} aria-label="Perks">
+      <p className="type-caps public-character-perks-heading">Perks</p>
+      {showClassPerk && (
+        <p className="type-body public-character-perk">
+          <span className="type-caps public-character-perk-label">{classData.perkLabel ?? "Perk"}: </span>
+          {classData.perk}
+          {shouldAppendCombatLink(characterClass?.id) ? <PerkCombatLink /> : null}
+        </p>
+      )}
+      {hasFeelingLucky && peasantData?.perk && (
+        <p className="type-body public-character-perk">
+          <span className="type-caps public-character-perk-label">{peasantData.perkLabel ?? "Feeling Lucky"}: </span>
+          {peasantData.perk}
+        </p>
+      )}
     </section>
   );
 }
@@ -125,7 +178,7 @@ function ConcordSidebar({ character, concord, teamData, getPathFromRoute, onOpen
   return (
     <aside className="concord-detail-left">
       <a
-        href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "backstory" })}
+        href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "players" })}
         onClick={onOpenConcord(character.concordId)}
         className="character-concord-link"
       >
@@ -360,7 +413,10 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
           </a>
         </nav>
         {detailTab === "stats" ? (
-          <StatsList character={character} />
+          <>
+            <StatsList character={character} />
+            <CharacterPerksSection character={character} characterClass={characterClass} className="character-private-perks public-character-perks" />
+          </>
         ) : detailTab === "costumes" ? (
           <section className="character-costume-notes" aria-label="Costume notes">
             <p className="character-concord-paragraph">Below is the mood and vibe for your concord. Please remember to wear flat shoes, and appear however you feel best</p>
@@ -389,7 +445,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
               <p key={`${character.concordId}-short-${index}`} className="character-concord-paragraph">{renderConcordWord(paragraph)}</p>
             ))}
             <a
-              href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "backstory" })}
+              href={getPathFromRoute({ page: "concord-detail", concordId: character.concordId, detailTab: "players" })}
               onClick={onOpenConcord(character.concordId)}
               className="type-caps character-more-lore-btn"
             >
@@ -402,7 +458,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
   );
 }
 
-export function PublicCharacterPage({ character, charactersLoaded, characterClass, teamBlueprint, concord, getPathFromRoute, onNavigate }) {
+export function PublicCharacterPage({ character, charactersLoaded, characterClass, teamBlueprint, concord, backRoute, getPathFromRoute, onNavigate }) {
   if (!character) {
     return (
       <main className="concord-detail-layout character-detail-layout">
@@ -415,61 +471,33 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
   }
 
   const teamData = teamBlueprint[character.concordId] ?? null;
-
   return (
-    <main className="concord-detail-layout character-detail-layout">
+    <main className="concord-detail-layout character-detail-layout public-character-layout">
+      <a
+        href={getPathFromRoute(backRoute ?? { page: "players" })}
+        onClick={onNavigate(backRoute ?? { page: "players" })}
+        className="type-caps public-character-back"
+      >
+        ← Players
+      </a>
+      <p className="character-name-hero-display public-character-name">
+        {character.characterName ?? character.realName}
+        {character.characterName && character.characterName !== character.realName
+          ? <span className="type-caps public-character-realname"> ({character.realName})</span>
+          : null}
+      </p>
+      {character.characterBio ? <p className="public-character-bio">{character.characterBio}</p> : null}
+      <p className="type-caps mobile-concord-heading">Concord</p>
       <ConcordSidebar
         character={character}
         concord={concord}
         teamData={teamData}
         getPathFromRoute={getPathFromRoute}
-        onOpenConcord={(concordId) => onNavigate({ page: "concord-detail", concordId, detailTab: "backstory" })}
+        onOpenConcord={(concordId) => onNavigate({ page: "concord-detail", concordId, detailTab: "players" })}
       />
-
-      <article className="concord-detail-right character-detail-right">
-        <a
-          href={getPathFromRoute({ page: "players" })}
-          onClick={onNavigate({ page: "players" })}
-          className="type-caps public-character-back"
-        >
-          ← Players
-        </a>
-        <p className="character-name-hero-display">
-          {character.characterName ?? character.realName}
-          {character.characterName && character.characterName !== character.realName
-            ? <span className="type-caps public-character-realname"> ({character.realName})</span>
-            : null}
-        </p>
-        {character.characterBio ? <p className="public-character-bio">{character.characterBio}</p> : null}
-        <CharacterClassSection characterClass={characterClass} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
-        <StatsList character={character} />
-        {(() => {
-          const classData = characterClass ? CLASS_DATA_BY_ID[characterClass.id] : null;
-          const dumbLuck = Number(character.stats?.dumbLuck ?? 0);
-          const isPeasant = characterClass?.id === PEASANT_CLASS_ID;
-          const showClassPerk = classData?.perk && (!isPeasant || dumbLuck >= 4);
-          const hasFeelingLucky = !isPeasant && dumbLuck >= 5;
-          const peasantData = CLASS_DATA_BY_ID[PEASANT_CLASS_ID];
-          if (!showClassPerk && !hasFeelingLucky) return null;
-          return (
-            <section className="public-character-perks" aria-label="Perks">
-              <p className="type-caps public-character-perks-heading">Perks</p>
-              {showClassPerk && (
-                <p className="type-body public-character-perk">
-                  <span className="type-caps public-character-perk-label">{classData.perkLabel ?? "Perk"}: </span>
-                  {classData.perk}
-                </p>
-              )}
-              {hasFeelingLucky && peasantData?.perk && (
-                <p className="type-body public-character-perk">
-                  <span className="type-caps public-character-perk-label">{peasantData.perkLabel ?? "Feeling Lucky"}: </span>
-                  {peasantData.perk}
-                </p>
-              )}
-            </section>
-          );
-        })()}
-      </article>
+      <CharacterClassSection characterClass={characterClass} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
+      <StatsList character={character} />
+      <CharacterPerksSection character={character} characterClass={characterClass} />
     </main>
   );
 }

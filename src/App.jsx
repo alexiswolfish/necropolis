@@ -814,7 +814,7 @@ function getRouteFromPath(pathname) {
 
   const detailMatch = appPath.match(/^\/concords\/([a-z0-9-]+)(?:\/(backstory|costumes|players))?$/);
   if (detailMatch && CONCORDS_BY_ID.has(detailMatch[1])) {
-    return { page: "concord-detail", concordId: detailMatch[1], detailTab: detailMatch[2] ?? "backstory" };
+    return { page: "concord-detail", concordId: detailMatch[1], detailTab: detailMatch[2] ?? "players" };
   }
 
   return { page: "not-found" };
@@ -857,6 +857,7 @@ export default function App() {
   const storedCharacter = getStoredCharacter();
   const storedOnboardingDraft = getStoredOnboardingDraft();
   const [route, setRoute] = useState(() => getRouteFromPath(window.location.pathname));
+  const [navigationState, setNavigationState] = useState(() => window.history.state ?? {});
   const [character, setCharacter] = useState(() => storedCharacter);
   const [allCharacters, setAllCharacters] = useState([]);
   const [charactersLoaded, setCharactersLoaded] = useState(false);
@@ -870,7 +871,11 @@ export default function App() {
   const detailHumRef = useRef(null);
 
   useEffect(() => {
-    const onPopState = () => { setRoute(getRouteFromPath(window.location.pathname)); setMenuOpen(false); };
+    const onPopState = () => {
+      setRoute(getRouteFromPath(window.location.pathname));
+      setNavigationState(window.history.state ?? {});
+      setMenuOpen(false);
+    };
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
@@ -969,9 +974,13 @@ export default function App() {
   const navigate = (nextRoute) => (event) => {
     event.preventDefault();
     const nextPath = getPathFromRoute(nextRoute);
+    const nextState = { route: nextRoute, fromRoute: route };
     if (window.location.pathname !== nextPath) {
-      window.history.pushState({}, "", nextPath);
+      window.history.pushState(nextState, "", nextPath);
+    } else {
+      window.history.replaceState(nextState, "", nextPath);
     }
+    setNavigationState(nextState);
     setRoute(nextRoute);
   };
 
@@ -1338,16 +1347,16 @@ export default function App() {
     );
   }
   if (route.page === "concords") {
-    pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id })} onHoverConcord={handleConcordHover} />;
+    pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id, detailTab: "players" })} onHoverConcord={handleConcordHover} />;
   }
   if (route.page === "concords-spare") {
-    pageContent = <ConcordsPage cards={SPARE_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id })} onHoverConcord={handleConcordHover} />;
+    pageContent = <ConcordsPage cards={SPARE_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id, detailTab: "players" })} onHoverConcord={handleConcordHover} />;
   }
   if (route.page === "concord-detail" && selectedConcord) {
     pageContent = (
       <ConcordDetailPage
         concord={selectedConcord}
-        detailTab={route.detailTab ?? "backstory"}
+        detailTab={route.detailTab ?? "players"}
         onOpenTab={(detailTab) => navigate({ page: "concord-detail", concordId: selectedConcord.id, detailTab })}
         onStartDetailHum={startDetailConcordHum}
         onStopDetailHum={stopDetailConcordHum}
@@ -1379,6 +1388,9 @@ export default function App() {
   }
   if (route.page === "player-detail") {
     const profileCharacter = allCharacters.find((c) => c.id === route.characterId) ?? null;
+    const backRoute = navigationState?.fromRoute?.page === "concord-detail" || navigationState?.fromRoute?.page === "players"
+      ? navigationState.fromRoute
+      : { page: "players" };
     pageContent = (
       <PublicCharacterPage
         character={profileCharacter}
@@ -1386,6 +1398,7 @@ export default function App() {
         teamBlueprint={TEAM_BLUEPRINT}
         concord={profileCharacter?.concordId ? (CONCORDS_BY_ID.get(profileCharacter.concordId) ?? null) : null}
         characterClass={profileCharacter ? (characterClassMap.get(profileCharacter.id) ?? null) : null}
+        backRoute={backRoute}
         getPathFromRoute={getPathFromRoute}
         onNavigate={navigate}
       />
@@ -1403,7 +1416,7 @@ export default function App() {
           costumeImagesByConcord={COSTUME_IMAGES_BY_CONCORD}
           detailTab={route.detailTab ?? "stats"}
           onOpenTab={(detailTab) => navigate({ page: "character", detailTab })}
-          onOpenConcord={(concordId) => navigate({ page: "concord-detail", concordId, detailTab: "backstory" })}
+          onOpenConcord={(concordId) => navigate({ page: "concord-detail", concordId, detailTab: "players" })}
           getPathFromRoute={getPathFromRoute}
           onSaveCharacterName={async (characterName) => {
             if (!character) return false;
