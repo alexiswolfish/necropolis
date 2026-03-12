@@ -773,6 +773,7 @@ html.fonts-ready #root {
 }
 
 .concord-player-card {
+  position: relative;
   min-width: 230px;
   padding: 12px 14px;
   border: 1px solid color-mix(in srgb, var(--concord-tertiary, currentColor) 22%, transparent 78%);
@@ -1352,6 +1353,8 @@ html.fonts-ready #root {
 .character-stats {
   margin-top: 1.2rem;
   max-width: 540px;
+  border-top: 1px solid color-mix(in srgb, var(--concord-tertiary, currentColor) 22%, transparent 78%);
+  padding-top: 1.2rem;
 }
 
 .character-stat-row {
@@ -1391,8 +1394,30 @@ html.fonts-ready #root {
   text-decoration: none;
 }
 
-.concord-player-link:hover {
+.concord-player-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.concord-player-card:hover {
   opacity: 0.7;
+}
+
+.public-character-realname {
+  font-size: 0.2em;
+  opacity: 0.7;
+  vertical-align: bottom;
+  margin-left: 12px;
+}
+
+.public-character-class {
+  margin-top: 20px;
+  margin-bottom: 0px;
+  font-family: "Darksame Regular", "Lohengrin", serif;
+  font-size: clamp(1.8rem, 1.4rem + 1.2vw, 2rem);
+  line-height: 1;
+  color: var(--concord-title);
 }
 
 .public-character-back {
@@ -1462,9 +1487,10 @@ html.fonts-ready #root {
 }
 
 .players-real-name {
-  font-size: 0.42em !important;
+  font-size: 0.42em;
   color: inherit !important;
   opacity: 0.92;
+  margin-left: 4px;
 }
 
 

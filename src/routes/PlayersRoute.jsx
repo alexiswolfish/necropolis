@@ -152,7 +152,7 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
                       <a href={getPathFromRoute({ page: "player-detail", characterId: member.id })} onClick={onNavigate({ page: "player-detail", characterId: member.id })} className="concord-player-link">
                         {member.characterName ?? member.realName}
                       </a>
-                      {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
+                      {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps" style={{fontSize: '6px !important'}}> ({member.realName})</span> : null}
                       {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
                       {/* characterClass display hidden until classes are ready to ship */}
                       {adminMode ? (
@@ -348,7 +348,13 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
         >
           ← Players
         </a>
-        <p className="character-name-hero-display">{character.characterName ?? character.realName}</p>
+        <p className="character-name-hero-display">
+          {character.characterName ?? character.realName}
+          {character.characterName && character.characterName !== character.realName
+            ? <span className="type-caps public-character-realname"> ({character.realName})</span>
+            : null}
+        </p>
+        {characterClass && <p className="public-character-class">{characterClass.tag}</p>}
         <StatsList character={character} />
       </article>
     </main>
