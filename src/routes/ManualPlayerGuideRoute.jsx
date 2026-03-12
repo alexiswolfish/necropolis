@@ -10,7 +10,7 @@ export function ManualPlayerGuideRoute({ getPathFromRoute, onNavigate }) {
       >
         <span className="type-logo page-back-arrow">‹</span>Handbook
       </a>
-      <p className="type-logo header-accent">Necropolis Player Guide</p>
+      <p className="type-logo header-accent">Game Guide</p>
 
       <section className="player-guide-content">
         <div className="player-guide-block">
@@ -132,66 +132,7 @@ export function ManualPlayerGuideRoute({ getPathFromRoute, onNavigate }) {
         <div className="player-guide-block">
           <h2 className="type-caps player-guide-section-label">Class Rules</h2>
           <p className="type-body">
-            Each class comes with its own talents, advantages, and bad habits. Some are subtle. Some are extremely much not.
-          </p>
-          <p className="type-body">
-            Know what your class can do before the game begins.
-          </p>
-
-          <div className="player-guide-class-entry">
-            <p className="type-caps player-guide-class-stat">Pulchritude — Bard</p>
-            <p className="type-body">
-              Bards possess such ruinous levels of charm, beauty, and social confidence that ordinary obstacles begin to feel slightly embarrassed to be standing in their way. Your sheer physical beauty, your grace — it is so overwhelming you might as well be Miss United States. Players with PULCHRITUDE will receive 3 cards of CHARM.
-            </p>
-            <p className="type-body">
-              By sacrificing one of your charms, you may avoid a trial of COMBAT or receiving a CURSE. When you use a charm, give it to the relevant party (your would-be opponent or the person giving the curse) to rip in half. Use them wisely. Beauty is powerful, but it is, tragically, finite.
-            </p>
-          </div>
-
-          <div className="player-guide-class-entry">
-            <p className="type-caps player-guide-class-stat">Grit — Druid</p>
-            <p className="type-body">
-              Druids specialize in persistence. They keep going. They survive things that should probably have put them down. It is less elegance than refusal, but the effect is much the same. Players with GRIT have Endurance: you may survive a hit. You will receive 5 cards of DODGE at the start of the event. Use in battle when defending to dodge a loss. When you use one, give the card to your opponent to rip in half.
-            </p>
-          </div>
-
-          <div className="player-guide-class-entry">
-            <p className="type-caps player-guide-class-stat">Brawn — Fighter</p>
-            <p className="type-body">
-              Fighters are straightforward people with straightforward solutions. If subtlety happens, it is usually by accident. Players with BRAWN have Strength. Headshot: instant kill. You will receive 2 of these HEADSHOTS at the start of the event. It cannot be defended against. Use it in battle: show it to your opponent, then give them the card to rip in half — they lose instantly.
-            </p>
-          </div>
-
-          <div className="player-guide-class-entry">
-            <p className="type-caps player-guide-class-stat">Vigilance — Ranger</p>
-            <p className="type-body">
-              Rangers move first, notice more, and have a deeply irritating habit of already knowing what you were about to do. Players with VIGILANCE have Initiative. Combat Advantage: you can pick a card from the other player and flip it. You will receive 7 VIGILANCE at the start of the game. Use during battle: when invoked, flip one of your own cards first, then randomly flip an opponent's, then give a VIGILANCE card to your opponent to rip in half.
-            </p>
-          </div>
-
-          <div className="player-guide-class-entry">
-            <p className="type-caps player-guide-class-stat">Shenanigans — Rogue</p>
-            <p className="type-body">
-              Rogues arrive prepared in the way that makes everyone else nervous. They are rarely where you expect them to be and almost never acting in anyone's best interest but their own. Players with SHENANIGANS begin the game with 3 Curse cards. These cards are yours to give away to whomever you like. Try to be thoughtful about it. Or don't.
-            </p>
-          </div>
-
-          <div className="player-guide-class-entry">
-            <p className="type-caps player-guide-class-stat">Mystery — Wizard</p>
-            <p className="type-body">
-              Wizards are under no obligation to be reasonable, accessible, or physically involved in problems that do not interest them. Players with MYSTERY begin the game with a single BLESSING. This blessing can be used unlimited times. Use it to avoid engaging in a battle — if someone challenges you to a duel, show this blessing and don't battle.
-            </p>
-          </div>
-
-          <div className="player-guide-class-entry">
-            <p className="type-caps player-guide-class-stat">Peasant</p>
-            <p className="type-body">
-              No special gift. No class advantage. No built-in protection from the cruelties of fate. You are here anyway. Which may yet prove to be its own kind of power.
-            </p>
-          </div>
-
-          <p className="type-body">
-            For the full class list and class details, read:{" "}
+            Each class comes with its own talents, advantages, and bad habits. Know what your class can do before the game begins.{" "}
             <a
               href={getPathFromRoute({ page: "manual-classes" })}
               onClick={onNavigate({ page: "manual-classes" })}
