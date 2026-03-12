@@ -1412,6 +1412,7 @@ html.fonts-ready #root {
   font-size: clamp(1.8rem, 1.4rem + 1.2vw, 2rem);
   line-height: 1;
   color: var(--concord-title);
+  text-transform: lowercase;
 }
 
 .character-class-lore {

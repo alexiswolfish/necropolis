@@ -33,16 +33,15 @@ function renderClassLore(text) {
   );
 }
 
-function CharacterClassSection({ characterClass, rawClassName, getPathFromRoute, onNavigate }) {
-  const normalizedRawClassName = String(rawClassName ?? "").trim().toLowerCase();
-  const shouldUseNpcFallback = !normalizedRawClassName || normalizedRawClassName === "npc";
-  if (!characterClass && !shouldUseNpcFallback) return null;
+function CharacterClassSection({ character, characterClass, getPathFromRoute, onNavigate }) {
+  const isNpc = Boolean(character?.excludedFromCount);
+  if (!isNpc && !characterClass) return null;
 
-  const displayClass = characterClass ?? NPC_CLASS;
+  const displayClass = isNpc ? NPC_CLASS : characterClass;
   const displayClassName = displayClass.tag ?? displayClass.label;
-  const classLore = characterClass ? CLASS_LORE_BY_ID[characterClass.id] : NPC_CLASS_LORE;
+  const classLore = isNpc ? NPC_CLASS_LORE : CLASS_LORE_BY_ID[characterClass.id];
 
-  const className = characterClass && getPathFromRoute && onNavigate
+  const className = !isNpc && characterClass && getPathFromRoute && onNavigate
     ? (
       <a
         href={getPathFromRoute({ page: "manual-classes", anchor: characterClass.id })}
@@ -389,7 +388,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
           placeholder={bioPlaceholder}
         />
         {profileSaveMessage ? <p className="type-caps character-name-save-msg">{profileSaveMessage}</p> : null}
-        <CharacterClassSection characterClass={characterClass} rawClassName={character.className} />
+        <CharacterClassSection character={character} characterClass={characterClass} />
         <nav className="concord-subnav character-subnav" aria-label="Character details">
           <a
             href={getPathFromRoute({ page: "character", detailTab: "stats" })}
@@ -490,7 +489,7 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
         getPathFromRoute={getPathFromRoute}
         onOpenConcord={(concordId) => onNavigate({ page: "concord-detail", concordId, detailTab: "players" })}
       />
-      <CharacterClassSection characterClass={characterClass} rawClassName={character.className} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
+      <CharacterClassSection character={character} characterClass={characterClass} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
       <StatsList character={character} />
       <CharacterPerksSection character={character} characterClass={characterClass} />
     </main>
