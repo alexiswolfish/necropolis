@@ -480,7 +480,7 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
       <p className="character-name-hero-display public-character-name">
         {character.characterName ?? character.realName}
       </p>
-      {character.characterBio ? <p className="public-character-bio">{character.characterBio}</p> : null}
+      {character.characterBio ? <p className="type-body-large public-character-bio">{character.characterBio}</p> : null}
       <p className="type-caps mobile-concord-heading">Concord</p>
       <ConcordSidebar
         character={character}

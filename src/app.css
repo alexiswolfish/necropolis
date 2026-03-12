@@ -1425,10 +1425,6 @@ html.fonts-ready #root {
   max-width: 780px;
   margin: 0;
   padding: 0 0 20px;
-  font-family: var(--font-body);
-  font-size: 28px;
-  line-height: 1.15;
-  letter-spacing: 0.01em;
   color: var(--concord-tertiary);
   white-space: pre-wrap;
 }
