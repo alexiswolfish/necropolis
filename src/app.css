@@ -2565,3 +2565,88 @@ html.fonts-ready #root {
     gap: 44px;
   }
 }
+
+/* ---- Manual: Player Guide ---- */
+.player-guide-layout {
+  width: min(780px, 100%);
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+.player-guide-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.player-guide-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.player-guide-section-label {
+  font-family: var(--font-display);
+  font-size: 52px;
+  line-height: 1;
+  font-weight: 400;
+  margin: 0 0 10px;
+  color: var(--theme-heading-color);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.player-guide-subsection-label {
+  margin: 16px 0 6px;
+}
+
+.player-guide-list {
+  margin: 8px 0 0;
+  padding-left: 1.4em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.player-guide-quote {
+  font-style: italic;
+  padding-left: 1em;
+}
+
+.player-guide-link {
+  color: #f37420;
+  text-decoration: underline;
+}
+
+.player-guide-link:hover {
+  opacity: 0.85;
+}
+
+.player-guide-class-entry {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.player-guide-class-stat {
+  margin: 0 0 8px;
+  opacity: 0.7;
+}
+
+#player-guide-page .type-body {
+  margin: 0;
+}
+
+@media (max-width: 620px) {
+  .player-guide-layout {
+    padding: 32px 24px 80px;
+  }
+
+  .player-guide-section-label {
+    font-size: 40px;
+  }
+
+  .player-guide-content {
+    gap: 28px;
+  }
+}

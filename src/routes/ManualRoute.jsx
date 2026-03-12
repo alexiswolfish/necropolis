@@ -7,6 +7,16 @@ export function ManualRoute({ getPathFromRoute, onNavigate }) {
       <nav className="manual-entries" aria-label="Handbook sections">
         <div className="manual-entry">
           <a
+            href={getPathFromRoute({ page: "manual-player-guide" })}
+            onClick={onNavigate({ page: "manual-player-guide" })}
+            className="manual-entry-title"
+          >
+            Player Guide
+          </a>
+          <p className="manual-entry-byline type-body">How to play Necropolis</p>
+        </div>
+        <div className="manual-entry">
+          <a
             href={getPathFromRoute({ page: "manual-combat" })}
             onClick={onNavigate({ page: "manual-combat" })}
             className="manual-entry-title"
