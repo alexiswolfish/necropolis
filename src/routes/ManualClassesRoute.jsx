@@ -79,7 +79,7 @@ export const CLASSES_DATA = [
     primaryStat: null,
     perkLabel: "Feeling Lucky",
     perk: "Upon failing a shrine challenge, if available, roll a lucky dice. On a 3, whatever terrible outcome was about to befall you is avoided, and maybe, you even just succeed.",
-    shortLore: "No particular gifts. No ancient training. No destiny to speak of. The Peasant is here anyway.",
+    shortLore: "No particular gifts. No ancient training. No destiny to speak of. The Peasant is here anyway, which, depending on how the night goes, may turn out to be the most remarkable thing about them.",
     lore: [
       "No particular gifts. No ancient training. No destiny to speak of.",
       "The Peasant is here anyway, which, depending on how the night goes, may turn out to be the most remarkable thing about them.",
