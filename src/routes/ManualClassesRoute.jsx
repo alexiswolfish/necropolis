@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 export const CLASSES_DATA = [
   {
@@ -19,10 +19,10 @@ export const CLASSES_DATA = [
     primaryStat: "Brawn",
     perkLabel: "One Hit KO",
     perk: "Your intimidating muscles really make opponents want to back down. Twice during the game, choose to use your impressive BRAWN to instantly win a combat encounter.",
-    shortLore: "Who needs brains when you have BRAWN. Fighters love fixing problems in the most efficient way possible. Bashing it over the head until it is no longer a problem.",
+    shortLore: "Who needs brains when you have BRAWN. Fighters love fixing problems in the most efficient way possible. Hit it until it stops. Works every time.",
     lore: [
       "In the great sagas, the heroes of brute BRAWN are rarely remembered for their speeches. They are remembered for what happened after the speeches, when things needed hitting.",
-      "Fighters are the load-bearing walls of any adventuring party: uncomplicated, reliable, and capable of absorbing a truly unreasonable amount of punishment before anyone needs to worry. They fix problems efficiently — locate problem, apply large blunt object, repeat until problem stops.",
+      "Fighters are the load-bearing walls of any adventuring party: uncomplicated, reliable, and capable of absorbing a truly unreasonable amount of punishment before anyone needs to worry. They fix problems efficiently — locate problem, hack and slash, repeat until problem stops.",
     ],
   },
   {
@@ -42,7 +42,7 @@ export const CLASSES_DATA = [
     label: "Druid",
     primaryStat: "Grit",
     perkLabel: "Diehard",
-    perk: "Your immeasurable GRIT allows you to shrug off 3 lost combat encounters during the party. Retain your soul until these are worn away.",
+    perk: "Your immeasurable GRIT allows you to shrug off the first fatal blow of any combat. The first time a multiple of 5 is drawn against you, play on.",
     shortLore: "Deeply attuned to physical planes, flowers bloom where a druid steps. Their extreme GRIT allows them to endure far past what those more feeble in mind and body could stand.",
     lore: [
       "Deeply attuned to the living world in ways that make for excellent company and occasionally alarming conversation, the Druids of old were known for outlasting everything: winters, sieges, philosophical arguments, and several civilizations that seemed quite confident at the time.",
@@ -88,6 +88,13 @@ export const CLASSES_DATA = [
 ];
 
 export function ManualClassesRoute({ getPathFromRoute, onNavigate }) {
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      document.getElementById(hash)?.scrollIntoView();
+    }
+  }, []);
+
   return (
     <main id="classes-page" className="classes-layout">
       <a
@@ -101,7 +108,7 @@ export function ManualClassesRoute({ getPathFromRoute, onNavigate }) {
       <p className="type-body classes-page-subtitle">Heroes of the grand tournament are often specialized in particular skills. The most notable of which are listed below.</p>
       <div className="classes-entries">
         {CLASSES_DATA.map((cls) => (
-          <section key={cls.id} className="classes-entry">
+          <section key={cls.id} id={cls.label.toLowerCase()} className="classes-entry">
             {cls.primaryStat && (
               <p className="type-caps classes-entry-stat"><span className="classes-entry-stat-label">Primary Stat:</span> <span className="classes-entry-stat-value">{cls.primaryStat}</span></p>
             )}

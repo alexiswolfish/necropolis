@@ -825,7 +825,7 @@ function getPathFromRoute(route) {
   if (route.page === "curses") return withBase("/curses");
   if (route.page === "manual") return withBase("/manual");
   if (route.page === "manual-combat") return withBase("/manual/combat");
-  if (route.page === "manual-classes") return withBase("/manual/classes");
+  if (route.page === "manual-classes") return withBase("/manual/classes" + (route.anchor ? "#" + route.anchor : ""));
   if (route.page === "concords") return withBase("/concords");
   if (route.page === "concords-spare") return withBase("/concords/spare");
   if (route.page === "players") return withBase("/players");

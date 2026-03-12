@@ -371,8 +371,8 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
         {characterClass && (
           <p className="public-character-class">
             <a
-              href={getPathFromRoute({ page: "manual-classes" })}
-              onClick={onNavigate({ page: "manual-classes" })}
+              href={getPathFromRoute({ page: "manual-classes", anchor: characterClass.id })}
+              onClick={onNavigate({ page: "manual-classes", anchor: characterClass.id })}
               className="public-character-class-link"
             >
               {characterClass.tag}
