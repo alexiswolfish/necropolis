@@ -1447,12 +1447,10 @@ html.fonts-ready #root {
 
 .public-character-perks-heading {
   margin: 0 0 12px;
-  opacity: 0.5;
 }
 
 .public-character-perk {
   margin: 0;
-  max-width: 520px;
 }
 
 .public-character-perk + .public-character-perk {

@@ -388,7 +388,7 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
           const dumbLuck = Number(character.stats?.dumbLuck ?? 0);
           const isPeasant = characterClass?.id === PEASANT_CLASS_ID;
           const showClassPerk = classData?.perk && (!isPeasant || dumbLuck >= 4);
-          const hasFeelingLucky = !isPeasant && dumbLuck > 5;
+          const hasFeelingLucky = !isPeasant && dumbLuck >= 5;
           const peasantData = CLASS_DATA_BY_ID[PEASANT_CLASS_ID];
           if (!showClassPerk && !hasFeelingLucky) return null;
           return (

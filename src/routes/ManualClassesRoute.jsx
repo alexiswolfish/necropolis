@@ -5,6 +5,7 @@ export const CLASSES_DATA = [
     id: "mortuary-medium",
     label: "Bard",
     primaryStat: "Pulchritude",
+    perkLabel: "Silver Tongue",
     perk: "Start the game with 3 instances of NATURAL CHARM. Sacrifice one to avoid combat or a curse.",
     shortLore: "Their beauty, their grace, BARDS might as well be Miss United States. Oozing with the kind of natural charisma that tends to lend a real shine to even the most incompetent, BARDS are jacks of all trades and top notch entertainers. A sparkling cocktail of interesting facts and impressive but not particularly high utility skills.",
     lore: [
@@ -16,6 +17,7 @@ export const CLASSES_DATA = [
     id: "lantern-warden",
     label: "Fighter",
     primaryStat: "Brawn",
+    perkLabel: "One Hit KO",
     perk: "Your intimidating muscles really make opponents want to back down. Twice during the game, choose to use your impressive BRAWN to instantly win a combat encounter.",
     shortLore: "Who needs brains when you have BRAWN. Fighters love fixing problems in the most efficient way possible. Bashing it over the head until it is no longer a problem.",
     lore: [
@@ -27,6 +29,7 @@ export const CLASSES_DATA = [
     id: "reliquarian",
     label: "Ranger",
     primaryStat: "Vigilance",
+    perkLabel: "Ambush",
     perk: "Gain initiative in every battle. For the first round of combat, after choosing your card and showing your opponent, you may flip one of their cards and take it out of play.",
     shortLore: "Rugged, hot, RANGERS can taste dirt on the rain and lead you safely through dark forests. Their VIGILANCE lets them get the jump on opponents in any battle.",
     lore: [
@@ -38,6 +41,7 @@ export const CLASSES_DATA = [
     id: "ossuary-monk",
     label: "Druid",
     primaryStat: "Grit",
+    perkLabel: "Diehard",
     perk: "Your immeasurable GRIT allows you to shrug off 3 lost combat encounters during the party. Retain your soul until these are worn away.",
     shortLore: "Deeply attuned to physical planes, flowers bloom where a druid steps. Their extreme GRIT allows them to endure far past what those more feeble in mind and body could stand.",
     lore: [
@@ -49,6 +53,7 @@ export const CLASSES_DATA = [
     id: "tomb-runner",
     label: "Rogue",
     primaryStat: "Shenanigans",
+    perkLabel: "Sneak Attack",
     perk: "Start the game with 3 curse cards to give to any player of your choice. All completely above board, naturally.",
     shortLore: "Quick on their feet, and constantly skulking in shadow at the periphery of your vision, the party's ROGUE is the perfect player to sow some chaos covertly amongst enemy ranks.",
     lore: [
@@ -60,6 +65,7 @@ export const CLASSES_DATA = [
     id: "sepulchral-mage",
     label: "Wizard",
     primaryStat: "Mystery",
+    perkLabel: "Sanctuary",
     perk: "Wizards cannot be challenged to combat, and thus cannot be compelled to give you a shard of their soul. It's very convenient for them. There are, however, rumours. And this is a party.",
     shortLore: "Wizards are masters of MYSTERY, and wield it quite effectively to avoid DEATH's nastier consequences. Extremely useful in a crisis. Slightly exhausting at dinner.",
     lore: [
@@ -105,7 +111,7 @@ export function ManualClassesRoute({ getPathFromRoute, onNavigate }) {
             ))}
             {cls.perk && (
               <p className="type-body classes-entry-perk">
-                <span className="type-caps classes-entry-perk-label">{cls.perkLabel ?? "Perk"}: </span>
+                <span className="type-caps classes-entry-perk-label">Perk{cls.perkLabel ? `: ${cls.perkLabel}` : ""}: </span>
                 {cls.perk}
               </p>
             )}
