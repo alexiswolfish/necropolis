@@ -111,7 +111,15 @@ function ConcordSidebar({ character, concord, teamData, getPathFromRoute, onOpen
   const concordName = teamData?.concordName ?? character.concordId;
   const [leftWord, rightWord] = concordName.split(" & ");
   const concordDisplay = rightWord
-    ? (<>{leftWord}<br />&<br />{rightWord}</>)
+    ? (
+      <>
+        {leftWord}
+        <br />
+        <span className="concord-detail-name-ampersand">&</span>
+        <br />
+        {rightWord}
+      </>
+    )
     : concordName;
 
   return (

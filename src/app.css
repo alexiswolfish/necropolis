@@ -652,6 +652,12 @@ html.fonts-ready #root {
   display: inline-block;
 }
 
+.concord-detail-name-ampersand {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
 .concord-meta {
   margin: 0;
 }
@@ -1397,6 +1403,10 @@ html.fonts-ready #root {
   white-space: pre-wrap;
 }
 
+.public-character-bio {
+  padding-top: 8px;
+}
+
 .character-subnav {
   margin-top: 1rem;
 }
@@ -1788,6 +1798,50 @@ html.fonts-ready #root {
   .concord-detail-layout {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  .concord-detail-left {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 16px;
+    padding-top: 0;
+  }
+
+  .character-concord-link {
+    flex: 0 0 42%;
+    display: flex;
+    align-items: center;
+  }
+
+  .concord-detail-name {
+    margin: 0;
+    font-size: clamp(2.3rem, 9vw, 3.2rem);
+    text-align: left;
+  }
+
+  .concord-meta {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .concord-meta-row {
+    gap: 0.45rem;
+    margin-bottom: 0;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: start;
+  }
+
+  .concord-meta-row dt {
+    font-size: 0.68rem;
+    line-height: 1.2;
+  }
+
+  .concord-meta-row dd,
+  .concord-meta-value {
+    font-size: 16px !important;
+    line-height: 1.05;
   }
 
   .concord-grid-exact {
