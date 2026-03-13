@@ -9,7 +9,7 @@ export const CLASSES_DATA = [
     label: "Bard",
     primaryStat: "Pulchritude",
     perkLabel: "Silver Tongue",
-    perk: "Start the game with 3 instances of NATURAL CHARM. Sacrifice one to avoid combat or a curse.",
+    perk: "Start the game with 3 cards of CHARM. By sacrificing one of your charms, you may avoid a trial of COMBAT or receiving a CURSE. When you use a charm, give it to the relevant party (your would-be opponent or the person giving the curse) to rip in half.",
     shortLore: "Their beauty, their grace, BARDS might as well be Miss United States. Oozing with the kind of natural charisma that tends to lend a real shine to even the most incompetent, BARDS are jacks of all trades and top notch entertainers. A sparkling cocktail of interesting facts and impressive but not particularly high utility skills.",
     lore: [
       "The Bards of the ancient world were not merely entertainers — they were keepers of legend, speakers of truth, and profoundly excellent at parties. Their beauty, their grace: they might as well be Miss United States.",
@@ -20,8 +20,8 @@ export const CLASSES_DATA = [
     id: "lantern-warden",
     label: "Fighter",
     primaryStat: "Brawn",
-    perkLabel: "One Hit KO",
-    perk: "Your intimidating muscles really make opponents want to back down. Twice during the game, choose to use your impressive BRAWN to instantly win a combat encounter.",
+    perkLabel: "Headshot",
+    perk: "You will receive 2 of these HEADSHOTS at the start of the event. It cannot be defended against. Use it in battle: show it to your opponent, then give them the card to rip in half — they lose instantly.",
     shortLore: "Who needs brains when you have BRAWN. Fighters love fixing problems in the most efficient way possible. Hit it until it stops. Works every time.",
     lore: [
       "In the great sagas, the heroes of brute BRAWN are rarely remembered for their speeches. They are remembered for what happened after the speeches, when things needed hitting.",
@@ -32,8 +32,8 @@ export const CLASSES_DATA = [
     id: "reliquarian",
     label: "Ranger",
     primaryStat: "Vigilance",
-    perkLabel: "Ambush",
-    perk: "Gain initiative in every battle. For the first round of combat, after choosing your card and showing your opponent, you may flip one of their cards and take it out of play.",
+    perkLabel: "Combat Advantage",
+    perk: "You can pick a card from the other player and flip it. You will receive VIGILANCE with unlimited uses at the start of the game. Once per battle before you draw show your opponent your VIGILANCE card then flip one of your own cards first, then randomly flip an opponent's.",
     shortLore: "Rugged, hot, RANGERS can taste dirt on the rain and lead you safely through dark forests. Their VIGILANCE lets them get the jump on opponents in any battle.",
     lore: [
       "The RANGERS of legend were the guardians of wild places, moving through dark forests and bitter mountains with the quiet certainty of those who have slept in significantly worse conditions and are fine about it.",
@@ -44,8 +44,8 @@ export const CLASSES_DATA = [
     id: "ossuary-monk",
     label: "Druid",
     primaryStat: "Grit",
-    perkLabel: "Diehard",
-    perk: "Your immeasurable GRIT allows you to shrug off the first fatal blow of any combat. The first time a multiple of 5 is drawn against you, play on.",
+    perkLabel: "Endurance",
+    perk: "You may survive a hit. You will receive a DODGE card that can be used 5 times at the start of the event. Use in battle when defending to dodge a loss. When you use one, give the card to your opponent and have them mark off one of the uses. After your 5th use the opponent destroys the card.",
     shortLore: "Deeply attuned to physical planes, flowers bloom where a druid steps. Their extreme GRIT allows them to endure far past what those more feeble in mind and body could stand.",
     lore: [
       "Deeply attuned to the living world in ways that make for excellent company and occasionally alarming conversation, the Druids of old were known for outlasting everything: winters, sieges, philosophical arguments, and several civilizations that seemed quite confident at the time.",
@@ -57,7 +57,7 @@ export const CLASSES_DATA = [
     label: "Rogue",
     primaryStat: "Shenanigans",
     perkLabel: "Sneak Attack",
-    perk: "Start the game with 3 curse cards to give to any player of your choice. All completely above board, naturally.",
+    perk: "Start the game with 3 Curse cards. They are yours to give away to whomever you like.",
     shortLore: "Quick on their feet, and constantly skulking in shadow at the periphery of your vision, the party's ROGUE is the perfect player to sow some chaos covertly amongst enemy ranks.",
     lore: [
       "The great thieves, spies, and professional skulkers of every age shared one common trait: they were never quite where you were looking.",
@@ -69,7 +69,7 @@ export const CLASSES_DATA = [
     label: "Wizard",
     primaryStat: "Mystery",
     perkLabel: "Sanctuary",
-    perk: "Wizards cannot be challenged to combat and therefore cannot be compelled to surrender a shard of their soul. This arrangement suits them perfectly. Of course, every sanctuary has its obscure clauses, and parties have a remarkable habit of uncovering them.",
+    perk: "Start the game with a single BLESSING. This blessing can be used unlimited times. Use it to avoid engaging in a battle — if someone challenges you to a duel, show this blessing and don't battle.",
     shortLore: "Wizards are masters of MYSTERY, and wield it quite effectively to avoid DEATH's nastier consequences. Extremely useful in a crisis. Slightly exhausting at dinner.",
     lore: [
       "In the oldest traditions, the great sorcerers did not choose MYSTERY — MYSTERY chose them, usually at considerable inconvenience to their social calendar. Wizards arrive with three specific questions that need answering and the patience of someone who came for the information, not the wine.",

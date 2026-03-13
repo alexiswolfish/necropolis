@@ -93,6 +93,13 @@ export function ManualPlayerGuideRoute({ getPathFromRoute, onNavigate }) {
         </div>
 
         <div className="player-guide-block">
+          <h2 className="type-caps player-guide-section-label">Spells</h2>
+          <p className="type-body">
+            While at a shrine you may receive a spell. Spells come in small vials — DO NOT DRINK THESE. Take these spells to the potion stand (run by Simi) to find out just what spell you received and receive a BLESSING OR A CURSE depending on your luck.
+          </p>
+        </div>
+
+        <div className="player-guide-block">
           <h2 className="type-caps player-guide-section-label">Dueling</h2>
           <p className="type-body">
             Dueling is a major part of Necropolis. Use it often. Duels are always 1 on 1.
@@ -125,14 +132,7 @@ export function ManualPlayerGuideRoute({ getPathFromRoute, onNavigate }) {
             >
               Combat Guidelines
             </a>
-            .
-          </p>
-        </div>
-
-        <div className="player-guide-block">
-          <h2 className="type-caps player-guide-section-label">Class Rules</h2>
-          <p className="type-body">
-            Each class comes with its own talents, advantages, and bad habits. Know what your class can do before the game begins.{" "}
+            . For class abilities and battle mechanics, see{" "}
             <a
               href={getPathFromRoute({ page: "manual-classes" })}
               onClick={onNavigate({ page: "manual-classes" })}
@@ -140,6 +140,7 @@ export function ManualPlayerGuideRoute({ getPathFromRoute, onNavigate }) {
             >
               Player Classes
             </a>
+            .
           </p>
         </div>
 
