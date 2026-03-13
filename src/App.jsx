@@ -8,6 +8,7 @@ import { CursesRoute } from "./routes/CursesRoute";
 import { BlessingsRoute } from "./routes/BlessingsRoute";
 import { HintCardsRoute } from "./routes/HintCardsRoute";
 import { MinionsRoute } from "./routes/MinionsRoute";
+import { KillContractRoute } from "./routes/KillContractRoute";
 import { CombatRoute } from "./routes/CombatRoute";
 import { ManualRoute } from "./routes/ManualRoute";
 import { ManualClassesRoute } from "./routes/ManualClassesRoute";
@@ -800,6 +801,7 @@ function getRouteFromPath(pathname) {
   if (appPath === "/blessings") return { page: "blessings" };
   if (appPath === "/hint-cards") return { page: "hint-cards" };
   if (appPath === "/minions") return { page: "minions" };
+  if (appPath === "/kill-contract") return { page: "kill-contract" };
   if (appPath === "/manual") return { page: "manual" };
   if (appPath === "/manual/combat") return { page: "manual-combat" };
   if (appPath === "/manual/classes") return { page: "manual-classes" };
@@ -827,6 +829,7 @@ function getPathFromRoute(route) {
   if (route.page === "blessings") return withBase("/blessings");
   if (route.page === "hint-cards") return withBase("/hint-cards");
   if (route.page === "minions") return withBase("/minions");
+  if (route.page === "kill-contract") return withBase("/kill-contract");
   if (route.page === "manual") return withBase("/manual");
   if (route.page === "manual-combat") return withBase("/manual/combat");
   if (route.page === "manual-classes") return withBase("/manual/classes" + (route.anchor ? "#" + route.anchor : ""));
@@ -1482,6 +1485,9 @@ export default function App() {
   }
   if (route.page === "minions") {
     pageContent = <MinionsRoute />;
+  }
+  if (route.page === "kill-contract") {
+    pageContent = <KillContractRoute />;
   }
   if (route.page === "manual") {
     pageContent = <ManualRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;

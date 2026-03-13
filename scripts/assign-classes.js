@@ -4,6 +4,16 @@
  * Usage:
  *   node scripts/assign-classes.js             # assign and write
  *   node scripts/assign-classes.js --dry-run   # preview only
+ *
+ * This file is the class assignment script:
+ *   /Users/wolfe/code/necropolis/scripts/assign-classes.js
+ *
+ * Read this top-to-bottom as:
+ *   1. Load env / class config.
+ *   2. Fetch every character row from Supabase.
+ *   3. Compute one set of class assignments per concord/team.
+ *   4. Diff the computed classes against the DB.
+ *   5. Print the diff, and optionally PATCH the changed rows.
  */
 
 import { readFileSync } from "fs";
@@ -34,6 +44,8 @@ const NECROPOLIS_CLASSES = JSON.parse(
   readFileSync(path.join(__dirname, "../src/data/necropolisClasses.json"), "utf8")
 );
 
+// "Competitive" classes are the ones that participate in scoring.
+// "peasant" and "npc" are fallback/special-case tags and are not scored.
 const COMPETITIVE_CLASSES = NECROPOLIS_CLASSES.filter((c) => c.primaryStat !== null);
 const PEASANT_TAG = "peasant";
 const NPC_TAG = "npc";
@@ -41,7 +53,11 @@ const WIZARD_TAG = "wizard";
 const WIZARD_CLASS_ID = "sepulchral-mage";
 
 // Manually pre-assigned wizards — one per concord, by player ID.
-// These players skip the competitive algorithm and always get wizard.
+// These players skip the normal algorithm and always get wizard.
+//
+// Important: this is id-based, not name-based. If a player's row is deleted
+// and recreated with a new id, this override will stop applying until this list
+// is updated.
 const WIZARD_IDS = new Set([
   "7f6ff7d4-b37e-4ab5-a59c-1bf714ce1cfd", // Gianni          — desire-conspire
   "9c8ddcf2-b817-4444-a8a3-8200389032da", // Marco Dyer      — pleasure-treasure
@@ -104,23 +120,43 @@ async function fetchAllCharacters() {
 // ---------------------------------------------------------------------------
 // Assignment logic
 // ---------------------------------------------------------------------------
+// The algorithm runs one concord at a time.
+//
+// Current model:
+//   - NPCs are excluded.
+//   - Forced wizards are assigned first and reserve the wizard slot.
+//   - Everyone else competes for the remaining unique class slots.
+//   - If someone doesn't win a slot, they temporarily become peasant.
+//   - Second pass: some peasants can be promoted into duplicate non-wizard classes.
+//
+// This is a greedy algorithm, not a globally optimized one. That means it can
+// produce surprising outcomes when ties happen or when the second pass ignores
+// which classes are already present on the team.
 
 function assignNecroClasses(members) {
+  // Final output for this concord: player id -> class tag.
   const result = new Map(); // id → tag string
+
+  // Players who survive the early special-case checks and are allowed into the
+  // main scored assignment pass.
   const competitive = [];
 
-  // Pre-claim the wizard slot so the greedy algorithm can't assign it to anyone else
+  // Track which unique class slots are already taken in the first pass.
+  // `assignedClasses` is keyed by class id (e.g. "sepulchral-mage"), not tag.
+  //
+  // If we have a forced wizard, we reserve the wizard slot here before scoring
+  // anyone else so the greedy pass cannot hand wizard to another player.
   const assignedClasses = new Set();
   const assignedPlayers = new Set();
 
   for (const member of members) {
-    // Manually marked NPCs — excluded from everything
+    // NPCs do not participate in assignment at all.
     if (member.excludedFromCount) {
       result.set(member.id, NPC_TAG);
       continue;
     }
 
-    // Pre-assigned wizards — skip the algorithm entirely
+    // Forced wizards skip scoring entirely.
     if (WIZARD_IDS.has(member.id)) {
       result.set(member.id, WIZARD_TAG);
       assignedClasses.add(WIZARD_CLASS_ID);
@@ -131,18 +167,23 @@ function assignNecroClasses(members) {
     const stats = member.stats ?? {};
     const vals = Object.entries(stats).map(([, v]) => Number(v ?? 0));
     const maxVal = Math.max(0, ...vals);
-    const topCount = vals.filter((v) => v === maxVal).length;
-
-    // No points or 3+ stats tied at top → Peasant
-    if (maxVal === 0 || topCount >= 3) {
+    // Completely statless characters cannot win a real class.
+    if (maxVal === 0) {
       result.set(member.id, PEASANT_TAG);
       continue;
     }
 
+    // Everyone else enters the main competitive pool.
     competitive.push(member);
   }
 
-  // Score each (player, class) pair: primary * 10 + secondaries + dumbLuck * 0.5
+  // Score every (player, class) pair.
+  //
+  // Formula:
+  //   primary * 10 + sum(secondaries) + dumbLuck * 0.5
+  //
+  // Primary stat dominates. Secondary stats matter, but much less.
+  // dumbLuck is a small bonus that can break close contests.
   const completedAtById = new Map(competitive.map((m) => [m.id, m.completedAt ?? ""]));
   const pairs = [];
   for (const member of competitive) {
@@ -156,9 +197,17 @@ function assignNecroClasses(members) {
     }
   }
 
-  // Greedy assignment: best score first; each class and player assigned at most once.
-  // assignedClasses already contains the wizard slot, so it won't be re-assigned.
-  // Tiebreak: earlier character creation (first RSVP) wins
+  // Greedy assignment:
+  //   - highest score pair wins first
+  //   - each player can win only one class in this pass
+  //   - each class slot can be used only once in this pass
+  //
+  // Wizard is already reserved if a forced wizard exists.
+  //
+  // Tiebreaks:
+  //   1. Higher score
+  //   2. Earlier completed_at timestamp
+  //   3. Lexical class id
   pairs.sort((a, b) => {
     const scoreDiff = b.score - a.score;
     if (scoreDiff !== 0) return scoreDiff;
@@ -174,13 +223,27 @@ function assignNecroClasses(members) {
     assignedClasses.add(cls.id);
   }
 
-  // Anyone competitive who didn't win a class slot → Peasant
+  // Anyone who was eligible for scoring but lost every unique slot falls back
+  // to peasant for now.
   for (const member of competitive) {
     if (!result.has(member.id)) result.set(member.id, PEASANT_TAG);
   }
 
-  // Second pass: any peasant with a max stat >= 5 gets a duplicate class.
-  // Wizard is excluded — there can only be one wizard per team.
+  // Second pass:
+  //   promote some peasants into duplicate non-wizard classes.
+  //
+  // Important caveats:
+  //   - This pass does NOT care whether the class is already present on the team.
+  //   - It simply picks the player's best non-wizard score in isolation.
+  //   - That is why this pass can produce "why did this person become another bard
+  //     when the team already had one?" style results.
+  //
+  // Rule:
+  //   - player must currently be peasant
+  //   - player must be RSVP matched
+  //   - player must have at least one stat at 4 or above
+  //
+  // Wizard is excluded here because there should only be one wizard per team.
   const nonWizardClasses = COMPETITIVE_CLASSES.filter((c) => c.id !== WIZARD_CLASS_ID);
   for (const member of members) {
     if (result.get(member.id) !== PEASANT_TAG) continue;
@@ -195,6 +258,9 @@ function assignNecroClasses(members) {
       const primary = Number(stats[cls.primaryStat] ?? 0);
       const secondary = cls.secondaryStats.reduce((sum, s) => sum + Number(stats[s] ?? 0), 0);
       const score = primary * 10 + secondary + dumbLuck * 0.5;
+      // Strictly greater only.
+      // If two classes tie, the earlier class in `nonWizardClasses` wins because
+      // we do not replace the current winner on equality.
       if (score > bestScore) { bestScore = score; bestCls = cls; }
     }
     if (bestCls) result.set(member.id, bestCls.tag);
@@ -206,6 +272,9 @@ function assignNecroClasses(members) {
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
+// This section does no scoring itself.
+// It simply computes assignments, diffs them against the DB, prints the diff,
+// and optionally writes the changed class_name values back to Supabase.
 
 const dryRun = process.argv.includes("--dry-run");
 
@@ -213,21 +282,21 @@ console.log(`Fetching characters…`);
 const characters = await fetchAllCharacters();
 console.log(`${characters.length} characters found.\n`);
 
-// Group by concord and assign
+// Each concord is assigned independently.
 const byConcord = {};
 for (const c of characters) {
   if (!byConcord[c.concordId]) byConcord[c.concordId] = [];
   byConcord[c.concordId].push(c);
 }
 
-const assignments = new Map(); // id → tag
+const assignments = new Map(); // id → computed tag
 for (const members of Object.values(byConcord)) {
   for (const [id, tag] of assignNecroClasses(members)) {
     assignments.set(id, tag);
   }
 }
 
-// Diff against current DB values
+// Only rows whose computed class differs from the DB are considered changes.
 const changes = characters.filter((c) => assignments.get(c.id) !== c.className);
 
 if (changes.length === 0) {
