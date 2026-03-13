@@ -2491,77 +2491,22 @@ html.fonts-ready #root {
   position: relative;
   width: 300px;
   min-height: 525px;
-  background: #d8e8f4;
-  overflow: hidden;
+  background: #ffffff;
   flex-shrink: 0;
-  border: 1px solid #7a8a9a;
+  border: 2px solid #3a2a08;
   box-shadow: none;
 }
 
-.hint-card-border-top,
-.hint-card-border-bottom,
-.hint-card-border-left,
-.hint-card-border-right {
-  font-family: var(--font-logo);
-  font-size: 17px;
-  color: #6b5a0a;
-  letter-spacing: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  line-height: 1;
-}
-
-.hint-card-border-top {
-  position: relative;
-  top: 8px;
-  margin: 0 30px;
-}
-
-.hint-card-border-bottom {
+.hint-card-border {
   position: absolute;
-  bottom: 20px;
-  left: 4px;
-  right: 4px;
-  margin: 0 30px;
-}
-
-.hint-card-border-left {
-  position: absolute;
-  top: 0;
-  left: 20px;
-  bottom: 0;
-  width: 20px;
-  margin: 20px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hint-card-border-right {
-  position: absolute;
-  top: 0;
-  right: 20px;
-  bottom: 0;
-  width: 20px;
-  margin: 20px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hint-card-border-left span {
-  display: inline-block;
-  transform: rotate(90deg);
-}
-
-.hint-card-border-right span {
-  display: inline-block;
-  transform: rotate(-90deg);
+  inset: 16px;
+  border: 1px solid #3a2a08;
+  pointer-events: none;
 }
 
 .hint-card-inner {
   position: absolute;
-  inset: 74px 40px 40px;
+  inset: 36px;
   padding-bottom: 28px;
   display: flex;
   flex-direction: column;
@@ -2577,20 +2522,10 @@ html.fonts-ready #root {
   line-height: 1;
 }
 
-.hint-card-hint {
-  margin: 0 0 14px;
-  font-family: var(--font-logo);
-  font-size: 32px;
-  font-weight: normal;
-  color: #5a4a08;
-  letter-spacing: 7px;
-  text-transform: uppercase;
-  line-height: 1;
-}
-
 .hint-card-icon-wrap {
   flex-shrink: 0;
-  margin-bottom: 20px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 .hint-card-icon {
@@ -2601,23 +2536,13 @@ html.fonts-ready #root {
 }
 
 .hint-card-header {
-  margin: 0 0 4px;
-  font-family: var(--font-logo);
-  font-size: 16px;
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 28px;
   font-weight: normal;
   color: #5a4a08;
-  text-transform: none;
-  letter-spacing: 1px;
-  line-height: 1.2;
-  text-align: center;
-}
-
-.hint-card-tag {
-  margin: 0 0 12px;
-  font-size: 11px;
-  color: #6b5a0a;
-  letter-spacing: 1px;
-  line-height: 1;
+  line-height: 1.1;
+  text-align: left;
 }
 
 .hint-card-lore {
