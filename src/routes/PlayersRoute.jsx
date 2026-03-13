@@ -234,7 +234,7 @@ function StatsList({ character }) {
   );
 }
 
-export function PlayersPage({ characters, teamBlueprint, currentCharacter, characterClassMap, onToggleExcluded, getPathFromRoute, onNavigate }) {
+export function PlayersPage({ characters, teamBlueprint, currentCharacter, characterClassMap, getPathFromRoute, onNavigate }) {
   const adminMode = isAdmin(currentCharacter);
 
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {
@@ -276,14 +276,6 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
                       {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps" style={{fontSize: '6px !important'}}> ({member.realName})</span> : null}
                       {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
                       {/* characterClass display hidden until classes are ready to ship */}
-                      {adminMode ? (
-                        <button
-                          className="type-caps players-admin-toggle"
-                          onClick={() => onToggleExcluded(member.id, !member.excludedFromCount)}
-                        >
-                          {member.excludedFromCount ? "include" : "exclude"}
-                        </button>
-                      ) : null}
                     </p>
                   </div>
                 );

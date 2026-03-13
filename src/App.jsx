@@ -9,7 +9,7 @@ import { CombatRoute } from "./routes/CombatRoute";
 import { ManualRoute } from "./routes/ManualRoute";
 import { ManualClassesRoute } from "./routes/ManualClassesRoute";
 import { ManualPlayerGuideRoute } from "./routes/ManualPlayerGuideRoute";
-import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterById } from "./data/charactersApi";
+import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterProfileById } from "./data/charactersApi";
 import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
 
 const CONCORDS = [
@@ -1089,6 +1089,7 @@ export default function App() {
         birthDate: monthDayToStorageDate(onboardingForm.birthDate),
         zodiacSign,
         concordId: allocatedConcordId,
+        className: "peasant",
         stats: onboardingForm.stats,
         completedAt: new Date().toISOString()
       };
@@ -1369,12 +1370,6 @@ export default function App() {
         characterClassMap={characterClassMap}
         getPathFromRoute={getPathFromRoute}
         onNavigate={navigate}
-        onToggleExcluded={async (characterId, excluded) => {
-          const updated = await updateCharacterById(characterId, { excludedFromCount: excluded });
-          if (updated) {
-            setAllCharacters((prev) => prev.map((c) => c.id === characterId ? { ...c, excludedFromCount: excluded } : c));
-          }
-        }}
       />
     );
   }
@@ -1411,7 +1406,7 @@ export default function App() {
             try {
               let updatedCharacter = null;
               if (character.id) {
-                updatedCharacter = await updateCharacterById(character.id, { characterName });
+                updatedCharacter = await updateCharacterProfileById(character.id, { characterName });
               }
 
               if (!updatedCharacter) {
@@ -1438,7 +1433,7 @@ export default function App() {
             try {
               let updatedCharacter = null;
               if (character.id) {
-                updatedCharacter = await updateCharacterById(character.id, { characterBio });
+                updatedCharacter = await updateCharacterProfileById(character.id, { characterBio });
               }
 
               if (!updatedCharacter) {

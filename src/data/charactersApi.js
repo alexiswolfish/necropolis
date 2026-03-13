@@ -92,6 +92,19 @@ export async function createCharacter(character) {
   return fromDbCharacter(rows[0]);
 }
 
+export async function updateCharacterProfileById(id, patch) {
+  const rows = await supabaseRequest("rpc/update_character_profile", {
+    method: "POST",
+    body: {
+      p_id: id,
+      p_character_name: Object.prototype.hasOwnProperty.call(patch, "characterName") ? (patch.characterName?.trim() || null) : null,
+      p_character_bio: Object.prototype.hasOwnProperty.call(patch, "characterBio") ? (patch.characterBio?.trim() || null) : null
+    }
+  });
+
+  return rows.length ? fromDbCharacter(rows[0]) : null;
+}
+
 export async function updateCharacterById(id, patch) {
   const payload = {};
   if (Object.prototype.hasOwnProperty.call(patch, "characterName")) {
