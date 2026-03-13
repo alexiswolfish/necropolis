@@ -1,11 +1,10 @@
-import React, { useId, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 
 /* Eerie question mark — pale, looming, unsettling */
 function HintQuestionIcon({ className }) {
-  const id = useId().replace(/:/g, "");
   return (
     <svg
       className={className}
@@ -13,25 +12,14 @@ function HintQuestionIcon({ className }) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
     >
-      <defs>
-        <filter id={`hint-q-glow-${id}`}>
-          <feGaussianBlur stdDeviation="1" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
       <text
         x="50"
         y="62"
         textAnchor="middle"
-        fill="#5a4a08"
+        fill="#1e0e3f"
         fontSize="72"
         fontFamily="Spinosa BTW01 Regular, Times New Roman, serif"
         fontWeight="normal"
-        filter={`url(#hint-q-glow-${id})`}
-        style={{ opacity: 0.9 }}
       >
         ?
       </text>
