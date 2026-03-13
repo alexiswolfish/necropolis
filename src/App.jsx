@@ -1421,7 +1421,7 @@ export default function App() {
             try {
               let updatedCharacter = null;
               if (character.id) {
-                updatedCharacter = await updateCharacterProfileById(character.id, { characterName });
+                updatedCharacter = await updateCharacterProfileById(character.id, { characterName, characterBio: character.characterBio });
               }
 
               if (!updatedCharacter) {
@@ -1448,7 +1448,7 @@ export default function App() {
             try {
               let updatedCharacter = null;
               if (character.id) {
-                updatedCharacter = await updateCharacterProfileById(character.id, { characterBio });
+                updatedCharacter = await updateCharacterProfileById(character.id, { characterBio, characterName: character.characterName });
               }
 
               if (!updatedCharacter) {
