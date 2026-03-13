@@ -2576,7 +2576,7 @@ html.fonts-ready #root {
 .player-guide-content {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 56px;
 }
 
 .player-guide-block {
@@ -2635,6 +2635,7 @@ html.fonts-ready #root {
 
 #player-guide-page .type-body {
   margin: 0;
+  max-width: 580px;
 }
 
 @media (max-width: 620px) {

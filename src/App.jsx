@@ -444,13 +444,13 @@ const ZODIAC_SECONDARY_ELEMENT = {
 };
 const TEAM_ELEMENT = Object.fromEntries(Object.values(TEAM_BLUEPRINT).map((team) => [team.id, team.element]));
 const ONBOARDING_STATS = [
-  { key: "pulchritude", label: "Pulchritude", className: "Velvet Oracle" },
-  { key: "grit", label: "Grit", className: "Crypt Warden" },
-  { key: "brawn", label: "Brawn", className: "Iron Revenant" },
-  { key: "shenanigans", label: "Shenanigans", className: "Moon Trickster" },
-  { key: "vigilance", label: "Vigilance", className: "Ash Sentinel" },
-  { key: "mystery", label: "Mystery", className: "Veil Seer" },
-  { key: "dumbLuck", label: "Dumb Luck", className: "Fortune Ghoul" }
+  { key: "pulchritude", label: "Pulchritude", className: "Bard" },
+  { key: "grit", label: "Grit", className: "Druid" },
+  { key: "brawn", label: "Brawn", className: "Fighter" },
+  { key: "shenanigans", label: "Shenanigans", className: "Rogue" },
+  { key: "vigilance", label: "Vigilance", className: "Ranger" },
+  { key: "mystery", label: "Mystery", className: "Wizard" },
+  { key: "dumbLuck", label: "Dumb Luck", className: "Peasant" }
 ];
 const CLASS_BY_STAT = Object.fromEntries(ONBOARDING_STATS.map((stat) => [stat.key, stat.className]));
 const STAT_LABELS = Object.fromEntries(ONBOARDING_STATS.map((stat) => [stat.key, stat.label]));
@@ -733,15 +733,6 @@ function getZodiacSign(dateString) {
   return "Pisces";
 }
 
-function getAssignedClass(stats) {
-  const entries = Object.entries(stats);
-  entries.sort((a, b) => b[1] - a[1]);
-  if (entries.length < 2 || entries[0][1] !== entries[1][1]) {
-    return CLASS_BY_STAT[entries[0][0]] ?? "Doom Herald";
-  }
-  return "Doom Herald";
-}
-
 const CLASS_BY_TAG = Object.fromEntries(NECROPOLIS_CLASSES.map((c) => [c.tag, c]));
 
 
@@ -970,7 +961,6 @@ export default function App() {
     const body = assignedConcord.bodyParagraphs ?? (assignedConcord.body ? [assignedConcord.body] : []);
     return [assignedConcord.lede, ...body].filter(Boolean).slice(0, 2);
   }, [assignedConcord]);
-  const assignedClass = useMemo(() => getAssignedClass(onboardingForm.stats), [onboardingForm.stats]);
   const remainingStatPoints = STAT_POINT_POOL - Object.values(onboardingForm.stats).reduce((total, value) => total + value, 0);
   const canAccessStory = Boolean(character);
 
@@ -1099,7 +1089,6 @@ export default function App() {
         birthDate: monthDayToStorageDate(onboardingForm.birthDate),
         zodiacSign,
         concordId: allocatedConcordId,
-        className: assignedClass,
         stats: onboardingForm.stats,
         completedAt: new Date().toISOString()
       };

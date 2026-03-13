@@ -10,7 +10,7 @@ export function ManualPlayerGuideRoute({ getPathFromRoute, onNavigate }) {
       >
         <span className="type-logo page-back-arrow">‹</span>Handbook
       </a>
-      <p className="type-logo header-accent">Game Guide</p>
+      <h1 className="classes-page-heading">Game Guide</h1>
 
       <section className="player-guide-content">
         <div className="player-guide-block">
