@@ -9,6 +9,7 @@ import { MinionsRoute } from "./routes/MinionsRoute";
 import { CombatRoute } from "./routes/CombatRoute";
 import { ManualRoute } from "./routes/ManualRoute";
 import { ManualClassesRoute } from "./routes/ManualClassesRoute";
+import { ManualOssuaryRoute } from "./routes/ManualOssuaryRoute";
 import { ManualPlayerGuideRoute } from "./routes/ManualPlayerGuideRoute";
 import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterProfileById } from "./data/charactersApi";
 import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
@@ -799,6 +800,7 @@ function getRouteFromPath(pathname) {
   if (appPath === "/manual/combat") return { page: "manual-combat" };
   if (appPath === "/manual/classes") return { page: "manual-classes" };
   if (appPath === "/manual/player-guide") return { page: "manual-player-guide" };
+  if (appPath === "/manual/ossuary") return { page: "manual-ossuary" };
   if (appPath === "/concords") return { page: "concords" };
   if (appPath === "/concords/spare") return { page: "concords-spare" };
   if (appPath === "/players") return { page: "players" };
@@ -823,6 +825,7 @@ function getPathFromRoute(route) {
   if (route.page === "manual-combat") return withBase("/manual/combat");
   if (route.page === "manual-classes") return withBase("/manual/classes" + (route.anchor ? "#" + route.anchor : ""));
   if (route.page === "manual-player-guide") return withBase("/manual/player-guide");
+  if (route.page === "manual-ossuary") return withBase("/manual/ossuary");
   if (route.page === "concords") return withBase("/concords");
   if (route.page === "concords-spare") return withBase("/concords/spare");
   if (route.page === "players") return withBase("/players");
@@ -1480,6 +1483,9 @@ export default function App() {
   if (route.page === "manual-player-guide") {
     pageContent = <ManualPlayerGuideRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
   }
+  if (route.page === "manual-ossuary") {
+    pageContent = <ManualOssuaryRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
   if (route.page === "not-found") {
     pageContent = <NotFoundPage onReturnHome={navigate({ page: "home" })} />;
   }
@@ -1487,7 +1493,7 @@ export default function App() {
   const inConcordsSection = concordsVisible;
   const inPlayersSection = route.page === "players" || route.page === "player-detail";
   const inCharacterSection = route.page === "character";
-  const inManualSection = route.page === "manual" || route.page === "manual-combat" || route.page === "manual-classes" || route.page === "manual-player-guide";
+  const inManualSection = route.page === "manual" || route.page === "manual-combat" || route.page === "manual-classes" || route.page === "manual-player-guide" || route.page === "manual-ossuary";
 
   return (
     <div className="page-shell" data-page={route.page} data-concord={themedConcord ? themedConcord.id : undefined}>

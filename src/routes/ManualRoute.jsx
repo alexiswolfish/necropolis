@@ -35,6 +35,16 @@ export function ManualRoute({ getPathFromRoute, onNavigate }) {
           </a>
           <p className="manual-entry-byline type-body">Perks and Persuasions</p>
         </div>
+        <div className="manual-entry">
+          <a
+            href={getPathFromRoute({ page: "manual-ossuary" })}
+            onClick={onNavigate({ page: "manual-ossuary" })}
+            className="manual-entry-title"
+          >
+            Ossuary of Unspoken Grief
+          </a>
+          <p className="manual-entry-byline type-body">Entry times at The Japanese Tea House</p>
+        </div>
       </nav>
     </main>
   );

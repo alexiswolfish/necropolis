@@ -2055,6 +2055,12 @@ html.fonts-ready #root {
   margin: 0;
 }
 
+.minions-note {
+  font-style: italic;
+  opacity: 0.9;
+  margin-top: 12px;
+}
+
 @media (max-width: 620px) {
   .minions-page-title {
     font-size: 40px;
@@ -2544,6 +2550,110 @@ html.fonts-ready #root {
   .manual-entry-byline {
     font-size: 20px;
     padding-top: 4px;
+  }
+}
+
+.ossuary-layout {
+  width: min(780px, 100%);
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+.ossuary-header-accent {
+  font-size: 44px;
+  font-weight: 400;
+  color: #f37420;
+  letter-spacing: 4px;
+  margin: 0 0 8px;
+  line-height: 1;
+}
+
+.ossuary-location {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary, #888);
+  margin: 0 0 32px;
+}
+
+.ossuary-intro {
+  margin: 0 0 40px;
+  max-width: 520px;
+  line-height: 1.6;
+}
+
+.ossuary-schedule-wrap {
+  padding: 32px 36px 36px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  max-width: 380px;
+}
+
+.ossuary-schedule-label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--color-text-secondary, #888);
+  margin: 0 0 20px;
+}
+
+.ossuary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 18px;
+}
+
+.ossuary-table td {
+  padding: 10px 0;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ossuary-table tr:last-child td {
+  border-bottom: none;
+}
+
+.ossuary-row-break td {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  padding-top: 16px;
+}
+
+.ossuary-time {
+  color: var(--color-text-secondary, #888);
+  white-space: nowrap;
+  padding-right: 24px;
+  font-size: 16px;
+}
+
+.ossuary-slot {
+  color: var(--theme-heading-color);
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.ossuary-row-break .ossuary-slot {
+  font-family: var(--font-caps);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary, #888);
+}
+
+@media (max-width: 620px) {
+  .ossuary-layout {
+    padding: 32px 24px 80px;
+  }
+
+  .ossuary-header-accent {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+
+  .ossuary-schedule-wrap {
+    padding: 24px 24px 28px;
+  }
+
+  .ossuary-slot {
+    font-size: 17px;
   }
 }
 

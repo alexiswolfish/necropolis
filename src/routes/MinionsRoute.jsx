@@ -27,6 +27,9 @@ export function MinionsRoute() {
           <p className="type-body">
             Carry a die with you at all times.
           </p>
+          <p className="type-body minions-note">
+            Note: Picking people off when they are at a shrine will cause chaos.
+          </p>
         </div>
 
         <div className="minions-block">
