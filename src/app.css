@@ -2267,6 +2267,445 @@ html.fonts-ready #root {
   border-color: #f37420;
 }
 
+/* ─── Blessings route (white & gold) ───────────────────────────────────── */
+.blessings-layout {
+  padding: 48px 24px 64px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.blessings-page-title {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--color-text-caps);
+  margin: 0 0 32px;
+  text-align: center;
+}
+
+.blessings-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px 36px;
+  justify-content: center;
+}
+
+.blessing-card-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.blessing-card {
+  position: relative;
+  width: 300px;
+  height: 525px;
+  background: #1a1a1c;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid #f5e6b3;
+}
+
+.blessing-card-border-top,
+.blessing-card-border-bottom,
+.blessing-card-border-left,
+.blessing-card-border-right {
+  font-family: var(--font-logo);
+  font-size: 17px;
+  color: #d4af37;
+  letter-spacing: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.blessing-card-border-top {
+  position: relative;
+  top: 8px;
+  margin: 0 30px;
+}
+
+.blessing-card-border-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 4px;
+  right: 4px;
+  margin: 0 30px;
+}
+
+.blessing-card-border-left {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  bottom: 0;
+  width: 20px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blessing-card-border-right {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  bottom: 0;
+  width: 20px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blessing-card-border-left span {
+  display: inline-block;
+  transform: rotate(90deg);
+}
+
+.blessing-card-border-right span {
+  display: inline-block;
+  transform: rotate(-90deg);
+}
+
+.blessing-card-inner {
+  position: absolute;
+  inset: 74px 40px 40px;
+  padding-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.blessing-card-you-are {
+  margin: 0 0 3px;
+  font-size: 11px;
+  color: #f5e6b3;
+  line-height: 1;
+}
+
+.blessing-card-blessed {
+  margin: 0 0 14px;
+  font-family: var(--font-logo);
+  font-size: 32px;
+  font-weight: normal;
+  color: #ffffff;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.blessing-card-icon-wrap {
+  flex-shrink: 0;
+  margin-bottom: 24px;
+}
+
+.blessing-card-icon {
+  display: block;
+  width: 110px;
+  height: 110px;
+}
+
+.blessing-card-header {
+  margin: 0 0 9px;
+  font-family: var(--font-logo);
+  font-size: 18px;
+  font-weight: normal;
+  color: #d4af37;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.blessing-card-body {
+  margin: 0;
+  font-size: 16px;
+  color: #f5e6b3;
+  line-height: 1.24;
+  text-align: left;
+  width: 100%;
+}
+
+.blessing-card-spinosa-word {
+  font-family: var(--font-logo);
+  font-size: 14px;
+  color: #d4af37;
+}
+
+.blessing-card-xx {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  font-family: var(--font-logo);
+  font-size: 23px;
+  color: #d4af37;
+  letter-spacing: 6px;
+  line-height: 1;
+  text-align: center;
+}
+
+.blessing-card-dl-btn {
+  font-family: var(--font-caps);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #f5e6b3;
+  background: transparent;
+  border: 1px solid rgba(245, 230, 179, 0.4);
+  padding: 7px 18px;
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+
+.blessing-card-dl-btn:hover {
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* ─── Hint Cards route (light blue bg, dark yellow text) ───────────────── */
+.hint-cards-layout {
+  padding: 48px 24px 64px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hint-cards-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px 32px;
+  margin-bottom: 32px;
+}
+
+.hint-cards-page-title {
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--color-text-caps);
+  margin: 0;
+  text-align: center;
+}
+
+.hint-cards-pdf-btn {
+  font-family: var(--font-caps);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #6b5a0a;
+  background: transparent;
+  border: 1px solid rgba(90, 74, 10, 0.5);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+
+.hint-cards-pdf-btn:hover:not(:disabled) {
+  color: #5a4a08;
+  border-color: #6b5a0a;
+}
+
+.hint-cards-pdf-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.hint-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px 36px;
+  justify-content: center;
+}
+
+.hint-card-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.hint-card-print-count {
+  margin: 0;
+  font-size: 11px;
+  color: #6b5a0a;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.hint-card {
+  position: relative;
+  width: 300px;
+  min-height: 525px;
+  background: #d8e8f4;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid #7a8a9a;
+  box-shadow: none;
+}
+
+.hint-card-border-top,
+.hint-card-border-bottom,
+.hint-card-border-left,
+.hint-card-border-right {
+  font-family: var(--font-logo);
+  font-size: 17px;
+  color: #6b5a0a;
+  letter-spacing: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.hint-card-border-top {
+  position: relative;
+  top: 8px;
+  margin: 0 30px;
+}
+
+.hint-card-border-bottom {
+  position: absolute;
+  bottom: 20px;
+  left: 4px;
+  right: 4px;
+  margin: 0 30px;
+}
+
+.hint-card-border-left {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  bottom: 0;
+  width: 20px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hint-card-border-right {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  bottom: 0;
+  width: 20px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hint-card-border-left span {
+  display: inline-block;
+  transform: rotate(90deg);
+}
+
+.hint-card-border-right span {
+  display: inline-block;
+  transform: rotate(-90deg);
+}
+
+.hint-card-inner {
+  position: absolute;
+  inset: 74px 40px 40px;
+  padding-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hint-card-you-are-given {
+  margin: 0 0 3px;
+  font-size: 11px;
+  color: #6b5a0a;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.hint-card-hint {
+  margin: 0 0 14px;
+  font-family: var(--font-logo);
+  font-size: 32px;
+  font-weight: normal;
+  color: #5a4a08;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.hint-card-icon-wrap {
+  flex-shrink: 0;
+  margin-bottom: 20px;
+}
+
+.hint-card-icon {
+  display: block;
+  width: 90px;
+  height: 90px;
+  filter: none;
+}
+
+.hint-card-header {
+  margin: 0 0 4px;
+  font-family: var(--font-logo);
+  font-size: 16px;
+  font-weight: normal;
+  color: #5a4a08;
+  text-transform: none;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.hint-card-tag {
+  margin: 0 0 12px;
+  font-size: 11px;
+  color: #6b5a0a;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.hint-card-lore {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #5a4a08;
+  line-height: 1.3;
+  text-align: left;
+  width: 100%;
+  font-style: italic;
+}
+
+.hint-card-therefore {
+  margin: 0;
+  font-size: 14px;
+  color: #5a4a08;
+  line-height: 1.3;
+  text-align: left;
+  width: 100%;
+}
+
+.hint-card-dl-btn {
+  font-family: var(--font-caps);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #6b5a0a;
+  background: transparent;
+  border: 1px solid rgba(90, 74, 10, 0.5);
+  padding: 7px 18px;
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+
+.hint-card-dl-btn:hover {
+  color: #5a4a08;
+  border-color: #6b5a0a;
+}
+
 /* ── Combat Route ───────────────────────────────────────────────────────── */
 /* Combat page — layout only; typography comes from type utilities */
 #combat-page .type-caps {

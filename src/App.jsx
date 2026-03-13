@@ -5,6 +5,8 @@ import { BeginGate, OnboardingWizard } from "./routes/OnboardingRoute";
 import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
 import { CharacterPage, PlayersPage, PublicCharacterPage } from "./routes/PlayersRoute";
 import { CursesRoute } from "./routes/CursesRoute";
+import { BlessingsRoute } from "./routes/BlessingsRoute";
+import { HintCardsRoute } from "./routes/HintCardsRoute";
 import { MinionsRoute } from "./routes/MinionsRoute";
 import { CombatRoute } from "./routes/CombatRoute";
 import { ManualRoute } from "./routes/ManualRoute";
@@ -795,6 +797,8 @@ function getRouteFromPath(pathname) {
   const appPath = stripBase(pathname);
   if (appPath === "/") return { page: "home" };
   if (appPath === "/curses") return { page: "curses" };
+  if (appPath === "/blessings") return { page: "blessings" };
+  if (appPath === "/hint-cards") return { page: "hint-cards" };
   if (appPath === "/minions") return { page: "minions" };
   if (appPath === "/manual") return { page: "manual" };
   if (appPath === "/manual/combat") return { page: "manual-combat" };
@@ -820,6 +824,8 @@ function getRouteFromPath(pathname) {
 function getPathFromRoute(route) {
   if (route.page === "home") return withBase("/");
   if (route.page === "curses") return withBase("/curses");
+  if (route.page === "blessings") return withBase("/blessings");
+  if (route.page === "hint-cards") return withBase("/hint-cards");
   if (route.page === "minions") return withBase("/minions");
   if (route.page === "manual") return withBase("/manual");
   if (route.page === "manual-combat") return withBase("/manual/combat");
@@ -1467,6 +1473,12 @@ export default function App() {
   }
   if (route.page === "curses") {
     pageContent = <CursesRoute />;
+  }
+  if (route.page === "blessings") {
+    pageContent = <BlessingsRoute />;
+  }
+  if (route.page === "hint-cards") {
+    pageContent = <HintCardsRoute />;
   }
   if (route.page === "minions") {
     pageContent = <MinionsRoute />;
