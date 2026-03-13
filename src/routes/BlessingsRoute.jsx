@@ -10,6 +10,97 @@ const BLESS_ICON_SRC = `${import.meta.env.BASE_URL}bless-icon.svg`;
 
 export const BLESSING_CARDS = [
   {
+    id: "blessing-sanctified",
+    header: "SANCTIFIED",
+    body: [
+      { text: "The next time you would be " },
+      { highlight: "CURSED" },
+      { text: ", discard this card and remain immune." },
+      { br: true },
+      { br: true },
+      { text: "You may then give the curse to someone of your choice." },
+    ],
+  },
+  {
+    id: "blessing-second-wind",
+    header: "SECOND WIND",
+    body: [
+      { text: "The next time you lose a round of BRUTAL combat, you may burn this blessing to begin the round again." },
+    ],
+  },
+  {
+    id: "blessing-feeling-lucky",
+    header: "FEELING LUCKY",
+    body: [
+      { text: "The next time you FAIL a challenge, if available, roll a luck dice. On a 3, you succeed." },
+    ],
+  },
+  {
+    id: "blessing-foresight",
+    header: "FORESIGHT",
+    body: [
+      { text: "Right before trying a SHRINE TRIAL, show the keeper this card. If you fail, you may not be cursed. Burn afterwards." },
+    ],
+  },
+  {
+    id: "blessing-geas",
+    header: "GEAS",
+    body: [
+      { text: "When challenged to combat, you may choose another player to fight in your place." },
+    ],
+  },
+  {
+    id: "blessing-boon",
+    header: "BOON",
+    body: [
+      { text: "Write the name of another player on the back of this card and give it to them. They owe you a favor before the night ends." },
+    ],
+  },
+  {
+    id: "blessing-righteous-scorn",
+    header: "RIGHTEOUS SCORN",
+    body: [
+      { text: "Write the name of another player upon this card. If they are under a " },
+      { highlight: "CURSE" },
+      { text: ", they must give you one of their soul shards. Discard this blessing." },
+    ],
+  },
+  {
+    id: "blessing-revelry",
+    header: "REVELRY",
+    body: [
+      { text: "Give out three drinks. Next time you must be re-incarnated, gain an extra soul shard." },
+      { br: true },
+      { br: true },
+      { text: "Give this card to ALEX." },
+    ],
+  },
+  {
+    id: "blessing-cleansing",
+    header: "CLEANSING",
+    body: [
+      { text: "Gather three players and perform a ritual bow together. All participants may end the suffering of a single " },
+      { highlight: "CURSE" },
+      { text: "." },
+    ],
+  },
+  {
+    id: "blessing-procession",
+    header: "PROCESSION",
+    body: [
+      { text: "Choose two players. They must follow you in a line until you attempt the next shrine trial." },
+    ],
+  },
+  {
+    id: "blessing-exorcism",
+    header: "EXORCISM",
+    body: [
+      { text: "Have another player kneel before you. You may remove one of their " },
+      { highlight: "CURSES" },
+      { text: "." },
+    ],
+  },
+  {
     id: "blessing-pacifism",
     header: "PACIFISM",
     body: [
@@ -17,56 +108,6 @@ export const BLESSING_CARDS = [
       { br: true },
       { br: true },
       { text: "Discard afterwards." },
-    ],
-  },
-  {
-    id: "blessing-grace",
-    header: "GRACE",
-    body: [
-      { text: "Once per event, when you would receive a " },
-      { highlight: "CURSE" },
-      { text: ", you may instead refuse it. The curse returns to the giver." },
-    ],
-  },
-  {
-    id: "blessing-favor",
-    header: "FAVOR",
-    body: [
-      { text: "A member of your " },
-      { highlight: "CONCORD" },
-      { text: " may perform one BOON of service for you in your stead." },
-    ],
-  },
-  {
-    id: "blessing-radiance",
-    header: "RADIANCE",
-    body: [
-      { text: "Your presence draws attention. Add " },
-      { highlight: "+1" },
-      { text: " to the outcome of your next Duel if an audience of at least three witnesses watches." },
-    ],
-  },
-  {
-    id: "blessing-sanctuary",
-    header: "SANCTUARY",
-    body: [
-      { text: "You may grant one other player temporary refuge. They may not be challenged to combat while standing within arm's reach of you." },
-    ],
-  },
-  {
-    id: "blessing-ward",
-    header: "WARD",
-    body: [
-      { text: "Once per event, when a denizen aligned to " },
-      { highlight: "EARTH" },
-      { text: " would kill you, you may hand them a cleansed Curse Card instead of a Soul Shard." },
-    ],
-  },
-  {
-    id: "blessing-beacon",
-    header: "BEACON",
-    body: [
-      { text: "You shine in the dark. The next player who asks you for directions must accompany you to a shrine of your choice." },
     ],
   },
 ];
@@ -107,7 +148,7 @@ function BlessingCard({ card }) {
           <p className="blessing-card-body type-body">
             {card.body.map((seg, i) =>
               "highlight" in seg
-                ? <span key={i} className={`blessing-card-highlight${seg.highlight === "CURSE" ? " blessing-card-highlight--curse" : ""}`}>{seg.highlight}</span>
+                ? <span key={i} className={`blessing-card-highlight${seg.highlight.startsWith("CURSE") ? " blessing-card-highlight--curse" : ""}`}>{seg.highlight}</span>
                 : "br" in seg
                 ? <br key={i} />
                 : seg.text
