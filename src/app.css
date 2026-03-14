@@ -3526,6 +3526,44 @@ html.fonts-ready #root {
   margin: 0;
 }
 
+.ros-denied-form {
+  margin-top: 24px;
+  padding-bottom: 40px;
+}
+
+.ros-denied-input {
+  font-size: 1.25rem;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: inherit;
+  border-radius: 4px;
+  text-align: center;
+  outline: none;
+}
+
+.ros-denied-input::placeholder {
+  opacity: 0.35;
+}
+
+.ros-denied-submit {
+  display: block;
+  margin: 12px auto 0;
+  padding: 8px 24px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: inherit;
+  border-radius: 4px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.ros-denied-submit:hover {
+  opacity: 1;
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .ros-layout {

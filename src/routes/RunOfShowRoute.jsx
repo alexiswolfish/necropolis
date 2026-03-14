@@ -28,6 +28,8 @@ function C({ children }) {
 
 export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
   const [activeAct, setActiveAct] = useState("pregame");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordGranted, setPasswordGranted] = useState(false);
   const observerRef = useRef(null);
 
   useEffect(() => {
@@ -50,13 +52,34 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
     return () => observerRef.current?.disconnect();
   }, []);
 
-  if (!hasAccess(character)) {
+  if (!hasAccess(character) && !passwordGranted) {
     return (
       <main className="ros-layout ros-access-denied">
         <p className="ros-denied-label type-caps">Run of Show</p>
         <p className="ros-denied-title">Death</p>
         <p className="ros-denied-sub">must claim us all</p>
         <p className="ros-denied-message type-body">This page is restricted.</p>
+        <form
+          className="ros-denied-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (passwordInput.trim().toLowerCase() === "candle") {
+              setPasswordGranted(true);
+            } else {
+              setPasswordInput("");
+            }
+          }}
+        >
+          <input
+            className="ros-denied-input"
+            type="password"
+            placeholder="password"
+            value={passwordInput}
+            onChange={(e) => setPasswordInput(e.target.value)}
+            autoComplete="off"
+          />
+          <button className="ros-denied-submit type-caps" type="submit">Enter</button>
+        </form>
       </main>
     );
   }
