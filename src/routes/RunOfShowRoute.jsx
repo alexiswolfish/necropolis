@@ -21,6 +21,11 @@ const ACTS = [
   { id: "act-five", label: "Finale", heading: "ACT FIVE" },
 ];
 
+// Shorthand for inline type-caps spans
+function C({ children }) {
+  return <span className="type-caps">{children}</span>;
+}
+
 export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
   const [activeAct, setActiveAct] = useState("pregame");
   const observerRef = useRef(null);
@@ -78,7 +83,7 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
         </div>
       </nav>
 
-      {/* Mobile-only sticky jump bar — direct child of ros-layout so it has full page height as its sticky container */}
+      {/* Mobile-only sticky jump bar */}
       <div className="ros-jump-bar">
         <div className="ros-jump-links">
           {ACTS.filter((a) => a.heading).map((act) => (
@@ -94,12 +99,13 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
       </div>
 
       <div className="ros-content">
-        {/* Mobile-only content header — scrolls with the page */}
+        {/* Mobile-only content header */}
         <div className="ros-content-header">
           <p className="ros-nav-meta type-caps">Run of Show</p>
           <p className="ros-nav-title">Death</p>
           <p className="ros-nav-sub">must claim us all</p>
         </div>
+
         {/* Pregame */}
         <section id="pregame" className="ros-section">
           <div className="ros-section-header">
@@ -109,7 +115,7 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
             <p className="ros-subsection-label type-caps">What must be done</p>
             <ul className="ros-list type-body">
               <li>
-                Alex + Jordan have a greeter stand to hand out team materials. Everyone gets a:
+                <C>Alex</C> + <C>Jordan</C> have a greeter stand to hand out team materials. Everyone gets a:
                 <ul>
                   <li>set of combat cards</li>
                   <li>perk cards for their class</li>
@@ -117,19 +123,19 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
                   <li>a soul shard chain</li>
                 </ul>
               </li>
-              <li>KATE is giving each team a flower pin with their team colors.</li>
+              <li><C>Kate</C> is giving each team a flower pin with their team colors.</li>
               <li>
-                SHRINE KEEPERS get:
+                <C>Shrine Keepers</C> get:
                 <ul>
                   <li>8 of their relic</li>
                   <li>8 certificates of completion</li>
                   <li>a stack of curses</li>
                   <li>a "lucky dice" for players with dumb luck</li>
-                  <li>a list of "LUCKY" players</li>
+                  <li>a list of <C>Lucky</C> players</li>
                 </ul>
               </li>
               <li>
-                SIMI gets:
+                <C>Simi</C> gets:
                 <ul>
                   <li>a stack of blessings</li>
                 </ul>
@@ -165,13 +171,13 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
                     <ul>
                       <li>Explain Relic games</li>
                       <li>Introduce shrine keepers</li>
-                      <li>Explain Curses and Blessings</li>
+                      <li>Explain <C>Curses</C> and <C>Blessings</C></li>
                     </ul>
                   </li>
                   <li>
-                    Explain COMBAT
+                    Explain <C>Combat</C>
                     <ul>
-                      <li>Alex and Jordan demonstrate combat</li>
+                      <li><C>Alex</C> and <C>Jordan</C> demonstrate combat</li>
                       <li>Teams practice combat amongst themselves</li>
                       <li>You cannot engage in combat if you are out of shards</li>
                     </ul>
@@ -192,7 +198,7 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
           </div>
           <div className="ros-subsection">
             <p className="ros-subsection-label type-caps">Where it happens</p>
-            <p className="ros-subsection-value type-body">OUTSIDE / The Venue</p>
+            <p className="ros-subsection-value type-body">Outside / The Venue</p>
           </div>
           <div className="ros-subsection">
             <p className="ros-subsection-label type-caps">What must be done</p>
@@ -202,13 +208,13 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
               <ul className="ros-list type-body">
                 <li>Players compete in the Shrine games</li>
                 <li>Players give soul tokens to each other on Death</li>
-                <li>Players give soul tokens to JESS + KAVYA to track kills</li>
-                <li>Players get NEW soul tokens from Alex when they run out</li>
-                <li>Players can give spent/cured curses to SHRINE KEEPERS or DEATH'S MINIONS</li>
+                <li>Players give soul tokens to <C>Jess</C> + <C>Kavya</C> to track kills</li>
+                <li>Players get new soul tokens from <C>Alex</C> when they run out</li>
+                <li>Players can give spent/cured curses to <C>Shrine Keepers</C> or <C>Death's Minions</C></li>
                 <li>
-                  If a player has at least ONE soul token, they can play your game
+                  If a player has at least one soul token, they can play your game
                   <ul>
-                    <li>If a player has no soul tokens and attempts to play — CURSE them</li>
+                    <li>If a player has no soul tokens and attempts to play — <C>Curse</C> them</li>
                   </ul>
                 </li>
               </ul>
@@ -217,18 +223,18 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
             <div className="ros-list-group">
               <p className="ros-list-group-label type-caps">Shrine Keepers</p>
               <ul className="ros-list type-body">
-                <li>Shrine Keepers hand out CERTIFICATES if players complete your games</li>
-                <li>Shrine Keepers hand out RELICS if you solve their relic clue</li>
+                <li><C>Shrine Keepers</C> hand out <C>Certificates</C> if players complete your games</li>
+                <li><C>Shrine Keepers</C> hand out <C>Relics</C> if you solve their relic clue</li>
                 <li>
-                  Shrine Keepers hand out CURSES if your shrine challenge is failed, or if you feel like it. Curse people at will.
+                  <C>Shrine Keepers</C> hand out <C>Curses</C> if your shrine challenge is failed, or if you feel like it. Curse people at will.
                   <ul>
-                    <li>If a player has the "FEELING LUCKY" feat, let them roll a dice. On a 3 they are not cursed.</li>
+                    <li>If a player has the <C>Feeling Lucky</C> feat, let them roll a dice. On a 3 they are not cursed.</li>
                   </ul>
                 </li>
                 <li>
-                  When a TEAM completes the Rite of Final Passage, <strong>Geri + Shane</strong> send them to Alex to mark their finishing order in the grand tournament
+                  When a team completes the Rite of Final Passage, <strong><C>Geri</C> + <C>Shane</C></strong> send them to <C>Alex</C> to mark their finishing order in the grand tournament
                   <ul>
-                    <li>Alex gives that team a <strong>BLESSED</strong> card and updates them in the website</li>
+                    <li><C>Alex</C> gives that team a <strong><C>Blessed</C></strong> card and updates them in the website</li>
                   </ul>
                 </li>
               </ul>
@@ -237,24 +243,24 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
             <div className="ros-list-group">
               <p className="ros-list-group-label type-caps">Specific Shrines</p>
               <ul className="ros-list type-body">
-                <li>Jess + Kavya tally how many kills from each team</li>
-                <li>Simi gives away BLESSINGS</li>
-                <li>Simi gives away WIZARD KILLS</li>
-                <li>Shane + Geri send teams to Alex after they get all relics to have their rank in the tournament recorded</li>
-                <li>Alex gives HOLLOW or BLESSED cards</li>
+                <li><C>Jess</C> + <C>Kavya</C> tally how many kills from each team</li>
+                <li><C>Simi</C> gives away <C>Blessings</C></li>
+                <li><C>Simi</C> gives away <C>Wizard Kills</C></li>
+                <li><C>Shane</C> + <C>Geri</C> send teams to <C>Alex</C> after they get all relics to have their rank in the tournament recorded</li>
+                <li><C>Alex</C> gives <C>Hollow</C> or <C>Blessed</C> cards</li>
               </ul>
             </div>
 
             <div className="ros-list-group">
               <p className="ros-list-group-label type-caps">GMs</p>
               <ul className="ros-list type-body">
-                <li>SIMI hands out BLESSINGS if you complete her potion games</li>
-                <li>JORDAN hands out HINT CARDS if people are getting stuck</li>
-                <li>JORDAN + DEATH'S MINIONS enforce curses</li>
+                <li><C>Simi</C> hands out <C>Blessings</C> if you complete her potion games</li>
+                <li><C>Jordan</C> hands out <C>Hint Cards</C> if people are getting stuck</li>
+                <li><C>Jordan</C> + <C>Death's Minions</C> enforce curses</li>
                 <li>
-                  If a player has <strong>more than 6 deaths</strong>, the next time they see <strong>Alex</strong> she weighs their soul
+                  If a player has <strong>more than 6 deaths</strong>, the next time they see <strong><C>Alex</C></strong> she weighs their soul
                   <ul>
-                    <li>Give them a <strong>HOLLOW</strong> card and update them in the website</li>
+                    <li>Give them a <strong><C>Hollow</C></strong> card and update them in the website</li>
                   </ul>
                 </li>
               </ul>
@@ -270,9 +276,9 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
           </div>
           <div className="ros-subsection">
             <p className="ros-subsection-label type-caps">Where it happens</p>
-            <p className="ros-subsection-value type-body">THE REDWOODS / THE AMPHITHEATER</p>
+            <p className="ros-subsection-value type-body">The Redwoods / The Amphitheater</p>
             <p className="ros-subsection-note type-body">
-              Death's Minions tell the Shrine Keepers it's time to kick off Act III. Shrine Keepers stop running your shrine. All NPCs usher players back into the AMPHITHEATER by Nancy + Max's Shrine. Players sit on the bleachers, roughly with their teams.
+              <C>Death's Minions</C> tell the <C>Shrine Keepers</C> it's time to kick off Act III. <C>Shrine Keepers</C> stop running your shrine. All NPCs usher players back into the Amphitheater by <C>Nancy</C> + <C>Max</C>'s Shrine. Players sit on the bleachers, roughly with their teams.
             </p>
           </div>
           <div className="ros-subsection">
@@ -284,13 +290,13 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
                   onClick={onNavigate({ page: "run-of-show-tournament" })}
                   className="ros-script-link"
                 >
-                  [SCRIPT] Declare VICTORS for the tournament
+                  [SCRIPT] Declare Victors for the tournament
                 </a>
               </li>
               <li>
-                WIN CONDITION:
+                <C>Win Condition</C>:
                 <ul>
-                  <li>TEAMS that got all 5 relics — we have them compete to see who "wins"</li>
+                  <li>Teams that got all 5 relics — we have them compete to see who "wins"</li>
                   <li>
                     Players with the highest individual kill counts
                     <ul>
@@ -300,26 +306,26 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
                   <li>
                     Teams with the highest kill counts + all 5 relics
                     <ul>
-                      <li>We have them pick "CHAMPIONS" for each contest</li>
+                      <li>We have them pick <C>Champions</C> for each contest</li>
                     </ul>
                   </li>
                 </ul>
               </li>
               <li>
-                TOURNAMENT GAME: We pick 3 mini games for the great tournament, each loosely involved around a stat.
+                <C>Tournament Game</C>: We pick 3 mini games for the great tournament, each loosely involved around a stat.
                 <ul>
-                  <li>PULCHRITUDE — GRAND ENTRANCE (contestants can pick a song, and have to do a walk around the arena). The crowd cheers, and we have a panel of judges who judge them on the spot</li>
+                  <li><C>Pulchritude</C> — <C>Grand Entrance</C> (contestants can pick a song, and have to do a walk around the arena). The crowd cheers, and we have a panel of judges who judge them on the spot</li>
                   <li>
-                    BRAWN — Arm Wrestling OR Sword Fight (fencing rules)
+                    <C>Brawn</C> — Arm Wrestling or Sword Fight (fencing rules)
                     <ul>
-                      <li>Have Emily run the sound mixer</li>
+                      <li>Have <C>Emily</C> run the sound mixer</li>
                     </ul>
                   </li>
-                  <li>GRIT — planking?? first one to make a sound??</li>
-                  <li>VIGILANCE — Archery</li>
-                  <li>SHENANIGANS — Riddles or RAPPING / RHYMES</li>
-                  <li>MYSTERY — Jeopardy???</li>
-                  <li>DUMB LUCK — Dice rolls???</li>
+                  <li><C>Grit</C> — planking?? first one to make a sound??</li>
+                  <li><C>Vigilance</C> — Archery</li>
+                  <li><C>Shenanigans</C> — Riddles or Rapping / Rhymes</li>
+                  <li><C>Mystery</C> — Jeopardy???</li>
+                  <li><C>Dumb Luck</C> — Dice rolls???</li>
                 </ul>
               </li>
               <li>
@@ -328,7 +334,7 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
                   onClick={onNavigate({ page: "run-of-show-tournament" })}
                   className="ros-script-link"
                 >
-                  [SCRIPT] — Transfer the party back to the Great Hall for the "CROWNING" of the VICTOR
+                  [SCRIPT] — Transfer the party back to the Great Hall for the crowning of the <C>Victor</C>
                 </a>
               </li>
             </ul>
@@ -338,11 +344,11 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
           <div className="ros-subsection ros-callout">
             <p className="ros-subsection-label type-caps">Before the transition to Act Four</p>
             <p className="ros-callout-body type-body">
-              <strong>Geri, Jess, and Kavya</strong> slip out before everyone else and position themselves at the entrance to the Great Hall.
+              <strong><C>Geri</C>, <C>Jess</C>, and <C>Kavya</C></strong> slip out before everyone else and position themselves at the entrance to the Great Hall.
             </p>
             <ul className="ros-list type-body" style={{ marginTop: "8px" }}>
-              <li>Player has a <strong>BLESSED</strong> card — send them to the <strong>left</strong></li>
-              <li>Player has a <strong>HOLLOW</strong> card — send them to the <strong>right</strong></li>
+              <li>Player has a <strong><C>Blessed</C></strong> card — send them to the <strong>left</strong></li>
+              <li>Player has a <strong><C>Hollow</C></strong> card — send them to the <strong>right</strong></li>
             </ul>
           </div>
         </section>
@@ -355,57 +361,57 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
           </div>
           <div className="ros-subsection">
             <p className="ros-subsection-label type-caps">Where it happens</p>
-            <p className="ros-subsection-value type-body">THE GREAT HALL</p>
+            <p className="ros-subsection-value type-body">The Great Hall</p>
           </div>
           <div className="ros-subsection">
             <p className="ros-subsection-label type-caps">What must be done</p>
             <ul className="ros-list type-body">
-              <li>Players can take a break to Eat and/or CHANGE SHOES</li>
+              <li>Players can take a break to eat and/or <C>Change Shoes</C></li>
               <li>
                 <a
                   href={getPathFromRoute({ page: "run-of-show-crowning" })}
                   onClick={onNavigate({ page: "run-of-show-crowning" })}
                   className="ros-script-link"
                 >
-                  [SCRIPT] — Call players back for the CROWNING ceremony
+                  [SCRIPT] — Call players back for the crowning ceremony
                 </a>
                 <ul>
                   <li>
-                    As the VICTOR is being crowned we reveal DEATH
+                    As the <C>Victor</C> is being crowned we reveal <C>Death</C>
                     <ul>
-                      <li>SPOTLIGHTS</li>
-                      <li>Death lays her hand on the champion's shoulder</li>
-                      <li>and he becomes the main lieutenant for DEATH's army</li>
+                      <li><C>Spotlights</C></li>
+                      <li><C>Death</C> lays her hand on the champion's shoulder</li>
+                      <li>and he becomes the main lieutenant for <C>Death</C>'s army</li>
                     </ul>
                   </li>
-                  <li>Alex + Jordan explain Manhunt Mechanics
+                  <li><C>Alex</C> + <C>Jordan</C> explain Manhunt Mechanics
                     <ul>
-                      <li>Death's minions must walk</li>
-                      <li>Players with a light are immune from being turned</li>
+                      <li><C>Death</C>'s minions must walk</li>
+                      <li>Players with a light are immune from being <C>Turned</C></li>
                     </ul>
                   </li>
-                  <li>Death flips the timer</li>
-                  <li>Death gives everyone a TEN SECOND HEAD START</li>
+                  <li><C>Death</C> flips the timer</li>
+                  <li><C>Death</C> gives everyone a <C>Ten Second Head Start</C></li>
                   <li>Anyone who is too slow starts getting converted into the undead</li>
                 </ul>
               </li>
               <li>
-                WIN CONDITIONS
+                <C>Win Conditions</C>
                 <ul>
-                  <li>The players win by gathering a candle from each of the five shrines, and surrounding Death</li>
-                  <li>Players with a LIGHT — so wizards with a staff, or someone holding a candle — can't be TURNED</li>
+                  <li>The players win by gathering a candle from each of the five shrines, and surrounding <C>Death</C></li>
+                  <li>Players with a <C>Light</C> — so wizards with a staff, or someone holding a candle — can't be <C>Turned</C></li>
                   <li>
-                    Five players holding candles have to surround DEATH
+                    Five players holding candles have to surround <C>Death</C>
                     <ul>
-                      <li>DEATH EXTENDS HER HAND</li>
+                      <li><C>Death</C> extends her hand</li>
                       <li>A sixth player without a candle must kiss it</li>
-                      <li>THE CURSE IS BROKEN AND THE PLAYERS WIN</li>
+                      <li>The curse is broken and the players win</li>
                     </ul>
                   </li>
                 </ul>
               </li>
               <li>
-                DEATH WINS:
+                <C>Death Wins</C>:
                 <ul>
                   <li>The timer runs out</li>
                   <li>We toll a bell 3 times</li>

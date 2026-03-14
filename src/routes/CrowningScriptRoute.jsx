@@ -33,6 +33,7 @@ export function CrowningScriptRoute({ getPathFromRoute, onNavigate }) {
             <p>Concords! Gather round. The hour of crowning is upon us. Can we call our VICTOR up onto the stage.</p>
             <p>Congratulations [CONCORD] on your victory. You are both cursed and blessed, and may your names, no further ink inscribe. Let [CREED] rule Necropolis from this day forward.</p>
           </div>
+          <p className="script-direction type-body">Jess spotlights Death.</p>
         </section>
 
         {/* DEATH: Kneel */}
@@ -40,6 +41,7 @@ export function CrowningScriptRoute({ getPathFromRoute, onNavigate }) {
           <p className="script-speaker type-caps">Death</p>
           <div className="script-body type-body">
             <p>[NAME], KNEEL.</p>
+            <p>Did you think this was victory? I will have you all.</p>
           </div>
           <p className="script-direction type-body">Steps forward through the crowd, and places her arm on the champion's shoulder.</p>
         </section>
