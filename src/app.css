@@ -3676,6 +3676,15 @@ html.fonts-ready #root {
   margin-bottom: 4px;
 }
 
+/* type-caps inline within body text should match surrounding size */
+.ros-list .type-caps,
+.ros-subsection-note .type-caps,
+.ros-callout-body .type-caps {
+  font-size: 11px;
+  color: '#78cdd0';
+  line-height: inherit;
+}
+
 .ros-script-link {
   color: #d4ece3;
   text-decoration: underline;
