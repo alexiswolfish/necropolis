@@ -119,14 +119,14 @@ export function RunOfShowRoute({ character }) {
                   <li>8 of their relic</li>
                   <li>8 certificates of completion</li>
                   <li>a stack of curses</li>
+                  <li>a "lucky dice" for players with dumb luck</li>
+                  <li>a list of "LUCKY" players</li>
                 </ul>
               </li>
               <li>
                 SIMI gets:
                 <ul>
                   <li>a stack of blessings</li>
-                  <li>a "lucky dice" for players with dumb luck</li>
-                  <li>a list of "LUCKY" players</li>
                 </ul>
               </li>
             </ul>
