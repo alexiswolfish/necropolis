@@ -21,7 +21,7 @@ const ACTS = [
   { id: "act-five", label: "Finale", heading: "ACT FIVE" },
 ];
 
-export function RunOfShowRoute({ character }) {
+export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
   const [activeAct, setActiveAct] = useState("pregame");
   const observerRef = useRef(null);
 
@@ -147,7 +147,13 @@ export function RunOfShowRoute({ character }) {
             <p className="ros-subsection-label type-caps">What must be done</p>
             <ul className="ros-list type-body">
               <li>
-                [SCRIPT] Introduction to the game and welcome
+                <a
+                  href={getPathFromRoute({ page: "run-of-show-intro" })}
+                  onClick={onNavigate({ page: "run-of-show-intro" })}
+                  className="ros-script-link"
+                >
+                  [SCRIPT] Introduction to the game and welcome
+                </a>
                 <ul>
                   <li>
                     Explain win conditions for the tournament

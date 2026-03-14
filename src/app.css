@@ -3599,3 +3599,123 @@ html.fonts-ready #root {
     margin-bottom: 40px;
   }
 }
+
+/* ── Intro Script Route ─────────────────────── */
+
+.script-layout {
+  padding: 40px 48px 80px;
+  max-width: 640px;
+}
+
+.script-page-header {
+  margin-bottom: 36px;
+}
+
+.script-page-subtitle {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--color-text-secondary, #888);
+  margin-top: 6px;
+}
+
+.script-sections {
+  display: flex;
+  flex-direction: column;
+}
+
+.script-section {
+  padding: 24px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.script-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.script-speaker {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #ffa6d9;
+  margin-bottom: 14px;
+}
+
+.script-body p {
+  font-size: 17px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.script-body p:last-child {
+  margin-bottom: 0;
+}
+
+.script-concord-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(212, 236, 227, 0.25);
+}
+
+.script-concord-list li {
+  font-size: 17px;
+  line-height: 1.5;
+  margin-bottom: 2px;
+}
+
+.script-bullet-list {
+  list-style: disc;
+  padding-left: 22px;
+  margin: 0 0 12px;
+}
+
+.script-bullet-list li {
+  font-size: 17px;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.ros-script-link {
+  color: #d4ece3;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(212, 236, 227, 0.4);
+}
+
+.ros-script-link:hover {
+  text-decoration-color: #d4ece3;
+}
+
+.script-continue-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 40px;
+  color: #d4ece3;
+  text-decoration: none;
+  font-size: 10px;
+  letter-spacing: 2px;
+  opacity: 0.6;
+}
+
+.script-continue-link:hover {
+  opacity: 1;
+}
+
+.script-continue-arrow {
+  font-size: 20px;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .script-layout {
+    padding: 24px 20px 60px;
+  }
+
+  .script-body p,
+  .script-concord-list li,
+  .script-bullet-list li {
+    font-size: 15px;
+  }
+}
