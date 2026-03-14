@@ -3687,6 +3687,21 @@ html.fonts-ready #root {
   text-decoration-color: #d4ece3;
 }
 
+.script-speaker-note {
+  font-size: 9px;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  text-transform: uppercase;
+}
+
+.script-direction {
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 12px;
+}
+
 .script-continue-link {
   display: inline-flex;
   align-items: baseline;

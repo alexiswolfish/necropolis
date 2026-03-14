@@ -26,6 +26,11 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
   const observerRef = useRef(null);
 
   useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) document.getElementById(hash)?.scrollIntoView();
+  }, []);
+
+  useEffect(() => {
     const sections = ACTS.map((a) => document.getElementById(a.id)).filter(Boolean);
     observerRef.current = new IntersectionObserver(
       (entries) => {
@@ -357,7 +362,13 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
             <ul className="ros-list type-body">
               <li>Players can take a break to Eat and/or CHANGE SHOES</li>
               <li>
-                [SCRIPT] — Call players back for the CROWNING ceremony
+                <a
+                  href={getPathFromRoute({ page: "run-of-show-crowning" })}
+                  onClick={onNavigate({ page: "run-of-show-crowning" })}
+                  className="ros-script-link"
+                >
+                  [SCRIPT] — Call players back for the CROWNING ceremony
+                </a>
                 <ul>
                   <li>
                     As the VICTOR is being crowned we reveal DEATH
@@ -414,6 +425,24 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
           <div className="ros-subsection">
             <p className="ros-subsection-label type-caps">What must be done</p>
             <ul className="ros-list type-body">
+              <li>
+                <a
+                  href={getPathFromRoute({ page: "run-of-show-players-win" })}
+                  onClick={onNavigate({ page: "run-of-show-players-win" })}
+                  className="ros-script-link"
+                >
+                  [SCRIPT] Players Win
+                </a>
+              </li>
+              <li>
+                <a
+                  href={getPathFromRoute({ page: "run-of-show-death-wins" })}
+                  onClick={onNavigate({ page: "run-of-show-death-wins" })}
+                  className="ros-script-link"
+                >
+                  [SCRIPT] Death Wins
+                </a>
+              </li>
               <li>Closing prizes????</li>
             </ul>
           </div>

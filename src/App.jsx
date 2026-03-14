@@ -12,6 +12,9 @@ import { KillContractRoute } from "./routes/KillContractRoute";
 import { RunOfShowRoute } from "./routes/RunOfShowRoute";
 import { IntroScriptRoute } from "./routes/IntroScriptRoute";
 import { TournamentScriptRoute } from "./routes/TournamentScriptRoute";
+import { CrowningScriptRoute } from "./routes/CrowningScriptRoute";
+import { PlayersWinScriptRoute } from "./routes/PlayersWinScriptRoute";
+import { DeathWinsScriptRoute } from "./routes/DeathWinsScriptRoute";
 import { CombatRoute } from "./routes/CombatRoute";
 import { ManualRoute } from "./routes/ManualRoute";
 import { ManualClassesRoute } from "./routes/ManualClassesRoute";
@@ -808,6 +811,9 @@ function getRouteFromPath(pathname) {
   if (appPath === "/run-of-show") return { page: "run-of-show" };
   if (appPath === "/run-of-show/intro") return { page: "run-of-show-intro" };
   if (appPath === "/run-of-show/tournament") return { page: "run-of-show-tournament" };
+  if (appPath === "/run-of-show/crowning") return { page: "run-of-show-crowning" };
+  if (appPath === "/run-of-show/players-win") return { page: "run-of-show-players-win" };
+  if (appPath === "/run-of-show/death-wins") return { page: "run-of-show-death-wins" };
   if (appPath === "/manual") return { page: "manual" };
   if (appPath === "/manual/combat") return { page: "manual-combat" };
   if (appPath === "/manual/classes") return { page: "manual-classes" };
@@ -839,6 +845,9 @@ function getPathFromRoute(route) {
   if (route.page === "run-of-show") return withBase("/run-of-show");
   if (route.page === "run-of-show-intro") return withBase("/run-of-show/intro");
   if (route.page === "run-of-show-tournament") return withBase("/run-of-show/tournament");
+  if (route.page === "run-of-show-crowning") return withBase("/run-of-show/crowning");
+  if (route.page === "run-of-show-players-win") return withBase("/run-of-show/players-win");
+  if (route.page === "run-of-show-death-wins") return withBase("/run-of-show/death-wins");
   if (route.page === "manual") return withBase("/manual");
   if (route.page === "manual-combat") return withBase("/manual/combat");
   if (route.page === "manual-classes") return withBase("/manual/classes" + (route.anchor ? "#" + route.anchor : ""));
@@ -999,6 +1008,13 @@ export default function App() {
     }
     setNavigationState(nextState);
     setRoute(nextRoute);
+    if (nextRoute.scrollTo) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.getElementById(nextRoute.scrollTo)?.scrollIntoView();
+        });
+      });
+    }
   };
 
   const handleOnboardingBack = () => {
@@ -1506,6 +1522,15 @@ export default function App() {
   }
   if (route.page === "run-of-show-tournament") {
     pageContent = <TournamentScriptRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
+  if (route.page === "run-of-show-crowning") {
+    pageContent = <CrowningScriptRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
+  if (route.page === "run-of-show-players-win") {
+    pageContent = <PlayersWinScriptRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
+  if (route.page === "run-of-show-death-wins") {
+    pageContent = <DeathWinsScriptRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
   }
   if (route.page === "manual") {
     pageContent = <ManualRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;

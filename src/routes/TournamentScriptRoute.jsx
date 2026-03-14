@@ -87,7 +87,11 @@ export function TournamentScriptRoute({ getPathFromRoute, onNavigate }) {
 
       </div>
 
-      <a href={`${rosPath}#act-four`} className="script-continue-link type-caps">
+      <a
+        href={`${rosPath}#act-four`}
+        onClick={onNavigate({ page: "run-of-show", scrollTo: "act-four" })}
+        className="script-continue-link type-caps"
+      >
         Continue to Act Four <span className="type-logo script-continue-arrow">›</span>
       </a>
     </main>

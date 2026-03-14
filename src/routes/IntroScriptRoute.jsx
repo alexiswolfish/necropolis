@@ -89,7 +89,11 @@ export function IntroScriptRoute({ getPathFromRoute, onNavigate }) {
 
       </div>
 
-      <a href={`${rosPath}#act-two`} className="script-continue-link type-caps">
+      <a
+        href={`${rosPath}#act-two`}
+        onClick={onNavigate({ page: "run-of-show", scrollTo: "act-two" })}
+        className="script-continue-link type-caps"
+      >
         Continue to Act Two <span className="type-logo script-continue-arrow">›</span>
       </a>
     </main>
