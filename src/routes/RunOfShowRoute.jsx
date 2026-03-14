@@ -402,19 +402,19 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
                   <li>
                     As the <C>Victor</C> is being crowned we reveal <C>Death</C>
                     <ul>
-                      <li><C>Spotlights</C></li>
+                      <li><C>Jess</C>  to hit her with a SPOTLIGHT</li>
                       <li><C>Death</C> lays her hand on the champion's shoulder</li>
-                      <li>and he becomes the main lieutenant for <C>Death</C>'s army</li>
+                      <li>and they become the main lieutenant for <C>Death</C>'s army</li>
                     </ul>
                   </li>
                   <li><C>Alex</C> + <C>Jordan</C> explain Manhunt Mechanics
                     <ul>
                       <li><C>Death</C>'s minions must walk</li>
-                      <li>Players with a light are immune from being <C>Turned</C></li>
+                      <li>Players with a light are immune from being TURNED</li>
                     </ul>
                   </li>
                   <li><C>Death</C> flips the timer</li>
-                  <li><C>Death</C> gives everyone a <C>Ten Second Head Start</C></li>
+                  <li><C>Death</C> gives everyone a TEN Second Head Start</li>
                   <li>Anyone who is too slow starts getting converted into the undead</li>
                 </ul>
               </li>
@@ -422,7 +422,7 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
                 <C>Win Conditions</C>
                 <ul>
                   <li>The players win by gathering a candle from each of the five shrines, and surrounding <C>Death</C></li>
-                  <li>Players with a <C>Light</C> — so wizards with a staff, or someone holding a candle — can't be <C>Turned</C></li>
+                  <li>Players with a LIGHT — so wizards with a staff, or someone holding a candle — can't be TURNED</li>
                   <li>
                     Five players holding candles have to surround <C>Death</C>
                     <ul>
