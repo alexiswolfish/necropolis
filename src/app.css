@@ -3433,6 +3433,21 @@ html.fonts-ready #root {
   line-height: 1.35;
 }
 
+.ros-list-group {
+  margin-bottom: 14px;
+}
+
+.ros-list-group:last-child {
+  margin-bottom: 0;
+}
+
+.ros-list-group-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #ffa6d9;
+  margin: 0 0 4px;
+}
+
 .ros-list {
   margin: 0;
   padding-left: 16px;
@@ -3442,6 +3457,9 @@ html.fonts-ready #root {
 
 .ros-list > li {
   margin-bottom: 3px;
+}
+
+.ros-list > li:has(> ul) {
   padding-bottom: 4px;
 }
 
@@ -3460,6 +3478,18 @@ html.fonts-ready #root {
   opacity: 0.5;
   font-size: 13px;
   font-style: italic;
+}
+
+.ros-callout {
+  border-left: 2px solid #ffa6d9;
+  padding-left: 14px;
+  margin-top: 20px;
+}
+
+.ros-callout-body {
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 4px 0 0;
 }
 
 /* Access denied */

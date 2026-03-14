@@ -185,30 +185,69 @@ export function RunOfShowRoute({ character }) {
           </div>
           <div className="ros-subsection">
             <p className="ros-subsection-label type-caps">What must be done</p>
-            <ul className="ros-list type-body">
-              <li>Players compete in the Shrine games</li>
-              <li>Players give soul tokens to each other on Death</li>
-              <li>Players give soul tokens to JESS + KAVYA to track kills</li>
-              <li>Players get NEW soul tokens from Alex when they run out</li>
-              <li>Players can give spent/cured curses to SHRINE KEEPERS or DEATH'S MINIONS</li>
-              <li>
-                If a player has at least ONE soul token, they can play your game
-                <ul>
-                  <li>If a player has no soul tokens and attempts to play — CURSE them</li>
-                </ul>
-              </li>
-              <li>Shrine Keepers hand out CERTIFICATES if players complete your games</li>
-              <li>Shrine Keepers hand out RELICS if you solve their relic clue</li>
-              <li>
-                Shrine Keepers hand out CURSES if your shrine challenge is failed, or if you feel like it. Curse people at will.
-                <ul>
-                  <li>If a player has the "FEELING LUCKY" feat, let them roll a dice. On a 3 they are not cursed.</li>
-                </ul>
-              </li>
-              <li>SIMI hands out BLESSINGS if you complete her potion games</li>
-              <li>JORDAN hands out HINT CARDS if people are getting stuck</li>
-              <li>JORDAN + DEATH'S MINIONS enforce curses</li>
-            </ul>
+
+            <div className="ros-list-group">
+              <p className="ros-list-group-label type-caps">Players</p>
+              <ul className="ros-list type-body">
+                <li>Players compete in the Shrine games</li>
+                <li>Players give soul tokens to each other on Death</li>
+                <li>Players give soul tokens to JESS + KAVYA to track kills</li>
+                <li>Players get NEW soul tokens from Alex when they run out</li>
+                <li>Players can give spent/cured curses to SHRINE KEEPERS or DEATH'S MINIONS</li>
+                <li>
+                  If a player has at least ONE soul token, they can play your game
+                  <ul>
+                    <li>If a player has no soul tokens and attempts to play — CURSE them</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+
+            <div className="ros-list-group">
+              <p className="ros-list-group-label type-caps">Shrine Keepers</p>
+              <ul className="ros-list type-body">
+                <li>Shrine Keepers hand out CERTIFICATES if players complete your games</li>
+                <li>Shrine Keepers hand out RELICS if you solve their relic clue</li>
+                <li>
+                  Shrine Keepers hand out CURSES if your shrine challenge is failed, or if you feel like it. Curse people at will.
+                  <ul>
+                    <li>If a player has the "FEELING LUCKY" feat, let them roll a dice. On a 3 they are not cursed.</li>
+                  </ul>
+                </li>
+                <li>
+                  When a TEAM completes the Rite of Final Passage, <strong>Geri + Shane</strong> send them to Alex to mark their finishing order in the grand tournament
+                  <ul>
+                    <li>Alex gives that team a <strong>BLESSED</strong> card and updates them in the website</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+
+            <div className="ros-list-group">
+              <p className="ros-list-group-label type-caps">Specific Shrines</p>
+              <ul className="ros-list type-body">
+                <li>Jess + Kavya tally how many kills from each team</li>
+                <li>Simi gives away BLESSINGS</li>
+                <li>Simi gives away WIZARD KILLS</li>
+                <li>Shane + Geri send teams to Alex after they get all relics to have their rank in the tournament recorded</li>
+                <li>Alex gives HOLLOW or BLESSED cards</li>
+              </ul>
+            </div>
+
+            <div className="ros-list-group">
+              <p className="ros-list-group-label type-caps">GMs</p>
+              <ul className="ros-list type-body">
+                <li>SIMI hands out BLESSINGS if you complete her potion games</li>
+                <li>JORDAN hands out HINT CARDS if people are getting stuck</li>
+                <li>JORDAN + DEATH'S MINIONS enforce curses</li>
+                <li>
+                  If a player has <strong>more than 6 deaths</strong>, the next time they see <strong>Alex</strong> she weighs their soul
+                  <ul>
+                    <li>Give them a <strong>HOLLOW</strong> card and update them in the website</li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
           </div>
         </section>
 
@@ -267,6 +306,17 @@ export function RunOfShowRoute({ character }) {
               <li>[SCRIPT] — Transfer the party back to the Great Hall for the "CROWNING" of the VICTOR</li>
             </ul>
             <p className="ros-aside type-body">* Note — should we give teams their concord signs?</p>
+          </div>
+
+          <div className="ros-subsection ros-callout">
+            <p className="ros-subsection-label type-caps">Before the transition to Act Four</p>
+            <p className="ros-callout-body type-body">
+              <strong>Geri, Jess, and Kavya</strong> slip out before everyone else and position themselves at the entrance to the Great Hall.
+            </p>
+            <ul className="ros-list type-body" style={{ marginTop: "8px" }}>
+              <li>Player has a <strong>BLESSED</strong> card — send them to the <strong>left</strong></li>
+              <li>Player has a <strong>HOLLOW</strong> card — send them to the <strong>right</strong></li>
+            </ul>
           </div>
         </section>
 
