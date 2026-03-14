@@ -263,12 +263,14 @@ html.fonts-ready #root {
 }
 
 .top-bar {
-  position: relative;
-  z-index: 3;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2.2rem;
+  background-color: var(--page-bg, var(--color-bg));
 }
 
 .brand {
@@ -296,6 +298,8 @@ html.fonts-ready #root {
 @media (max-width: 980px) {
   .top-bar {
     z-index: 1001;
+    background-color: var(--page-bg, var(--color-bg));
+    padding-bottom: 4px;
   }
 
   .brand {
@@ -3310,4 +3314,248 @@ html.fonts-ready #root {
 .kc-dl-btn:hover {
   color: #f37420;
   border-color: #f37420;
+}
+
+/* ---- Run of Show ---- */
+.ros-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 80px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 64px 32px 120px;
+  align-items: start;
+}
+
+.ros-nav {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+}
+
+.ros-nav-meta {
+  margin: 0 0 16px;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  opacity: 0.55;
+}
+
+.ros-nav-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 5vw, 5rem);
+  line-height: 1;
+  color: #d4ece3;
+  margin: 0 0 4px;
+}
+
+.ros-nav-sub {
+  font-family: "Darksame Regular", serif;
+  font-size: 17px;
+  color: #ffa6d9;
+  margin: 0 0 40px;
+}
+
+.ros-nav-links-wrap {
+  /* transparent wrapper; sticky only on mobile */
+}
+
+.ros-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ros-nav-link {
+  font-family: var(--font-body);
+  font-size: 22px;
+  color: #d4ece3;
+  text-decoration: none;
+  opacity: 0.45;
+  transition: opacity 150ms;
+  line-height: 1.5;
+}
+
+.ros-nav-link:hover,
+.ros-nav-link.is-active {
+  opacity: 1;
+}
+
+.ros-content {
+  min-width: 0;
+}
+
+.ros-section {
+  padding-bottom: 80px;
+  border-bottom: 1px solid rgba(212, 236, 227, 0.1);
+  margin-bottom: 80px;
+}
+
+.ros-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.ros-section-header {
+  margin-bottom: 40px;
+}
+
+.ros-act-darksame {
+  font-family: "Darksame Regular", serif;
+  font-size: 17px;
+  color: #ffa6d9;
+  margin: 0 0 4px;
+}
+
+.ros-act-heading {
+  font-family: var(--font-body);
+  font-size: clamp(28px, 3vw, 36px);
+  color: #d4ece3;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.ros-subsection {
+  margin-bottom: 28px;
+}
+
+.ros-subsection-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  opacity: 0.5;
+  margin: 0 0 6px;
+}
+
+.ros-subsection-value {
+  margin: 0 0 8px;
+}
+
+.ros-subsection-note {
+  margin: 8px 0 0;
+  opacity: 0.7;
+  font-size: 14px;
+}
+
+.ros-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.ros-list li {
+  margin-bottom: 6px;
+  line-height: 1.55;
+}
+
+.ros-list ul {
+  margin-top: 4px;
+  padding-left: 20px;
+}
+
+.ros-list ul li {
+  margin-bottom: 3px;
+}
+
+.ros-aside {
+  margin-top: 16px;
+  opacity: 0.5;
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* Access denied */
+.ros-access-denied {
+  display: block;
+  text-align: center;
+  padding-top: 120px;
+}
+
+.ros-denied-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  opacity: 0.45;
+  margin: 0 0 16px;
+}
+
+.ros-denied-title {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  color: #d4ece3;
+  margin: 0 0 4px;
+  line-height: 1;
+}
+
+.ros-denied-sub {
+  font-family: "Darksame Regular", serif;
+  font-size: 17px;
+  color: #ffa6d9;
+  margin: 0 0 40px;
+}
+
+.ros-denied-message {
+  opacity: 0.4;
+  margin: 0;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .ros-layout {
+    display: block;
+    padding: 32px 0 80px;
+  }
+
+  .ros-nav {
+    position: static;
+    padding: 0;
+  }
+
+  .ros-nav-header {
+    padding: 0 20px 24px;
+  }
+
+  .ros-nav-title {
+    font-size: 3rem;
+    margin-bottom: 2px;
+  }
+
+  .ros-nav-sub {
+    margin-bottom: 0;
+  }
+
+  .ros-nav-links-wrap {
+    position: sticky;
+    top: 56px;
+    z-index: 10;
+    background: var(--color-bg);
+  }
+
+  .ros-nav-links {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0;
+    padding: 10px 20px;
+    border-top: 1px solid rgba(212, 236, 227, 0.12);
+    border-bottom: 1px solid rgba(212, 236, 227, 0.12);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .ros-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ros-nav-link {
+    font-size: 14px;
+    white-space: nowrap;
+    padding: 4px 16px 4px 0;
+    flex-shrink: 0;
+  }
+
+  .ros-content {
+    padding: 0 20px;
+    margin-top: 40px;
+  }
+
+  .ros-section {
+    padding-bottom: 60px;
+    margin-bottom: 60px;
+  }
 }
