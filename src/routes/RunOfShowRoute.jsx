@@ -273,7 +273,15 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
           <div className="ros-subsection">
             <p className="ros-subsection-label type-caps">What must be done</p>
             <ul className="ros-list type-body">
-              <li>[SCRIPT] Declare VICTORS for the tournament</li>
+              <li>
+                <a
+                  href={getPathFromRoute({ page: "run-of-show-tournament" })}
+                  onClick={onNavigate({ page: "run-of-show-tournament" })}
+                  className="ros-script-link"
+                >
+                  [SCRIPT] Declare VICTORS for the tournament
+                </a>
+              </li>
               <li>
                 WIN CONDITION:
                 <ul>
@@ -309,7 +317,15 @@ export function RunOfShowRoute({ character, getPathFromRoute, onNavigate }) {
                   <li>DUMB LUCK — Dice rolls???</li>
                 </ul>
               </li>
-              <li>[SCRIPT] — Transfer the party back to the Great Hall for the "CROWNING" of the VICTOR</li>
+              <li>
+                <a
+                  href={getPathFromRoute({ page: "run-of-show-tournament" })}
+                  onClick={onNavigate({ page: "run-of-show-tournament" })}
+                  className="ros-script-link"
+                >
+                  [SCRIPT] — Transfer the party back to the Great Hall for the "CROWNING" of the VICTOR
+                </a>
+              </li>
             </ul>
             <p className="ros-aside type-body">* Note — should we give teams their concord signs?</p>
           </div>

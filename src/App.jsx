@@ -11,6 +11,7 @@ import { MinionsRoute } from "./routes/MinionsRoute";
 import { KillContractRoute } from "./routes/KillContractRoute";
 import { RunOfShowRoute } from "./routes/RunOfShowRoute";
 import { IntroScriptRoute } from "./routes/IntroScriptRoute";
+import { TournamentScriptRoute } from "./routes/TournamentScriptRoute";
 import { CombatRoute } from "./routes/CombatRoute";
 import { ManualRoute } from "./routes/ManualRoute";
 import { ManualClassesRoute } from "./routes/ManualClassesRoute";
@@ -806,6 +807,7 @@ function getRouteFromPath(pathname) {
   if (appPath === "/kill-contract") return { page: "kill-contract" };
   if (appPath === "/run-of-show") return { page: "run-of-show" };
   if (appPath === "/run-of-show/intro") return { page: "run-of-show-intro" };
+  if (appPath === "/run-of-show/tournament") return { page: "run-of-show-tournament" };
   if (appPath === "/manual") return { page: "manual" };
   if (appPath === "/manual/combat") return { page: "manual-combat" };
   if (appPath === "/manual/classes") return { page: "manual-classes" };
@@ -836,6 +838,7 @@ function getPathFromRoute(route) {
   if (route.page === "kill-contract") return withBase("/kill-contract");
   if (route.page === "run-of-show") return withBase("/run-of-show");
   if (route.page === "run-of-show-intro") return withBase("/run-of-show/intro");
+  if (route.page === "run-of-show-tournament") return withBase("/run-of-show/tournament");
   if (route.page === "manual") return withBase("/manual");
   if (route.page === "manual-combat") return withBase("/manual/combat");
   if (route.page === "manual-classes") return withBase("/manual/classes" + (route.anchor ? "#" + route.anchor : ""));
@@ -1500,6 +1503,9 @@ export default function App() {
   }
   if (route.page === "run-of-show-intro") {
     pageContent = <IntroScriptRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
+  if (route.page === "run-of-show-tournament") {
+    pageContent = <TournamentScriptRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
   }
   if (route.page === "manual") {
     pageContent = <ManualRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
