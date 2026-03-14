@@ -81,16 +81,10 @@ html.fonts-ready #root {
   min-height: 100vh;
   padding: 2.5rem 2.6rem 4rem;
   transition: color 320ms ease;
-  display: flex;
-  flex-direction: column;
 }
 
 .page-shell[data-concord] {
   transition: color 320ms ease, background-color 320ms ease;
-}
-
-.page-shell > main {
-  flex: 1;
 }
 
 .page-shell[data-concord="home"] {
@@ -3321,9 +3315,6 @@ html.fonts-ready #root {
   display: grid;
   grid-template-columns: 220px 1fr;
   gap: 80px;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 64px 32px 120px;
   align-items: start;
 }
 
@@ -3355,8 +3346,13 @@ html.fonts-ready #root {
   margin: 0 0 40px;
 }
 
-.ros-nav-links-wrap {
-  /* transparent wrapper; sticky only on mobile */
+/* Mobile-only elements hidden on desktop */
+.ros-jump-bar {
+  display: none;
+}
+
+.ros-content-header {
+  display: none;
 }
 
 .ros-nav-links {
@@ -3499,59 +3495,63 @@ html.fonts-ready #root {
 @media (max-width: 768px) {
   .ros-layout {
     display: block;
-    padding: 32px 0 80px;
   }
 
+  /* Hide desktop sidebar on mobile */
   .ros-nav {
-    position: static;
-    padding: 0;
+    display: none;
   }
 
-  .ros-nav-header {
-    padding: 0 20px 24px;
-  }
-
-  .ros-nav-title {
-    font-size: 3rem;
-    margin-bottom: 2px;
-  }
-
-  .ros-nav-sub {
-    margin-bottom: 0;
-  }
-
-  .ros-nav-links-wrap {
+  /* Sticky jump bar docks right below the Necropolis header */
+  .ros-jump-bar {
+    display: block;
     position: sticky;
-    top: 56px;
+    top: 36px;
     z-index: 10;
     background: var(--color-bg);
   }
 
-  .ros-nav-links {
+  .ros-jump-links {
+    display: flex;
     flex-direction: row;
     overflow-x: auto;
     gap: 0;
-    padding: 10px 20px;
+    padding: 10px 0;
     border-top: 1px solid rgba(212, 236, 227, 0.12);
     border-bottom: 1px solid rgba(212, 236, 227, 0.12);
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
 
-  .ros-nav-links::-webkit-scrollbar {
+  .ros-jump-links::-webkit-scrollbar {
     display: none;
   }
 
-  .ros-nav-link {
+  .ros-jump-link {
+    font-family: var(--font-body);
     font-size: 14px;
+    color: #d4ece3;
+    text-decoration: none;
+    opacity: 0.45;
+    transition: opacity 150ms;
     white-space: nowrap;
     padding: 4px 16px 4px 0;
     flex-shrink: 0;
+    line-height: 1.5;
+  }
+
+  .ros-jump-link.is-active {
+    opacity: 1;
+  }
+
+  /* Content header visible on mobile (scrolls with page) */
+  .ros-content-header {
+    display: block;
+    margin-bottom: 40px;
   }
 
   .ros-content {
-    padding: 0 20px;
-    margin-top: 40px;
+    margin-top: 24px;
   }
 
   .ros-section {

@@ -53,28 +53,48 @@ export function RunOfShowRoute({ character }) {
 
   return (
     <main className="ros-layout">
+      {/* Desktop sidebar nav */}
       <nav className="ros-nav" aria-label="Run of Show sections">
         <div className="ros-nav-header">
           <p className="ros-nav-meta type-caps">Run of Show</p>
           <p className="ros-nav-title">Death</p>
           <p className="ros-nav-sub">must claim us all</p>
         </div>
-        <div className="ros-nav-links-wrap">
-          <div className="ros-nav-links">
-            {ACTS.filter((a) => a.heading).map((act) => (
-              <a
-                key={act.id}
-                href={`#${act.id}`}
-                className={`ros-nav-link${activeAct === act.id ? " is-active" : ""}`}
-              >
-                {act.heading}
-              </a>
-            ))}
-          </div>
+        <div className="ros-nav-links">
+          {ACTS.filter((a) => a.heading).map((act) => (
+            <a
+              key={act.id}
+              href={`#${act.id}`}
+              className={`ros-nav-link${activeAct === act.id ? " is-active" : ""}`}
+            >
+              {act.heading}
+            </a>
+          ))}
         </div>
       </nav>
 
+      {/* Mobile-only sticky jump bar — direct child of ros-layout so it has full page height as its sticky container */}
+      <div className="ros-jump-bar">
+        <div className="ros-jump-links">
+          {ACTS.filter((a) => a.heading).map((act) => (
+            <a
+              key={act.id}
+              href={`#${act.id}`}
+              className={`ros-jump-link${activeAct === act.id ? " is-active" : ""}`}
+            >
+              {act.heading}
+            </a>
+          ))}
+        </div>
+      </div>
+
       <div className="ros-content">
+        {/* Mobile-only content header — scrolls with the page */}
+        <div className="ros-content-header">
+          <p className="ros-nav-meta type-caps">Run of Show</p>
+          <p className="ros-nav-title">Death</p>
+          <p className="ros-nav-sub">must claim us all</p>
+        </div>
         {/* Pregame */}
         <section id="pregame" className="ros-section">
           <div className="ros-section-header">
