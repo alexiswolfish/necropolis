@@ -42,11 +42,12 @@ function fromDbCharacter(row) {
     concordId: row.concord_id,
     className: row.class_name,
     stats: row.stats,
-    completedAt: row.completed_at
+    completedAt: row.completed_at,
+    deaths: row.deaths ?? 0
   };
 }
 
-const CHARACTER_SELECT = "id,real_name,character_name,character_bio,rsvp_matched,excluded_from_count,birth_date,zodiac_sign,concord_id,class_name,stats,completed_at";
+const CHARACTER_SELECT = "id,real_name,character_name,character_bio,rsvp_matched,excluded_from_count,birth_date,zodiac_sign,concord_id,class_name,stats,completed_at,deaths";
 
 export async function fetchAllCharacters() {
   const rows = await supabaseRequest("characters", {
@@ -124,6 +125,9 @@ export async function updateCharacterById(id, patch) {
   }
   if (Object.prototype.hasOwnProperty.call(patch, "excludedFromCount")) {
     payload.excluded_from_count = patch.excludedFromCount ?? false;
+  }
+  if (Object.prototype.hasOwnProperty.call(patch, "deaths")) {
+    payload.deaths = Math.max(0, Math.floor(patch.deaths ?? 0));
   }
 
   const rows = await supabaseRequest("characters", {

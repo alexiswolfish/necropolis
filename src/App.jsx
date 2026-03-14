@@ -20,7 +20,7 @@ import { ManualRoute } from "./routes/ManualRoute";
 import { ManualClassesRoute } from "./routes/ManualClassesRoute";
 import { ManualOssuaryRoute } from "./routes/ManualOssuaryRoute";
 import { ManualPlayerGuideRoute } from "./routes/ManualPlayerGuideRoute";
-import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterProfileById } from "./data/charactersApi";
+import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterProfileById, updateCharacterById } from "./data/charactersApi";
 import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
 
 const CONCORDS = [
@@ -997,6 +997,13 @@ export default function App() {
   const remainingStatPoints = STAT_POINT_POOL - Object.values(onboardingForm.stats).reduce((total, value) => total + value, 0);
   const canAccessStory = Boolean(character);
 
+  const handleUpdateDeaths = async (characterId, newDeaths) => {
+    const updated = await updateCharacterById(characterId, { deaths: newDeaths }).catch(() => null);
+    if (updated) {
+      setAllCharacters((current) => current.map((c) => c.id === characterId ? updated : c));
+    }
+  };
+
   const navigate = (nextRoute) => (event) => {
     event.preventDefault();
     const nextPath = getPathFromRoute(nextRoute);
@@ -1398,6 +1405,8 @@ export default function App() {
         costumeImagesByConcord={COSTUME_IMAGES_BY_CONCORD}
         teamBlueprint={TEAM_BLUEPRINT}
         characters={allCharacters}
+        currentCharacter={character}
+        onUpdateDeaths={handleUpdateDeaths}
       />
     );
   }
@@ -1424,6 +1433,8 @@ export default function App() {
         characterClass={profileCharacter ? (characterClassMap.get(profileCharacter.id) ?? null) : null}
         getPathFromRoute={getPathFromRoute}
         onNavigate={navigate}
+        currentCharacter={character}
+        onUpdateDeaths={handleUpdateDeaths}
       />
     );
   }

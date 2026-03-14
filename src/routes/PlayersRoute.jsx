@@ -114,6 +114,35 @@ function CharacterPerksSection({ character, characterClass, className = "public-
   );
 }
 
+function DeathsDisplay({ character, isAdmin, onUpdateDeaths }) {
+  if (!isAdmin) return null;
+  const deaths = character?.deaths ?? 0;
+  const isHollow = deaths >= 7;
+  return (
+    <div className="public-character-deaths">
+      <span className="type-caps public-character-deaths-label">Deaths</span>
+      <div className="public-character-deaths-stepper">
+        {isAdmin && (
+          <button
+            type="button"
+            className="stat-btn concord-player-card-deaths-btn"
+            onClick={() => onUpdateDeaths(character.id, Math.max(0, deaths - 1))}
+          >−</button>
+        )}
+        <span className="public-character-deaths-count">{deaths}</span>
+        {isAdmin && (
+          <button
+            type="button"
+            className="stat-btn stat-btn-plus type-caps concord-player-card-deaths-btn"
+            onClick={() => onUpdateDeaths(character.id, deaths + 1)}
+          >+</button>
+        )}
+      </div>
+      {isHollow && <span className="type-caps public-character-hollow-badge">Hollow</span>}
+    </div>
+  );
+}
+
 export const STAT_LABELS = {
   pulchritude: "Pulchritude",
   grit: "Grit",
@@ -458,7 +487,7 @@ export function CharacterPage({ character, characterClass, teamBlueprint, concor
   );
 }
 
-export function PublicCharacterPage({ character, charactersLoaded, characterClass, teamBlueprint, concord, getPathFromRoute, onNavigate }) {
+export function PublicCharacterPage({ character, charactersLoaded, characterClass, teamBlueprint, concord, getPathFromRoute, onNavigate, currentCharacter, onUpdateDeaths }) {
   if (!character) {
     return (
       <main className="concord-detail-layout character-detail-layout">
@@ -487,6 +516,7 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
         onOpenConcord={(concordId) => onNavigate({ page: "concord-detail", concordId, detailTab: "players" })}
       />
       <CharacterClassSection character={character} characterClass={characterClass} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
+      <DeathsDisplay character={character} isAdmin={isAdmin(currentCharacter)} onUpdateDeaths={onUpdateDeaths} />
       <StatsList character={character} />
       <CharacterPerksSection character={character} characterClass={characterClass} />
     </main>
