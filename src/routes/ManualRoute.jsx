@@ -45,6 +45,16 @@ export function ManualRoute({ getPathFromRoute, onNavigate }) {
           </a>
           <p className="manual-entry-byline type-body">Entry times at The Japanese Tea House</p>
         </div>
+        <div className="manual-entry">
+          <a
+            href={getPathFromRoute({ page: "artifacts" })}
+            onClick={onNavigate({ page: "artifacts" })}
+            className="manual-entry-title"
+          >
+            Artifacts
+          </a>
+          <p className="manual-entry-byline type-body">Cards, contracts, and crew resources</p>
+        </div>
       </nav>
     </main>
   );

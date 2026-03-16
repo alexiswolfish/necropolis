@@ -771,7 +771,33 @@ html.fonts-ready #root {
 .players-member {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+}
+
+.players-member-deaths {
+  display: flex;
+  align-items: center;
   gap: 4px;
+  padding-bottom: 6px;
+}
+
+.players-deaths-btn {
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.players-deaths-count {
+  font-family: var(--font-logo);
+  font-size: 15px;
+  min-width: 16px;
+  text-align: center;
+  line-height: 1;
+  color: #000000;
 }
 
 .concord-player-cards {
@@ -1503,6 +1529,8 @@ html.fonts-ready #root {
 }
 
 .concord-player-card-deaths {
+  position: relative;
+  z-index: 3;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1522,6 +1550,8 @@ html.fonts-ready #root {
 }
 
 .concord-player-card-deaths-btn {
+  position: relative;
+  z-index: 4;
   width: 24px;
   height: 24px;
   font-size: 16px;
@@ -1529,6 +1559,7 @@ html.fonts-ready #root {
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: auto;
 }
 
 .concord-player-card-deaths-count {
@@ -1537,6 +1568,7 @@ html.fonts-ready #root {
   min-width: 20px;
   text-align: center;
   line-height: 1;
+  color: var(--concord-tertiary);
 }
 
 .concord-player-card-hollow-badge {

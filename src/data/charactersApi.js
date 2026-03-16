@@ -106,6 +106,17 @@ export async function updateCharacterProfileById(id, patch) {
   return rows.length ? fromDbCharacter(rows[0]) : null;
 }
 
+export async function updateCharacterDeaths(id, deaths) {
+  const rows = await supabaseRequest("rpc/update_character_deaths", {
+    method: "POST",
+    body: {
+      p_id: id,
+      p_deaths: Math.max(0, Math.floor(deaths ?? 0))
+    }
+  });
+  return rows?.length ? fromDbCharacter(rows[0]) : null;
+}
+
 export async function updateCharacterById(id, patch) {
   const payload = {};
   if (Object.prototype.hasOwnProperty.call(patch, "characterName")) {
@@ -125,9 +136,6 @@ export async function updateCharacterById(id, patch) {
   }
   if (Object.prototype.hasOwnProperty.call(patch, "excludedFromCount")) {
     payload.excluded_from_count = patch.excludedFromCount ?? false;
-  }
-  if (Object.prototype.hasOwnProperty.call(patch, "deaths")) {
-    payload.deaths = Math.max(0, Math.floor(patch.deaths ?? 0));
   }
 
   const rows = await supabaseRequest("characters", {

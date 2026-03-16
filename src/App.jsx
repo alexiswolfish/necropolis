@@ -15,12 +15,13 @@ import { TournamentScriptRoute } from "./routes/TournamentScriptRoute";
 import { CrowningScriptRoute } from "./routes/CrowningScriptRoute";
 import { PlayersWinScriptRoute } from "./routes/PlayersWinScriptRoute";
 import { DeathWinsScriptRoute } from "./routes/DeathWinsScriptRoute";
+import { ArtifactsRoute } from "./routes/ArtifactsRoute";
 import { CombatRoute } from "./routes/CombatRoute";
 import { ManualRoute } from "./routes/ManualRoute";
 import { ManualClassesRoute } from "./routes/ManualClassesRoute";
 import { ManualOssuaryRoute } from "./routes/ManualOssuaryRoute";
 import { ManualPlayerGuideRoute } from "./routes/ManualPlayerGuideRoute";
-import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterProfileById, updateCharacterById } from "./data/charactersApi";
+import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterProfileById, updateCharacterById, updateCharacterDeaths } from "./data/charactersApi";
 import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
 
 const CONCORDS = [
@@ -814,6 +815,7 @@ function getRouteFromPath(pathname) {
   if (appPath === "/run-of-show/crowning") return { page: "run-of-show-crowning" };
   if (appPath === "/run-of-show/players-win") return { page: "run-of-show-players-win" };
   if (appPath === "/run-of-show/death-wins") return { page: "run-of-show-death-wins" };
+  if (appPath === "/artifacts") return { page: "artifacts" };
   if (appPath === "/manual") return { page: "manual" };
   if (appPath === "/manual/combat") return { page: "manual-combat" };
   if (appPath === "/manual/classes") return { page: "manual-classes" };
@@ -848,6 +850,7 @@ function getPathFromRoute(route) {
   if (route.page === "run-of-show-crowning") return withBase("/run-of-show/crowning");
   if (route.page === "run-of-show-players-win") return withBase("/run-of-show/players-win");
   if (route.page === "run-of-show-death-wins") return withBase("/run-of-show/death-wins");
+  if (route.page === "artifacts") return withBase("/artifacts");
   if (route.page === "manual") return withBase("/manual");
   if (route.page === "manual-combat") return withBase("/manual/combat");
   if (route.page === "manual-classes") return withBase("/manual/classes" + (route.anchor ? "#" + route.anchor : ""));
@@ -998,7 +1001,7 @@ export default function App() {
   const canAccessStory = Boolean(character);
 
   const handleUpdateDeaths = async (characterId, newDeaths) => {
-    const updated = await updateCharacterById(characterId, { deaths: newDeaths }).catch(() => null);
+    const updated = await updateCharacterDeaths(characterId, newDeaths).catch(() => null);
     if (updated) {
       setAllCharacters((current) => current.map((c) => c.id === characterId ? updated : c));
     }
@@ -1419,6 +1422,7 @@ export default function App() {
         characterClassMap={characterClassMap}
         getPathFromRoute={getPathFromRoute}
         onNavigate={navigate}
+        onUpdateDeaths={handleUpdateDeaths}
       />
     );
   }
@@ -1526,7 +1530,7 @@ export default function App() {
     pageContent = <KillContractRoute />;
   }
   if (route.page === "run-of-show") {
-    pageContent = <RunOfShowRoute character={character} getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+    pageContent = <RunOfShowRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
   }
   if (route.page === "run-of-show-intro") {
     pageContent = <IntroScriptRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
@@ -1542,6 +1546,9 @@ export default function App() {
   }
   if (route.page === "run-of-show-death-wins") {
     pageContent = <DeathWinsScriptRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
+  }
+  if (route.page === "artifacts") {
+    pageContent = <ArtifactsRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
   }
   if (route.page === "manual") {
     pageContent = <ManualRoute getPathFromRoute={getPathFromRoute} onNavigate={navigate} />;
@@ -1565,7 +1572,7 @@ export default function App() {
   const inConcordsSection = concordsVisible;
   const inPlayersSection = route.page === "players" || route.page === "player-detail";
   const inCharacterSection = route.page === "character";
-  const inManualSection = route.page === "manual" || route.page === "manual-combat" || route.page === "manual-classes" || route.page === "manual-player-guide" || route.page === "manual-ossuary";
+  const inManualSection = route.page === "manual" || route.page === "manual-combat" || route.page === "manual-classes" || route.page === "manual-player-guide" || route.page === "manual-ossuary" || route.page === "artifacts";
 
   return (
     <div className="page-shell" data-page={route.page} data-concord={themedConcord ? themedConcord.id : undefined}>

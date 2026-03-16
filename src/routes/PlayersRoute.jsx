@@ -114,30 +114,13 @@ function CharacterPerksSection({ character, characterClass, className = "public-
   );
 }
 
-function DeathsDisplay({ character, isAdmin, onUpdateDeaths }) {
-  if (!isAdmin) return null;
+function DeathsDisplay({ character }) {
   const deaths = character?.deaths ?? 0;
   const isHollow = deaths >= 7;
   return (
     <div className="public-character-deaths">
-      <span className="type-caps public-character-deaths-label">Deaths</span>
-      <div className="public-character-deaths-stepper">
-        {isAdmin && (
-          <button
-            type="button"
-            className="stat-btn concord-player-card-deaths-btn"
-            onClick={() => onUpdateDeaths(character.id, Math.max(0, deaths - 1))}
-          >−</button>
-        )}
-        <span className="public-character-deaths-count">{deaths}</span>
-        {isAdmin && (
-          <button
-            type="button"
-            className="stat-btn stat-btn-plus type-caps concord-player-card-deaths-btn"
-            onClick={() => onUpdateDeaths(character.id, deaths + 1)}
-          >+</button>
-        )}
-      </div>
+      <span className="type-caps public-character-deaths-label">True Deaths</span>
+      <span className="public-character-deaths-count">{deaths}</span>
       {isHollow && <span className="type-caps public-character-hollow-badge">Hollow</span>}
     </div>
   );
@@ -263,7 +246,21 @@ function StatsList({ character }) {
   );
 }
 
-export function PlayersPage({ characters, teamBlueprint, currentCharacter, characterClassMap, getPathFromRoute, onNavigate }) {
+function PlayerMemberRow({ member, adminMode, concordId, memberColor, getPathFromRoute, onNavigate }) {
+  return (
+    <div className="players-member">
+      <p className="concord-player-name" style={{ color: member.excludedFromCount ? "#000000" : memberColor }}>
+        <a href={getPathFromRoute({ page: "player-detail", characterId: member.id })} onClick={onNavigate({ page: "player-detail", characterId: member.id })} className="concord-player-link">
+          {member.characterName ?? member.realName}
+        </a>
+        {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
+        {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
+      </p>
+    </div>
+  );
+}
+
+export function PlayersPage({ characters, teamBlueprint, currentCharacter, characterClassMap, getPathFromRoute, onNavigate, onUpdateDeaths }) {
   const adminMode = isAdmin(currentCharacter);
 
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {
@@ -295,20 +292,18 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
               {adminMode ? <span className="type-caps players-admin-count"> ({group.officialCount}/7)</span> : null}
             </h2>
             <div className="concord-players-list">
-              {group.members.map((member) => {
-                return (
-                  <div key={`${group.concordId}-${member.realName}`} className="players-member">
-                    <p className="concord-player-name" style={{ color: member.excludedFromCount ? "#000000" : group.memberColor }}>
-                      <a href={getPathFromRoute({ page: "player-detail", characterId: member.id })} onClick={onNavigate({ page: "player-detail", characterId: member.id })} className="concord-player-link">
-                        {member.characterName ?? member.realName}
-                      </a>
-                      {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps" style={{fontSize: '6px !important'}}> ({member.realName})</span> : null}
-                      {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
-                      {/* characterClass display hidden until classes are ready to ship */}
-                    </p>
-                  </div>
-                );
-              })}
+              {group.members.map((member) => (
+                <PlayerMemberRow
+                  key={`${group.concordId}-${member.realName}`}
+                  member={member}
+                  adminMode={adminMode}
+                  concordId={group.concordId}
+                  memberColor={group.memberColor}
+                  getPathFromRoute={getPathFromRoute}
+                  onNavigate={onNavigate}
+                  onUpdateDeaths={onUpdateDeaths}
+                />
+              ))}
             </div>
           </article>
         ))}
@@ -516,7 +511,7 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
         onOpenConcord={(concordId) => onNavigate({ page: "concord-detail", concordId, detailTab: "players" })}
       />
       <CharacterClassSection character={character} characterClass={characterClass} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
-      <DeathsDisplay character={character} isAdmin={isAdmin(currentCharacter)} onUpdateDeaths={onUpdateDeaths} />
+      <DeathsDisplay character={character} />
       <StatsList character={character} />
       <CharacterPerksSection character={character} characterClass={characterClass} />
     </main>

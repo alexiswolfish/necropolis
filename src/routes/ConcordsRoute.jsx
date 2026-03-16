@@ -16,7 +16,7 @@ export function renderConcordWord(text) {
   });
 }
 
-function ConcordPlayerCard({ entry, isAdmin, onUpdateDeaths, getPathFromRoute, onNavigate }) {
+function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
   const stats = entry.stats ?? {};
   const statEntries = Object.entries(STAT_LABELS).map(([key, label]) => ({
     key,
@@ -34,27 +34,6 @@ function ConcordPlayerCard({ entry, isAdmin, onUpdateDeaths, getPathFromRoute, o
         className="concord-player-card-link-overlay"
         aria-label={`Open ${entry.characterName ?? entry.realName}`}
       />
-      {isAdmin && <div className="concord-player-card-deaths">
-        <span className="type-caps concord-player-card-deaths-label">Deaths</span>
-        <div className="concord-player-card-deaths-stepper">
-          {isAdmin && (
-            <button
-              type="button"
-              className="stat-btn concord-player-card-deaths-btn"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onUpdateDeaths(entry.id, Math.max(0, deaths - 1)); }}
-            >−</button>
-          )}
-          <span className="concord-player-card-deaths-count">{deaths}</span>
-          {isAdmin && (
-            <button
-              type="button"
-              className="stat-btn stat-btn-plus type-caps concord-player-card-deaths-btn"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onUpdateDeaths(entry.id, deaths + 1); }}
-            >+</button>
-          )}
-        </div>
-        {isHollow && <span className="type-caps concord-player-card-hollow-badge">Hollow</span>}
-      </div>}
       <div className="concord-player-card-header">
         <div className="concord-player-card-names">
           {entry.characterName && entry.characterName !== entry.realName
@@ -73,6 +52,11 @@ function ConcordPlayerCard({ entry, isAdmin, onUpdateDeaths, getPathFromRoute, o
             <span className="concord-player-card-stat-value">{"+".repeat(Math.max(0, stat.value)) || "\u00a0"}</span>
           </div>
         ))}
+      </div>
+      <div className="concord-player-card-deaths">
+        <span className="type-caps concord-player-card-deaths-label">Deaths:</span>
+        <span className="concord-player-card-deaths-count">{deaths}</span>
+        {isHollow && <span className="type-caps concord-player-card-hollow-badge">Hollow</span>}
       </div>
     </article>
   );
@@ -113,11 +97,6 @@ export function ConcordsPage({ onOpenConcord, onHoverConcord, cards }) {
   );
 }
 
-const ADMIN_IDS = new Set([
-  "29450a65-8925-4b85-b4ef-c1b0870653cf",
-  "0bb97f08-c5bd-43d1-9934-99bbfcae3a21"
-]);
-
 export function ConcordDetailPage({
   concord,
   detailTab,
@@ -132,7 +111,6 @@ export function ConcordDetailPage({
   currentCharacter,
   onUpdateDeaths
 }) {
-  const isAdmin = Boolean(currentCharacter?.id && ADMIN_IDS.has(currentCharacter.id));
   const [leftLabel, rightLabel] = concord.label.split(" & ");
   const [loadedCostumeImages, setLoadedCostumeImages] = useState({});
   const displayLabel = rightLabel
@@ -246,8 +224,6 @@ export function ConcordDetailPage({
               <ConcordPlayerCard
                 key={`${concord.id}-${entry.realName}`}
                 entry={entry}
-                isAdmin={isAdmin}
-                onUpdateDeaths={onUpdateDeaths}
                 getPathFromRoute={getPathFromRoute}
                 onNavigate={onNavigate}
               />
