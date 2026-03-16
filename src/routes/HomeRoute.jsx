@@ -1,29 +1,234 @@
-import React from "react";
+import React, { useState } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 
-export function HomeRoute({ onHoverOmenStart, onHoverOmenEnd, deathImageSrc }) {
+const CONCORD_OPTIONS = [
+  { id: "death", label: "Death" },
+  { id: "desire-conspire", label: "Desire & Conspire" },
+  { id: "pleasure-treasure", label: "Pleasure & Treasure" },
+  { id: "brood-feud", label: "Brood & Feud" },
+  { id: "zeal-steel", label: "Zeal & Steel" },
+  { id: "tears-spears", label: "Tears & Spears" },
+  { id: "veils-sails", label: "Veils & Sails" },
+  { id: "laurels-quarrels", label: "Laurels & Quarrels" },
+  { id: "wit-spit", label: "Wit & Spit" }
+];
+
+const CONCORD_LABELS = Object.fromEntries(CONCORD_OPTIONS.map((o) => [o.id, o.label]));
+
+function formatRelativeDate(iso) {
+  if (!iso) return "";
+  const diff = Date.now() - new Date(iso).getTime();
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (minutes < 2) return "just now";
+  if (minutes < 60) return `${minutes} minutes ago`;
+  if (hours < 24) return `${hours} hour${hours !== 1 ? "s" : ""} ago`;
+  if (days < 30) return `${days} day${days !== 1 ? "s" : ""} ago`;
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function MemoryCard({ memory, getPathFromRoute, onNavigate }) {
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: memory.content,
+    editable: false
+  });
+
+  const authorLabel = memory.authorDisplayName ?? "Anonymous";
+
   return (
-    <main className="hero-layout">
-      <aside className="event-meta" />
+    <article className="memory-card" data-concord={memory.concordId ?? undefined}>
+      <header className="memory-card-header">
+        {memory.concordId && (
+          <span className="memory-concord-tag">{CONCORD_LABELS[memory.concordId] ?? memory.concordId}</span>
+        )}
+        <span className="memory-card-author">
+          {memory.characterId && getPathFromRoute ? (
+            <a
+              href={getPathFromRoute({ page: "player-detail", characterId: memory.characterId })}
+              onClick={onNavigate && onNavigate({ page: "player-detail", characterId: memory.characterId })}
+              className="memory-card-author-link"
+            >
+              {authorLabel}
+            </a>
+          ) : (
+            authorLabel
+          )}
+        </span>
+        <span className="memory-card-date">{formatRelativeDate(memory.createdAt)}</span>
+      </header>
+      <div className="memory-content">
+        <EditorContent editor={editor} />
+      </div>
+    </article>
+  );
+}
 
-      <article className="story-block">
-        <p className="type-body-large story-paragraph"><span className="type-before before-mark">Before</span> the dead were put to rest, and before the end of Wonders or the withering of Mystery, there loomed in the dusk of all things, the city of Necropolis.</p>
-        <p className="type-body-large story-paragraph">There, eight <span className="story-concord-word">Concords</span>, may they be both cursed and blessed, return to the sparring fields to compete in another cycle of the eternal tournament.</p>
-        <p className="type-body-large story-paragraph">Victory promises eternal renewal, dominion, or release, each Concord tells the tale it prefers, but all agree on this: <strong>the Tournament must be held, and you must attend.</strong></p>
-        <p className="type-body-large story-paragraph">Death has no hold on those bound by grim accord. Yet even here, beneath rite and rivalry, its shadow gathers and its patience thins.</p>
-        <p className="type-body-large story-paragraph story-omen-paragraph">
-          <span
-            className="story-concord-word story-omen-word"
-            onMouseEnter={onHoverOmenStart}
-            onMouseLeave={onHoverOmenEnd}
+function MemoryEditor({ character, onCreateMemory }) {
+  const [concordId, setConcordId] = useState(character?.concordId ?? "");
+  const [authorName, setAuthorName] = useState("");
+  const [botTrap, setBotTrap] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: ""
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (botTrap.trim()) return;
+    if (!editor || editor.isEmpty) return;
+
+    setSubmitting(true);
+    try {
+      await onCreateMemory({
+        content: editor.getJSON(),
+        concordId: character ? character.concordId : concordId || null,
+        characterId: character?.id ?? null,
+        authorDisplayName: character ? (character.characterName ?? character.realName) : (authorName.trim() || null)
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Failed to submit memory.", err);
+      setSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="memory-editor-wrap memory-editor-thanks">
+        <p className="type-body memory-thanks-text">Your memory has been submitted and will appear once reviewed.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="memory-editor-wrap">
+      <h2 className="type-caps memory-editor-heading">Share a Memory</h2>
+      <form className="memory-editor-form" onSubmit={handleSubmit}>
+        {character ? (
+          <div className="memory-author-locked">
+            <span className="memory-concord-tag" data-concord={character.concordId ?? undefined}>
+              {CONCORD_LABELS[character.concordId] ?? character.concordId}
+            </span>
+            <span className="type-body memory-author-name">{character.characterName ?? character.realName}</span>
+          </div>
+        ) : (
+          <div className="memory-author-fields">
+            <label className="memory-field-label" htmlFor="memory-author-name">
+              <span className="type-caps memory-field-label-text">Your Name</span>
+              <input
+                id="memory-author-name"
+                className="memory-field-input"
+                type="text"
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                placeholder="Optional"
+              />
+            </label>
+            <label className="memory-field-label" htmlFor="memory-concord-select">
+              <span className="type-caps memory-field-label-text">Concord</span>
+              <select
+                id="memory-concord-select"
+                className="memory-field-input memory-field-select"
+                value={concordId}
+                onChange={(e) => setConcordId(e.target.value)}
+              >
+                <option value="">— Select —</option>
+                {CONCORD_OPTIONS.map((opt) => (
+                  <option key={opt.id} value={opt.id}>{opt.label}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
+
+        {/* Honeypot */}
+        <input
+          type="text"
+          name="url"
+          value={botTrap}
+          onChange={(e) => setBotTrap(e.target.value)}
+          tabIndex={-1}
+          aria-hidden="true"
+          style={{ position: "absolute", opacity: 0, pointerEvents: "none", width: 0, height: 0 }}
+        />
+
+        <div className="memory-editor-toolbar">
+          <button
+            type="button"
+            className={`memory-toolbar-btn${editor?.isActive("bold") ? " is-active" : ""}`}
+            onClick={() => editor?.chain().focus().toggleBold().run()}
+            title="Bold"
           >
-            but death must claim us all
-          </span>
-          .
-        </p>
-      </article>
-      <div className="home-death-wrap" aria-hidden="true">
-        <img src={deathImageSrc} alt="" className="home-death-bg" />
-        <span className="home-death-overlay" />
+            <strong>B</strong>
+          </button>
+          <button
+            type="button"
+            className={`memory-toolbar-btn${editor?.isActive("italic") ? " is-active" : ""}`}
+            onClick={() => editor?.chain().focus().toggleItalic().run()}
+            title="Italic"
+          >
+            <em>I</em>
+          </button>
+          <button
+            type="button"
+            className={`memory-toolbar-btn${editor?.isActive("bulletList") ? " is-active" : ""}`}
+            onClick={() => editor?.chain().focus().toggleBulletList().run()}
+            title="Bullet list"
+          >
+            &#8226;&#8212;
+          </button>
+        </div>
+
+        <div className="memory-editor-content">
+          <EditorContent editor={editor} />
+        </div>
+
+        <button
+          type="submit"
+          className="memory-submit-btn type-caps"
+          disabled={submitting || !editor || editor.isEmpty}
+        >
+          {submitting ? "Submitting…" : "Submit Memory"}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export function HomeRoute({
+  memories,
+  character,
+  onCreateMemory,
+  getPathFromRoute,
+  onNavigate
+}) {
+  const approvedMemories = (memories ?? []).filter((m) => m.approved);
+
+  return (
+    <main className="memories-layout">
+      <div className="memories-editor-top">
+        <MemoryEditor character={character} onCreateMemory={onCreateMemory} />
+      </div>
+      <div className="memories-feed">
+        <h2 className="type-caps memories-feed-heading">Memories from the Hollows</h2>
+        {approvedMemories.length === 0 ? (
+          <p className="type-body memories-feed-empty">No memories yet. Be the first to share one.</p>
+        ) : (
+          approvedMemories.map((memory) => (
+            <MemoryCard
+              key={memory.id}
+              memory={memory}
+              getPathFromRoute={getPathFromRoute}
+              onNavigate={onNavigate}
+            />
+          ))
+        )}
       </div>
     </main>
   );

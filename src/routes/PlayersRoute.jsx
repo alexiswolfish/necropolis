@@ -137,6 +137,7 @@ export const STAT_LABELS = {
 };
 
 const PLAYERS_CONCORD_HEADING_COLORS = {
+  "death": "#FFA6D9",
   "desire-conspire": "#b32200",
   "pleasure-treasure": "#0d2b0f",
   "brood-feud": "#9e001f",
@@ -148,6 +149,7 @@ const PLAYERS_CONCORD_HEADING_COLORS = {
 };
 
 const PLAYERS_CONCORD_MEMBER_COLORS = {
+  "death": "#111314",
   "desire-conspire": "#f58e84",
   "pleasure-treasure": "#fdbf68",
   "brood-feud": "#a62c37",
@@ -246,15 +248,15 @@ function StatsList({ character }) {
   );
 }
 
-function PlayerMemberRow({ member, adminMode, concordId, memberColor, getPathFromRoute, onNavigate }) {
+function PlayerMemberRow({ member, adminMode, concordId, memberColor, realNameColor, classLabel, getPathFromRoute, onNavigate }) {
   return (
     <div className="players-member">
-      <p className="concord-player-name" style={{ color: member.excludedFromCount ? "#000000" : memberColor }}>
+      <p className="concord-player-name" style={{ color: memberColor }}>
         <a href={getPathFromRoute({ page: "player-detail", characterId: member.id })} onClick={onNavigate({ page: "player-detail", characterId: member.id })} className="concord-player-link">
           {member.characterName ?? member.realName}
         </a>
-        {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps"> ({member.realName})</span> : null}
-        {adminMode && !member.rsvpMatched ? <span className="players-unmatched" aria-label="unmatched">~</span> : null}
+        {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps" style={realNameColor ? { color: realNameColor } : undefined}> ({member.realName})</span> : null}
+{classLabel ? <span className="players-class-label type-caps"> {classLabel}</span> : null}
       </p>
     </div>
   );
@@ -263,11 +265,28 @@ function PlayerMemberRow({ member, adminMode, concordId, memberColor, getPathFro
 export function PlayersPage({ characters, teamBlueprint, currentCharacter, characterClassMap, getPathFromRoute, onNavigate, onUpdateDeaths }) {
   const adminMode = isAdmin(currentCharacter);
 
+  const npcMembers = characters
+    .filter((c) => c.excludedFromCount)
+    .sort((a, b) => (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? ""));
+
+  const npcIds = new Set(npcMembers.map((c) => c.id));
+
+  const deathGroup = npcMembers.length > 0 ? {
+    concordId: "death",
+    concordName: "Death",
+    backgroundColor: PLAYERS_CONCORD_HEADING_COLORS["death"],
+    memberColor: PLAYERS_CONCORD_MEMBER_COLORS["death"],
+    realNameColor: "#FFA6D9",
+    members: npcMembers,
+    officialCount: 0,
+    showClass: false
+  } : null;
+
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {
     const members = characters
-      .filter((player) => player.concordId === concordId)
+      .filter((player) => player.concordId === concordId && !npcIds.has(player.id))
       .sort((a, b) => (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? ""));
-    const officialCount = members.filter((m) => !m.excludedFromCount).length;
+    const officialCount = members.length;
     return {
       concordId,
       concordName: teamBlueprint[concordId]?.concordName ?? concordId,
@@ -275,21 +294,20 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
       memberColor: PLAYERS_CONCORD_MEMBER_COLORS[concordId] ?? "#000000",
       members,
       officialCount,
-      teamHighestMystery: members.reduce((max, member) => {
-        const mystery = Number(member?.stats?.mystery ?? 0);
-        return Math.max(max, mystery);
-      }, 0)
+      showClass: false
     };
   }).filter((group) => group.members.length > 0);
+
+  const allGroups = [...(deathGroup ? [deathGroup] : []), ...groupedByConcord];
 
   return (
     <main className="players-layout">
       <section className="players-concord-groups" aria-label="Players by concord">
-        {groupedByConcord.map((group) => (
+        {allGroups.map((group) => (
           <article key={group.concordId} className="players-concord-group">
             <h2 className="type-caps players-concord-name" style={{ color: group.backgroundColor }}>
               {group.concordName}
-              {adminMode ? <span className="type-caps players-admin-count"> ({group.officialCount}/7)</span> : null}
+              {adminMode && group.concordId !== "death" ? <span className="type-caps players-admin-count"> ({group.officialCount}/7)</span> : null}
             </h2>
             <div className="concord-players-list">
               {group.members.map((member) => (
@@ -299,6 +317,8 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
                   adminMode={adminMode}
                   concordId={group.concordId}
                   memberColor={group.memberColor}
+                  realNameColor={group.realNameColor ?? null}
+                  classLabel={group.showClass ? (characterClassMap?.get(member.id)?.label ?? null) : null}
                   getPathFromRoute={getPathFromRoute}
                   onNavigate={onNavigate}
                   onUpdateDeaths={onUpdateDeaths}

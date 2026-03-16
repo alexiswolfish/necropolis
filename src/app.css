@@ -101,7 +101,8 @@ html.fonts-ready #root {
   --concord-primary: #ffffff;
 }
 
-.page-shell[data-page="home"] {
+.page-shell[data-page="home"],
+.page-shell[data-page="lore"] {
   --theme-nav-font: var(--font-caps);
   --theme-nav-color: var(--color-text-caps);
   --theme-heading-color: var(--color-death);
@@ -109,6 +110,13 @@ html.fonts-ready #root {
   --theme-brand-color: var(--color-death);
   --page-bg: var(--concord-primary);
   background-color: var(--concord-primary);
+}
+
+.page-shell[data-page="lore"] .story-block {
+  width: min(100%, 800px);
+  max-width: 800px;
+  padding-left: 0;
+  text-align: left;
 }
 
 .page-shell[data-page="concords"] {
@@ -260,6 +268,14 @@ html.fonts-ready #root {
   --concord-secondary: #f27291;
   --concord-tertiary: #837e31;
   --concord-nav: #b73f74;
+}
+
+.page-shell[data-concord="death"] {
+  --concord-primary: #000000;
+  --concord-title: #D4ECE3;
+  --concord-secondary: #ffffff;
+  --concord-tertiary: #ffffff;
+  --concord-nav: #FFA6D9;
 }
 
 .top-bar {
@@ -616,6 +632,11 @@ html.fonts-ready #root {
   text-align: center;
 }
 
+.concord-card--death .concord-card-title {
+  font-size: clamp(3.8rem, 3rem + 2.8vw, 5.6rem);
+  letter-spacing: 0.02em;
+}
+
 .concord-card-desire {
   position: absolute;
   bottom: 0.52rem;
@@ -760,6 +781,21 @@ html.fonts-ready #root {
   transform: scale(1);
 }
 
+.costume-death-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 40vh;
+}
+
+.costume-death-hollow {
+  max-width: min(480px, 90%);
+  height: auto;
+  display: block;
+}
+
 .concord-players-list {
   display: flex;
   flex-direction: column;
@@ -868,6 +904,13 @@ html.fonts-ready #root {
   font-size: 18px;
   line-height: 1.2;
   color: var(--concord-title);
+}
+
+.concord-player-card-origin {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-top: 0.15rem;
+  letter-spacing: 0.08em;
 }
 
 .page-shell[data-concord="brood-feud"] .concord-player-card-class {
@@ -1808,9 +1851,16 @@ html.fonts-ready #root {
   text-transform: none;
 }
 
+.players-class-label {
+  font-size: 0.38em;
+  opacity: 0.65;
+  margin-left: 0.3em;
+  color: inherit;
+}
+
 .players-real-name {
   font-size: 0.42em;
-  color: inherit !important;
+  color: inherit;
   opacity: 0.92;
   margin-left: 4px;
 }
@@ -3942,4 +3992,636 @@ html.fonts-ready #root {
   .script-bullet-list li {
     font-size: 15px;
   }
+}
+
+/* ─── Home layout (memories feed) ─────────────────────────────────── */
+
+.home-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.hero-section {
+  /* inherits hero-layout grid styles */
+}
+
+.memories-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+}
+
+.memories-editor-top {
+  width: min(100%, 640px);
+}
+
+.memories-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: min(100%, 640px);
+}
+
+.memories-feed-heading {
+  font-family: var(--font-caps);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--color-text-caps);
+  margin: 0 0 1rem;
+  text-transform: uppercase;
+}
+
+.memories-feed-empty {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-text-primary);
+  opacity: 0.55;
+  margin: 0;
+}
+
+/* ─── Memory card ──────────────────────────────────────────────────── */
+
+.memory-card {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  padding: 1.25rem 1.4rem;
+  background: color-mix(in srgb, var(--color-bg-soft) 80%, transparent);
+}
+
+.memory-card-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.memory-concord-tag {
+  font-family: var(--font-caps);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--concord-title, var(--color-text-caps));
+  background: var(--concord-primary, transparent);
+  border: 1px solid var(--concord-title, var(--color-border-subtle));
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+
+/* Make concord tags inside cards pick up local concord vars */
+.memory-card[data-concord="desire-conspire"] {
+  --concord-primary: #b32200;
+  --concord-title: #f5dc74;
+}
+.memory-card[data-concord="pleasure-treasure"] {
+  --concord-primary: #0d2b0f;
+  --concord-title: #f0a925;
+}
+.memory-card[data-concord="brood-feud"] {
+  --concord-primary: #9e001f;
+  --concord-title: #c1c494;
+}
+.memory-card[data-concord="zeal-steel"] {
+  --concord-primary: #e596c9;
+  --concord-title: #7d1532;
+}
+.memory-card[data-concord="tears-spears"] {
+  --concord-primary: #3b1138;
+  --concord-title: #df7a91;
+}
+.memory-card[data-concord="veils-sails"] {
+  --concord-primary: #1d4255;
+  --concord-title: #e6a4dc;
+}
+.memory-card[data-concord="laurels-quarrels"] {
+  --concord-primary: #cc5918;
+  --concord-title: #4a1e8d;
+}
+.memory-card[data-concord="wit-spit"] {
+  --concord-primary: #f7f7f7;
+  --concord-title: #4a1e8d;
+}
+.memory-card[data-concord="death"] {
+  --concord-primary: #000000;
+  --concord-title: #D4ECE3;
+}
+
+.memory-card-author {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.memory-card-author-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.memory-card-date {
+  font-family: var(--font-caps);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-caps);
+  opacity: 0.6;
+  margin-left: auto;
+}
+
+.memory-content .ProseMirror {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  outline: none;
+  padding: 0;
+}
+
+.memory-content .ProseMirror p {
+  margin: 0 0 0.5em;
+}
+
+.memory-content .ProseMirror ul {
+  margin: 0 0 0.5em;
+  padding-left: 1.4em;
+}
+
+/* ─── Memory editor ────────────────────────────────────────────────── */
+
+.memory-editor-wrap {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  padding: 1.4rem;
+  background: color-mix(in srgb, var(--color-bg-soft) 80%, transparent);
+}
+
+.memory-editor-thanks {
+  padding: 2rem;
+  text-align: center;
+}
+
+.memory-thanks-text {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.memory-editor-heading {
+  font-family: var(--font-caps);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-text-caps);
+  margin: 0 0 1.2rem;
+}
+
+.memory-editor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.memory-author-locked {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.memory-author-name {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text-primary);
+}
+
+.memory-author-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.memory-field-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.memory-field-label-text {
+  font-family: var(--font-caps);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-text-caps);
+}
+
+.memory-field-input {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  padding: 0.5rem 0.65rem;
+  width: 100%;
+  appearance: none;
+}
+
+.memory-field-input:focus {
+  outline: 1px solid color-mix(in srgb, var(--color-text-primary) 40%, transparent);
+}
+
+.memory-field-select {
+  cursor: pointer;
+}
+
+.memory-editor-toolbar {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.memory-toolbar-btn {
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 3px 8px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-text-caps);
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.memory-toolbar-btn:hover,
+.memory-toolbar-btn.is-active {
+  background: color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+  color: var(--color-text-primary);
+}
+
+.memory-editor-content {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  padding: 0.65rem 0.8rem;
+  min-height: 120px;
+  background: var(--color-bg);
+  cursor: text;
+}
+
+.memory-editor-content .ProseMirror {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  outline: none;
+  min-height: 90px;
+}
+
+.memory-editor-content .ProseMirror p {
+  margin: 0 0 0.4em;
+}
+
+.memory-editor-content .ProseMirror p.is-editor-empty:first-child::before {
+  content: "Write a memory from the Hollows…";
+  color: var(--color-text-caps);
+  opacity: 0.45;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+.memory-submit-btn {
+  font-family: var(--font-caps);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  background: var(--color-text-primary);
+  border: none;
+  border-radius: 2px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: opacity 160ms ease;
+}
+
+.memory-submit-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ─── Sign-in layout ───────────────────────────────────────────────── */
+
+.sign-in-layout {
+  max-width: 480px;
+  margin: 0 auto;
+  padding-top: 3rem;
+}
+
+.sign-in-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--color-death);
+  margin: 0 0 0.75rem;
+}
+
+.sign-in-lede {
+  font-family: var(--font-body);
+  font-size: 18px;
+  color: var(--color-text-primary);
+  opacity: 0.8;
+  margin: 0 0 2rem;
+}
+
+.sign-in-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.sign-in-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sign-in-label-text {
+  font-family: var(--font-caps);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-text-caps);
+}
+
+.sign-in-hint {
+  opacity: 0.55;
+}
+
+.sign-in-input {
+  font-family: var(--font-body);
+  font-size: 17px;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  padding: 0.6rem 0.8rem;
+  width: 100%;
+}
+
+.sign-in-input:focus {
+  outline: 1px solid color-mix(in srgb, var(--color-text-primary) 40%, transparent);
+}
+
+.sign-in-error {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: #f27291;
+  margin: 0;
+}
+
+.sign-in-btn {
+  font-family: var(--font-caps);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-bg);
+  background: var(--color-text-primary);
+  border: none;
+  border-radius: 2px;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: opacity 160ms ease;
+  margin-top: 0.5rem;
+}
+
+.sign-in-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.sign-in-redirect-layout {
+  padding-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.sign-in-locked-name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+}
+
+.sign-in-locked-realname {
+  font-family: var(--font-body);
+  font-size: 17px;
+  color: var(--color-text-primary);
+}
+
+.sign-in-locked-charname {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-caps);
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.sign-in-clear-btn {
+  margin-left: auto;
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1;
+  color: var(--color-text-caps);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0.5;
+  transition: opacity 140ms ease;
+}
+
+.sign-in-clear-btn:hover {
+  opacity: 1;
+}
+
+.sign-in-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sign-in-suggestions-label {
+  font-family: var(--font-caps);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-text-caps);
+  margin: 0;
+  opacity: 0.7;
+}
+
+.sign-in-suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.sign-in-suggestion-btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 140ms ease;
+  text-align: left;
+}
+
+.sign-in-suggestion-btn:hover {
+  background: color-mix(in srgb, var(--color-text-primary) 16%, transparent);
+}
+
+.sign-in-suggestion-real {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.sign-in-redirect-link {
+  font-family: var(--font-caps);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ─── Admin memories layout ────────────────────────────────────────── */
+
+.admin-memories-layout {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-top: 2rem;
+}
+
+.admin-memories-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: var(--color-death);
+  margin: 0 0 2rem;
+}
+
+.admin-memories-section {
+  margin-bottom: 3rem;
+}
+
+.admin-memories-section-title {
+  font-family: var(--font-caps);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-text-caps);
+  margin: 0 0 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: 0.5rem;
+}
+
+.admin-memories-empty {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text-primary);
+  opacity: 0.5;
+  margin: 0;
+}
+
+.admin-memories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-memory-card {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 2px;
+  padding: 1rem 1.2rem;
+  background: color-mix(in srgb, var(--color-bg-soft) 80%, transparent);
+}
+
+/* Apply concord vars to admin cards too */
+.admin-memory-card[data-concord="desire-conspire"] { --concord-primary: #b32200; --concord-title: #f5dc74; }
+.admin-memory-card[data-concord="pleasure-treasure"] { --concord-primary: #0d2b0f; --concord-title: #f0a925; }
+.admin-memory-card[data-concord="brood-feud"] { --concord-primary: #9e001f; --concord-title: #c1c494; }
+.admin-memory-card[data-concord="zeal-steel"] { --concord-primary: #e596c9; --concord-title: #7d1532; }
+.admin-memory-card[data-concord="tears-spears"] { --concord-primary: #3b1138; --concord-title: #df7a91; }
+.admin-memory-card[data-concord="veils-sails"] { --concord-primary: #1d4255; --concord-title: #e6a4dc; }
+.admin-memory-card[data-concord="laurels-quarrels"] { --concord-primary: #cc5918; --concord-title: #4a1e8d; }
+.admin-memory-card[data-concord="wit-spit"] { --concord-primary: #f7f7f7; --concord-title: #4a1e8d; }
+.admin-memory-card[data-concord="death"] { --concord-primary: #000000; --concord-title: #D4ECE3; }
+
+.admin-memory-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.65rem;
+}
+
+.admin-memory-author {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.admin-memory-date {
+  font-family: var(--font-caps);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-caps);
+  opacity: 0.6;
+  margin-left: auto;
+}
+
+.admin-memory-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.admin-memory-btn {
+  font-family: var(--font-caps);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 2px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.admin-memory-approve {
+  color: #4adc7f;
+  border-color: #4adc7f;
+  background: transparent;
+}
+
+.admin-memory-reject {
+  color: #f27291;
+  border-color: #f27291;
+  background: transparent;
+}
+
+.admin-memory-btn:hover {
+  opacity: 0.7;
 }

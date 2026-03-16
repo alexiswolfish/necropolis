@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { GOING_GUEST_NAMES } from "./guestAllowlist";
 import { HomeRoute } from "./routes/HomeRoute";
-import { BeginGate, OnboardingWizard } from "./routes/OnboardingRoute";
+import { LoreRoute } from "./routes/LoreRoute";
 import { ConcordDetailPage, ConcordsPage } from "./routes/ConcordsRoute";
 import { CharacterPage, PlayersPage, PublicCharacterPage } from "./routes/PlayersRoute";
 import { CursesRoute } from "./routes/CursesRoute";
@@ -22,6 +22,9 @@ import { ManualClassesRoute } from "./routes/ManualClassesRoute";
 import { ManualOssuaryRoute } from "./routes/ManualOssuaryRoute";
 import { ManualPlayerGuideRoute } from "./routes/ManualPlayerGuideRoute";
 import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCharacterProfileById, updateCharacterById, updateCharacterDeaths } from "./data/charactersApi";
+import { fetchAllMemories, createMemory, approveMemory } from "./data/memoriesApi";
+import { SignInRoute } from "./routes/SignInRoute";
+import { AdminMemoriesRoute } from "./routes/AdminMemoriesRoute";
 import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
 
 const CONCORDS = [
@@ -125,7 +128,8 @@ const EXTRA_CONCORD_CARDS = [
   { id: "laurels-quarrels", title: "Laurels\n&\nQuarrels", element: "Warded Air", desire: "Glory", symbol: "☉", colorBg: "#cc5918", colorTop: "#df7a91", colorTitle: "#4a1e8d", routeId: "laurels-quarrels" },
   { id: "wit-spit", title: "Wit\n&\nSpit", element: "Wandering Air", desire: "Cunning", symbol: "⚶", colorBg: "#f7f7f7", colorTop: "#f3b1bc", colorTitle: "#4a1e8d", routeId: "wit-spit" },
   { id: "desire-conspire-gold", title: "Desire\n&\nConspire", element: "Wandering Fire", desire: "Ambition", symbol: "♃", colorBg: "#b32200", colorTop: "#f39b29", colorTitle: "#f5dc74", routeId: "desire-conspire" },
-  { id: "pleasure-treasure-gold", title: "Pleasure\n&\nTreasure", element: "Warded Earth", desire: "Hedonism", symbol: "♀", colorBg: "#0d2b0f", colorTop: "#cc8c37", colorTitle: "#f0a925", routeId: "pleasure-treasure" }
+  { id: "pleasure-treasure-gold", title: "Pleasure\n&\nTreasure", element: "Warded Earth", desire: "Hedonism", symbol: "♀", colorBg: "#0d2b0f", colorTop: "#cc8c37", colorTitle: "#f0a925", routeId: "pleasure-treasure" },
+  { id: "death", title: "Death", element: "", desire: "must claim us all", symbol: "", colorBg: "#000000", colorTop: "#FFA6D9", colorTitle: "#D4ECE3", routeId: "death", cardClass: "concord-card--death" }
 ];
 
 const EXTRA_CONCORD_DETAILS = [
@@ -224,6 +228,16 @@ const EXTRA_CONCORD_DETAILS = [
       "A member of the Academy, in full possession of the relevant facts, is — as several former governments could confirm — the most dangerous thing in any room."
     ],
     preview: { start: "#f7f7f7", end: "#f7f7f7", border: "#f3b1bc", text: "#4a1e8d" }
+  },
+  {
+    id: "death",
+    label: "Death",
+    paletteId: null,
+    element: "",
+    earthlyDesire: "Inevitability",
+    lede: "must claim us all",
+    bodyParagraphs: [],
+    preview: { start: "#000000", end: "#000000", border: "#FFA6D9", text: "#D4ECE3" }
   }
 ];
 
@@ -370,10 +384,14 @@ const MAIN_CARD_IDS = new Set([
   "tears-spears",
   "veils-sails",
   "laurels-quarrels",
-  "wit-spit"
+  "wit-spit",
+  "death"
 ]);
 
-const MAIN_CONCORD_CARDS = ALL_CONCORD_CARDS.filter((card) => MAIN_CARD_IDS.has(card.id));
+const MAIN_CONCORD_CARDS = [
+  ...ALL_CONCORD_CARDS.filter((card) => card.id === "death"),
+  ...ALL_CONCORD_CARDS.filter((card) => MAIN_CARD_IDS.has(card.id) && card.id !== "death")
+];
 const SPARE_CONCORD_CARDS = ALL_CONCORD_CARDS.filter((card) => !MAIN_CARD_IDS.has(card.id));
 const PARTY_DATE = "March 14th 2026";
 const PARTY_ADDRESS = "Piedmont Community Center";
@@ -804,6 +822,9 @@ function playGongTone(audioContext, frequency) {
 function getRouteFromPath(pathname) {
   const appPath = stripBase(pathname);
   if (appPath === "/") return { page: "home" };
+  if (appPath === "/lore") return { page: "lore" };
+  if (appPath === "/signin") return { page: "sign-in" };
+  if (appPath === "/admin/memories") return { page: "admin-memories" };
   if (appPath === "/curses") return { page: "curses" };
   if (appPath === "/blessings") return { page: "blessings" };
   if (appPath === "/hint-cards") return { page: "hint-cards" };
@@ -839,6 +860,9 @@ function getRouteFromPath(pathname) {
 
 function getPathFromRoute(route) {
   if (route.page === "home") return withBase("/");
+  if (route.page === "lore") return withBase("/lore");
+  if (route.page === "sign-in") return withBase("/signin");
+  if (route.page === "admin-memories") return withBase("/admin/memories");
   if (route.page === "curses") return withBase("/curses");
   if (route.page === "blessings") return withBase("/blessings");
   if (route.page === "hint-cards") return withBase("/hint-cards");
@@ -891,9 +915,7 @@ export default function App() {
   const [character, setCharacter] = useState(() => storedCharacter);
   const [allCharacters, setAllCharacters] = useState([]);
   const [charactersLoaded, setCharactersLoaded] = useState(false);
-  const [onboardingStep, setOnboardingStep] = useState(() => (storedCharacter ? 0 : (storedOnboardingDraft?.step ?? 0)));
-  const [onboardingError, setOnboardingError] = useState("");
-  const [onboardingForm, setOnboardingForm] = useState(() => (storedCharacter ? INITIAL_ONBOARDING_FORM : (storedOnboardingDraft?.form ?? INITIAL_ONBOARDING_FORM)));
+  const [memories, setMemories] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const audioContextRef = useRef(null);
   const lastHoverRef = useRef({ concordId: "", time: 0 });
@@ -931,6 +953,10 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    fetchAllMemories().then(setMemories).catch(() => {});
+  }, []);
+
   useEffect(() => () => {
     if (audioContextRef.current) {
       audioContextRef.current.close().catch(() => {});
@@ -938,16 +964,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (character) {
-      clearStoredOnboardingDraft();
-      return;
-    }
-    if (onboardingStep > 0) {
-      setStoredOnboardingDraft(onboardingStep, onboardingForm);
-    } else {
-      clearStoredOnboardingDraft();
-    }
-  }, [character, onboardingStep, onboardingForm]);
+    if (character) clearStoredOnboardingDraft();
+  }, [character]);
 
   const characterClassMap = useMemo(() => {
     const result = new Map();
@@ -976,29 +994,32 @@ export default function App() {
     }
     return null;
   }, [route.page, route.characterId, selectedConcord, character, allCharacters]);
-  const zodiacSign = useMemo(() => getZodiacSign(onboardingForm.birthDate), [onboardingForm.birthDate]);
-  const matchedGuestName = useMemo(() => findGuestNameMatch(onboardingForm.realName), [onboardingForm.realName]);
-  const guestNameSuggestions = useMemo(
-    () => (matchedGuestName ? [] : getGuestNameSuggestions(onboardingForm.realName)),
-    [matchedGuestName, onboardingForm.realName]
-  );
-  const teamCounts = useMemo(() => getTeamCounts(allCharacters), [allCharacters]);
-  const assignedConcordId = zodiacSign ? (getNameOverrideTeam(onboardingForm.realName) ?? assignTeamForSign(zodiacSign, teamCounts)) : null;
-  const assignedConcordCard = useMemo(() => {
-    if (!assignedConcordId) return null;
-    return ALL_CONCORD_CARDS.find((card) => card.routeId === assignedConcordId) ?? null;
-  }, [assignedConcordId]);
-  const assignedConcord = useMemo(() => {
-    if (!assignedConcordId) return null;
-    return CONCORDS_BY_ID.get(assignedConcordId) ?? null;
-  }, [assignedConcordId]);
-  const assignedConcordDescription = useMemo(() => {
-    if (!assignedConcord) return [];
-    const body = assignedConcord.bodyParagraphs ?? (assignedConcord.body ? [assignedConcord.body] : []);
-    return [assignedConcord.lede, ...body].filter(Boolean).slice(0, 2);
-  }, [assignedConcord]);
-  const remainingStatPoints = STAT_POINT_POOL - Object.values(onboardingForm.stats).reduce((total, value) => total + value, 0);
   const canAccessStory = Boolean(character);
+
+  const handleSignIn = (foundCharacter) => {
+    setCharacter(foundCharacter);
+    setStoredCharacter(foundCharacter);
+    const nextRoute = { page: "character", detailTab: "stats" };
+    const nextPath = getPathFromRoute(nextRoute);
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, "", nextPath);
+    }
+    setRoute(nextRoute);
+  };
+
+  const handleCreateMemory = async (data) => {
+    const created = await createMemory(data);
+    if (created) {
+      setMemories((current) => [created, ...current]);
+    }
+  };
+
+  const handleApproveMemory = async (id, approved) => {
+    const updated = await approveMemory(id, approved);
+    if (updated) {
+      setMemories((current) => current.map((m) => m.id === id ? updated : m));
+    }
+  };
 
   const handleUpdateDeaths = async (characterId, newDeaths) => {
     const updated = await updateCharacterDeaths(characterId, newDeaths).catch(() => null);
@@ -1024,152 +1045,6 @@ export default function App() {
           document.getElementById(nextRoute.scrollTo)?.scrollIntoView();
         });
       });
-    }
-  };
-
-  const handleOnboardingBack = () => {
-    setOnboardingError("");
-    setOnboardingStep((step) => Math.max(1, step - 1));
-  };
-
-  const handleAdjustStat = (statKey, direction) => {
-    setOnboardingForm((current) => {
-      const currentValue = current.stats[statKey];
-      const nextValue = currentValue + direction;
-      if (nextValue < 0 || nextValue > 10) return current;
-      const total = Object.values(current.stats).reduce((sum, value) => sum + value, 0);
-      if (direction > 0 && total >= STAT_POINT_POOL) return current;
-
-      return {
-        ...current,
-        stats: {
-          ...current.stats,
-          [statKey]: nextValue
-        }
-      };
-    });
-  };
-
-  const handleOnboardingNext = async () => {
-    setOnboardingError("");
-
-    if (onboardingStep === 1) {
-      const matchedName = findGuestNameMatch(onboardingForm.realName);
-      const normalized = normalizeName(matchedName ?? onboardingForm.realName);
-      if (onboardingForm.botTrap.trim()) {
-        setOnboardingError("Unable to proceed.");
-        return;
-      }
-      if (!matchedName && normalized.length < 1) {
-        setOnboardingError("Please use at least a full syllable for your name.");
-        return;
-      }
-      setOnboardingForm((current) => ({ ...current, realName: matchedName ?? current.realName }));
-      setOnboardingStep(2);
-      return;
-    }
-
-    if (onboardingStep === 2) {
-      if (!zodiacSign || !assignedConcordId) {
-        setOnboardingError("Please enter a valid birth date.");
-        return;
-      }
-
-       const normalized = normalizeName(matchedGuestName ?? onboardingForm.realName);
-       const existingCharacter = allCharacters.find((entry) => normalizeName(entry.realName) === normalized && sameBirthdayMonthDay(entry.birthDate, onboardingForm.birthDate)) ?? null;
-       if (existingCharacter) {
-
-         setCharacter(existingCharacter);
-         setStoredCharacter(existingCharacter);
-         setOnboardingStep(0);
-         setOnboardingForm(INITIAL_ONBOARDING_FORM);
-         clearStoredOnboardingDraft();
-         const nextPath = getPathFromRoute({ page: "character" });
-         if (window.location.pathname !== nextPath) {
-           window.history.pushState({}, "", nextPath);
-         }
-         setRoute({ page: "character", detailTab: "stats" });
-         return;
-       }
-
-      setOnboardingStep(3);
-      return;
-    }
-
-    if (onboardingStep === 3) {
-      if (remainingStatPoints > 0) {
-        setOnboardingError("Spend all stat points before continuing.");
-        return;
-      }
-      setOnboardingStep(4);
-      return;
-    }
-
-    if (onboardingStep === 4) {
-      if (!zodiacSign) {
-        setOnboardingError("Missing zodiac sign.");
-        return;
-      }
-
-      let latestCharacters;
-      try {
-        latestCharacters = await fetchAllCharacters();
-      } catch {
-        setOnboardingError("Unable to reach the roster. Please try again.");
-        return;
-      }
-
-      const claimed = latestCharacters.some((entry) => normalizeName(entry.realName) === normalizeName(onboardingForm.realName) && sameBirthdayMonthDay(entry.birthDate, onboardingForm.birthDate));
-      if (claimed) {
-        setOnboardingError("A character already exists for that name.");
-        return;
-      }
-
-      const latestCounts = getTeamCounts(latestCharacters);
-      const allocatedConcordId = getNameOverrideTeam(onboardingForm.realName) ?? assignTeamForSign(zodiacSign, latestCounts);
-      if (!allocatedConcordId) {
-        setOnboardingError("No teams available.");
-        return;
-      }
-
-      const nextCharacter = {
-        realName: (matchedGuestName ?? onboardingForm.realName).trim(),
-        characterName: (onboardingForm.characterName || "").trim() || (matchedGuestName ?? onboardingForm.realName).trim(),
-        rsvpMatched: Boolean(matchedGuestName),
-        birthDate: monthDayToStorageDate(onboardingForm.birthDate),
-        zodiacSign,
-        concordId: allocatedConcordId,
-        className: "peasant",
-        stats: onboardingForm.stats,
-        completedAt: new Date().toISOString()
-      };
-
-      try {
-        await createCharacter(nextCharacter);
-      } catch (error) {
-        const duplicateCheck = await findCharacterByIdentity(normalizeName(onboardingForm.realName), nextCharacter.birthDate).catch(() => null);
-        if (duplicateCheck) {
-          setOnboardingError("A character already exists for that name.");
-          return;
-        }
-        setOnboardingError("Unable to save your character. Please try again.");
-        return;
-      }
-
-      const updatedCharacters = await fetchAllCharacters().catch(() => latestCharacters);
-      const createdCharacter = updatedCharacters.find((entry) => normalizeName(entry.realName) === normalizeName(nextCharacter.realName)) ?? nextCharacter;
-      setCharacter(createdCharacter);
-      setStoredCharacter(createdCharacter);
-      setAllCharacters(updatedCharacters);
-      setOnboardingStep(0);
-      setOnboardingForm(INITIAL_ONBOARDING_FORM);
-      clearStoredOnboardingDraft();
-      const nextRoute = { page: "character", detailTab: "stats" };
-      const nextPath = getPathFromRoute(nextRoute);
-      if (window.location.pathname !== nextPath) {
-        window.history.pushState({}, "", nextPath);
-      }
-      setRoute(nextRoute);
     }
   };
 
@@ -1354,43 +1229,41 @@ export default function App() {
   };
 
   const concordsVisible = route.page === "concords" || route.page === "concords-spare" || route.page === "concord-detail";
-  const shouldShowOnboardingGate = !canAccessStory && !concordsVisible;
   const canSeeCharacterPage = canAccessStory;
 
-  let pageContent = <HomeRoute onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} deathImageSrc={withAssetBase("/death.png")} />;
-  if (shouldShowOnboardingGate && onboardingStep === 0) {
-    pageContent = <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
+  let pageContent = (
+    <HomeRoute
+      memories={memories}
+      character={character}
+      onCreateMemory={handleCreateMemory}
+      getPathFromRoute={getPathFromRoute}
+      onNavigate={navigate}
+    />
+  );
+  if (route.page === "lore") {
+    pageContent = <LoreRoute onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} deathImageSrc={withAssetBase("/death.png")} />;
   }
-  if (shouldShowOnboardingGate && onboardingStep > 0) {
+  if (route.page === "sign-in") {
     pageContent = (
-      <OnboardingWizard
-        step={onboardingStep}
-        form={onboardingForm}
-        remainingPoints={remainingStatPoints}
-        zodiacSign={zodiacSign}
-        assignedConcordCard={assignedConcordCard}
-        assignedConcordDescription={assignedConcordDescription}
-        welcomeName={matchedGuestName ?? onboardingForm.realName}
-        nameSuggestions={guestNameSuggestions}
-        error={onboardingError}
-        statKeys={STAT_KEYS}
-        statLabels={STAT_LABELS}
-        onNameChange={(realName) => setOnboardingForm((current) => ({ ...current, realName }))}
-        onSelectNameSuggestion={(realName) => setOnboardingForm((current) => ({ ...current, realName }))}
-        onBotTrapChange={(botTrap) => setOnboardingForm((current) => ({ ...current, botTrap }))}
-        onBirthDateChange={(birthDate) => setOnboardingForm((current) => ({ ...current, birthDate: normalizeMonthDayInput(birthDate) }))}
-        onCharacterNameChange={(characterName) => setOnboardingForm((current) => ({ ...current, characterName }))}
-        onAdjustStat={handleAdjustStat}
-        onResetStats={() => setOnboardingForm((current) => ({ ...current, stats: INITIAL_STATS }))}
-        onBack={handleOnboardingBack}
-        onNext={handleOnboardingNext}
-        onHoverOmenStart={startOminousHum}
-        onHoverOmenEnd={stopOminousHum}
+      <SignInRoute
+        allCharacters={allCharacters}
+        onSignIn={handleSignIn}
+        getPathFromRoute={getPathFromRoute}
+        onNavigate={navigate}
+      />
+    );
+  }
+  if (route.page === "admin-memories") {
+    pageContent = (
+      <AdminMemoriesRoute
+        memories={memories}
+        currentCharacter={character}
+        onApproveMemory={handleApproveMemory}
       />
     );
   }
   if (route.page === "concords") {
-    pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id, detailTab: "players" })} onHoverConcord={handleConcordHover} />;
+    pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id, detailTab: "players" })} onHoverConcord={handleConcordHover} onHoverDeathStart={startOminousHum} onHoverDeathEnd={stopOminousHum} />;
   }
   if (route.page === "concords-spare") {
     pageContent = <ConcordsPage cards={SPARE_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id, detailTab: "players" })} onHoverConcord={handleConcordHover} />;
@@ -1512,7 +1385,18 @@ export default function App() {
           }}
         />
       )
-      : <BeginGate onBegin={() => setOnboardingStep((current) => (current > 0 ? current : 1))} onHoverOmenStart={startOminousHum} onHoverOmenEnd={stopOminousHum} />;
+      : (
+        <main className="sign-in-redirect-layout">
+          <p className="type-body">You need to sign in to view your character.</p>
+          <a
+            href={getPathFromRoute({ page: "sign-in" })}
+            onClick={navigate({ page: "sign-in" })}
+            className="type-caps sign-in-redirect-link"
+          >
+            Sign In
+          </a>
+        </main>
+      );
   }
   if (route.page === "curses") {
     pageContent = <CursesRoute />;
@@ -1572,6 +1456,7 @@ export default function App() {
   const inConcordsSection = concordsVisible;
   const inPlayersSection = route.page === "players" || route.page === "player-detail";
   const inCharacterSection = route.page === "character";
+  const inLoreSection = route.page === "lore";
   const inManualSection = route.page === "manual" || route.page === "manual-combat" || route.page === "manual-classes" || route.page === "manual-player-guide" || route.page === "manual-ossuary" || route.page === "artifacts";
 
   return (
@@ -1582,10 +1467,11 @@ export default function App() {
           <span /><span /><span />
         </button>
         <nav className="top-nav" aria-label="Primary">
+          <a href={getPathFromRoute({ page: "lore" })} onClick={(e) => { setMenuOpen(false); navigate({ page: "lore" })(e); }} className="type-caps top-nav-link" aria-current={inLoreSection ? "page" : undefined}>Story</a>
           <a href={getPathFromRoute({ page: "manual" })} onClick={(e) => { setMenuOpen(false); navigate({ page: "manual" })(e); }} className="type-caps top-nav-link" aria-current={inManualSection ? "page" : undefined}>Handbook</a>
           <a href={getPathFromRoute({ page: "concords" })} onClick={(e) => { setMenuOpen(false); navigate({ page: "concords" })(e); }} className="type-caps top-nav-link" aria-current={inConcordsSection ? "page" : undefined}>Concords</a>
           <a href={getPathFromRoute({ page: "players" })} onClick={(e) => { setMenuOpen(false); navigate({ page: "players" })(e); }} className="type-caps top-nav-link" aria-current={inPlayersSection ? "page" : undefined}>Players</a>
-          <a href={getPathFromRoute({ page: canAccessStory ? "character" : "home" })} onClick={(e) => { setMenuOpen(false); navigate({ page: canAccessStory ? "character" : "home" })(e); }} className="type-caps top-nav-link" aria-current={inCharacterSection ? "page" : undefined}>{canAccessStory ? "Character" : "Sign In"}</a>
+          <a href={getPathFromRoute({ page: canAccessStory ? "character" : "sign-in" })} onClick={(e) => { setMenuOpen(false); navigate({ page: canAccessStory ? "character" : "sign-in" })(e); }} className="type-caps top-nav-link" aria-current={inCharacterSection ? "page" : undefined}>{canAccessStory ? "Character" : "Sign In"}</a>
         </nav>
       </header>
 

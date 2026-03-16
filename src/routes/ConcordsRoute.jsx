@@ -16,7 +16,7 @@ export function renderConcordWord(text) {
   });
 }
 
-function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
+function ConcordPlayerCard({ entry, originalConcordLabel, getPathFromRoute, onNavigate }) {
   const stats = entry.stats ?? {};
   const statEntries = Object.entries(STAT_LABELS).map(([key, label]) => ({
     key,
@@ -47,6 +47,9 @@ function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
         {entry.className
           ? <span className="concord-player-card-class">{entry.className}</span>
           : null}
+        {originalConcordLabel
+          ? <span className="concord-player-card-origin type-caps">{originalConcordLabel}</span>
+          : null}
       </div>
       <div className="concord-player-card-stats">
         {statEntries.map((stat) => (
@@ -65,7 +68,7 @@ function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
   );
 }
 
-export function ConcordsPage({ onOpenConcord, onHoverConcord, cards }) {
+export function ConcordsPage({ onOpenConcord, onHoverConcord, onHoverDeathStart, onHoverDeathEnd, cards }) {
   return (
     <main className="concords-layout">
       <section className="concord-grid concord-grid-exact" aria-label="Concord squares">
@@ -73,9 +76,10 @@ export function ConcordsPage({ onOpenConcord, onHoverConcord, cards }) {
           <button
             key={card.id}
             type="button"
-            className="concord-card"
+            className={`concord-card${card.cardClass ? ` ${card.cardClass}` : ""}`}
             onClick={onOpenConcord(card.routeId)}
-            onMouseEnter={() => onHoverConcord(card.routeId)}
+            onMouseEnter={() => card.id === "death" ? onHoverDeathStart?.() : onHoverConcord(card.routeId)}
+            onMouseLeave={() => card.id === "death" ? onHoverDeathEnd?.() : undefined}
             style={{
               "--card-bg": card.colorBg,
               "--card-secondary": card.colorTop,
@@ -134,8 +138,9 @@ export function ConcordDetailPage({
     if (cls === "peasant") return 1;
     return 0;
   }
+  const isDeath = concord.id === "death";
   const teamMembers = (characters ?? [])
-    .filter((entry) => entry?.concordId === concord.id)
+    .filter((entry) => isDeath ? entry?.excludedFromCount : entry?.concordId === concord.id)
     .sort((a, b) => {
       const orderDiff = classOrder(a) - classOrder(b);
       if (orderDiff !== 0) return orderDiff;
@@ -203,30 +208,41 @@ export function ConcordDetailPage({
         </nav>
 
         {detailTab === "costumes" ? (
-          <section className="costume-grid" aria-label={`${concord.label} costumes`}>
-            {costumeImages.map((src, index) => (
+          isDeath ? (
+            <section className="costume-death-placeholder" aria-label="Death costumes">
               <img
-                key={`${concord.id}-costume-${index + 1}`}
-                src={src}
-                alt={`${concord.label} costume ${index + 1}`}
-                className={`costume-image${loadedCostumeImages[src] ? " is-loaded" : ""}`}
-                loading="lazy"
-                decoding="async"
-                onLoad={() => {
-                  setLoadedCostumeImages((prev) => {
-                    if (prev[src]) return prev;
-                    return { ...prev, [src]: true };
-                  });
-                }}
+                src={`${import.meta.env.BASE_URL}hollow.png`}
+                alt="Hollow"
+                className="costume-death-hollow"
               />
-            ))}
-          </section>
+            </section>
+          ) : (
+            <section className="costume-grid" aria-label={`${concord.label} costumes`}>
+              {costumeImages.map((src, index) => (
+                <img
+                  key={`${concord.id}-costume-${index + 1}`}
+                  src={src}
+                  alt={`${concord.label} costume ${index + 1}`}
+                  className={`costume-image${loadedCostumeImages[src] ? " is-loaded" : ""}`}
+                  loading="lazy"
+                  decoding="async"
+                  onLoad={() => {
+                    setLoadedCostumeImages((prev) => {
+                      if (prev[src]) return prev;
+                      return { ...prev, [src]: true };
+                    });
+                  }}
+                />
+              ))}
+            </section>
+          )
         ) : detailTab === "players" ? (
           <section className="concord-player-cards" aria-label={`${concord.label} players`}>
             {teamMembers.map((entry) => (
               <ConcordPlayerCard
                 key={`${concord.id}-${entry.realName}`}
                 entry={entry}
+                originalConcordLabel={isDeath && entry.concordId ? (teamBlueprint[entry.concordId]?.concordName ?? null) : null}
                 getPathFromRoute={getPathFromRoute}
                 onNavigate={onNavigate}
               />
