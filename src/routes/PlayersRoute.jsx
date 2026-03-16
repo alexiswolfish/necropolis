@@ -119,7 +119,7 @@ function DeathsDisplay({ character }) {
   const isHollow = deaths >= 7;
   return (
     <div className="public-character-deaths">
-      <span className="type-caps public-character-deaths-label">True Deaths</span>
+      <span className="type-caps public-character-deaths-label">True Deaths:</span>
       <span className="public-character-deaths-count">{deaths}</span>
       {isHollow && <span className="type-caps public-character-hollow-badge">Hollow</span>}
     </div>
