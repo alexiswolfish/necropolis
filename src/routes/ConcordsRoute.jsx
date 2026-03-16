@@ -54,7 +54,7 @@ function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
         ))}
       </div>
       <div className="concord-player-card-deaths">
-        <span className="type-caps concord-player-card-deaths-label">Deaths:</span>
+        <span className="type-caps concord-player-card-stat-label concord-player-card-deaths-label">True Deaths:</span>
         <span className="concord-player-card-deaths-count">{deaths}</span>
         {isHollow && <span className="type-caps concord-player-card-hollow-badge">Hollow</span>}
       </div>

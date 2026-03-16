@@ -79,8 +79,14 @@ html.fonts-ready #root {
 
 .page-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   padding: 2.5rem 2.6rem 4rem;
   transition: color 320ms ease;
+}
+
+.page-shell > main {
+  flex: 1;
 }
 
 .page-shell[data-concord] {
@@ -1529,6 +1535,7 @@ html.fonts-ready #root {
 }
 
 .concord-player-card-deaths {
+  padding-top: 20px;
   position: relative;
   z-index: 3;
   display: flex;
@@ -1538,9 +1545,10 @@ html.fonts-ready #root {
 }
 
 .concord-player-card-deaths-label {
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  opacity: 0.5;
+  position: relative;
+  top: 2px;
+  font-size: 10px !important;
+  color: var(--concord-tertiary) !important;
 }
 
 .concord-player-card-deaths-stepper {
