@@ -25,15 +25,18 @@ function ConcordPlayerCard({ entry, getPathFromRoute, onNavigate }) {
   }));
   const deaths = entry.deaths ?? 0;
   const isHollow = deaths >= 7;
+  const hoverState = deaths > 1 ? "hollow" : "blessed";
+  const hoverSrc = `${import.meta.env.BASE_URL}${deaths > 1 ? "hollow.png" : "blessed.svg"}`;
 
   return (
-    <article className="concord-player-card">
+    <article className="concord-player-card" data-hover-state={hoverState}>
       <a
         href={getPathFromRoute({ page: "player-detail", characterId: entry.id })}
         onClick={onNavigate({ page: "player-detail", characterId: entry.id })}
         className="concord-player-card-link-overlay"
         aria-label={`Open ${entry.characterName ?? entry.realName}`}
       />
+      <img src={hoverSrc} alt="" className="concord-player-card-hover-img" aria-hidden="true" />
       <div className="concord-player-card-header">
         <div className="concord-player-card-names">
           {entry.characterName && entry.characterName !== entry.realName

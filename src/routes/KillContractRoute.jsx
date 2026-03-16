@@ -19,6 +19,15 @@ export const KILL_CONTRACTS = [
   },
 ];
 
+const LETTER_CARDS = [
+  { id: "letter-06", src: `${import.meta.env.BASE_URL}letter-06.svg` },
+  { id: "letter-08", src: `${import.meta.env.BASE_URL}letter-08.png` },
+  { id: "letter-10", src: `${import.meta.env.BASE_URL}letter-10.png` },
+  { id: "letter-11", src: `${import.meta.env.BASE_URL}letter-11.png` },
+  { id: "letter-12", src: `${import.meta.env.BASE_URL}letter-12.png` },
+  { id: "kill-contract-blank", src: `${import.meta.env.BASE_URL}kill-contract-blank.svg` },
+];
+
 function KillContractCard({ contract }) {
   const cardRef = useRef(null);
 
@@ -76,6 +85,22 @@ function KillContractCard({ contract }) {
   );
 }
 
+function LetterCard({ id, src }) {
+  const downloadImg = () => {
+    const link = document.createElement("a");
+    link.download = `${id}.${src.endsWith(".svg") ? "svg" : "png"}`;
+    link.href = src;
+    link.click();
+  };
+
+  return (
+    <div className="kc-wrap">
+      <img src={src} alt="" className="kc-letter-img" />
+      <button className="kc-dl-btn" onClick={downloadImg}>Download</button>
+    </div>
+  );
+}
+
 export function KillContractRoute() {
   return (
     <main className="kc-layout">
@@ -83,6 +108,9 @@ export function KillContractRoute() {
       <div className="kc-grid">
         {KILL_CONTRACTS.map((contract) => (
           <KillContractCard key={contract.id} contract={contract} />
+        ))}
+        {LETTER_CARDS.map(({ id, src }) => (
+          <LetterCard key={id} id={id} src={src} />
         ))}
       </div>
     </main>

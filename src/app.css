@@ -1531,7 +1531,45 @@ html.fonts-ready #root {
 }
 
 .concord-player-card:hover {
-  opacity: 0.7;
+  opacity: 1;
+}
+
+.concord-player-card[data-hover-state="blessed"]:hover {
+  background: #ffffff;
+  border-color: transparent;
+}
+
+.concord-player-card[data-hover-state="hollow"]:hover {
+  background: #000000;
+  border-color: transparent;
+}
+
+.concord-player-card .concord-player-card-hover-img {
+  position: absolute;
+  inset: 40px;
+  width: calc(100% - 80px);
+  height: calc(100% - 80px);
+  object-fit: contain;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
+}
+
+.concord-player-card:hover .concord-player-card-hover-img {
+  opacity: 1;
+}
+
+.concord-player-card-header,
+.concord-player-card-stats,
+.concord-player-card-deaths {
+  transition: opacity 120ms ease;
+}
+
+.concord-player-card:hover .concord-player-card-header,
+.concord-player-card:hover .concord-player-card-stats,
+.concord-player-card:hover .concord-player-card-deaths {
+  opacity: 0;
 }
 
 .concord-player-card-deaths {
@@ -3423,6 +3461,15 @@ html.fonts-ready #root {
 .kc-dl-btn:hover {
   color: #f37420;
   border-color: #f37420;
+}
+
+.kc-letter-img {
+  width: 396px;
+  height: 612px;
+  object-fit: contain;
+  background: #fff;
+  display: block;
+  flex-shrink: 0;
 }
 
 /* ---- Run of Show ---- */
