@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { STAT_LABELS } from "./PlayersRoute";
+import { STAT_LABELS, getNpcLocation } from "./PlayersRoute";
 
 function toFirstWordCapital(text) {
   const lower = text.toLowerCase();
@@ -16,7 +16,7 @@ export function renderConcordWord(text) {
   });
 }
 
-function ConcordPlayerCard({ entry, originalConcordLabel, getPathFromRoute, onNavigate }) {
+function ConcordPlayerCard({ entry, originalConcordLabel, isDeathConcord, getPathFromRoute, onNavigate }) {
   const stats = entry.stats ?? {};
   const statEntries = Object.entries(STAT_LABELS).map(([key, label]) => ({
     key,
@@ -27,6 +27,7 @@ function ConcordPlayerCard({ entry, originalConcordLabel, getPathFromRoute, onNa
   const isHollow = deaths >= 7;
   const hoverState = deaths > 1 ? "hollow" : "blessed";
   const hoverSrc = `${import.meta.env.BASE_URL}${deaths > 1 ? "hollow.png" : "blessed.svg"}`;
+  const location = isDeathConcord ? getNpcLocation(entry.id) : null;
 
   return (
     <article className="concord-player-card" data-hover-state={hoverState}>
@@ -59,11 +60,18 @@ function ConcordPlayerCard({ entry, originalConcordLabel, getPathFromRoute, onNa
           </div>
         ))}
       </div>
-      <div className="concord-player-card-deaths">
-        <span className="type-caps concord-player-card-stat-label concord-player-card-deaths-label">True Deaths:</span>
-        <span className="concord-player-card-deaths-count">{deaths}</span>
-        {isHollow && <span className="type-caps concord-player-card-hollow-badge">Hollow</span>}
-      </div>
+      {location ? (
+        <div className="concord-player-card-deaths">
+          <span className="type-caps concord-player-card-stat-label concord-player-card-deaths-label">Location:</span>
+          <span className="concord-player-card-deaths-count concord-player-card-location">{location}</span>
+        </div>
+      ) : (
+        <div className="concord-player-card-deaths">
+          <span className="type-caps concord-player-card-stat-label concord-player-card-deaths-label">True Deaths:</span>
+          <span className="concord-player-card-deaths-count">{deaths}</span>
+          {isHollow && <span className="type-caps concord-player-card-hollow-badge">Hollow</span>}
+        </div>
+      )}
     </article>
   );
 }
@@ -243,6 +251,7 @@ export function ConcordDetailPage({
                 key={`${concord.id}-${entry.realName}`}
                 entry={entry}
                 originalConcordLabel={isDeath && entry.concordId ? (teamBlueprint[entry.concordId]?.concordName ?? null) : null}
+                isDeathConcord={isDeath}
                 getPathFromRoute={getPathFromRoute}
                 onNavigate={onNavigate}
               />

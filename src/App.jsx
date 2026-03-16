@@ -129,7 +129,7 @@ const EXTRA_CONCORD_CARDS = [
   { id: "wit-spit", title: "Wit\n&\nSpit", element: "Wandering Air", desire: "Cunning", symbol: "⚶", colorBg: "#f7f7f7", colorTop: "#f3b1bc", colorTitle: "#4a1e8d", routeId: "wit-spit" },
   { id: "desire-conspire-gold", title: "Desire\n&\nConspire", element: "Wandering Fire", desire: "Ambition", symbol: "♃", colorBg: "#b32200", colorTop: "#f39b29", colorTitle: "#f5dc74", routeId: "desire-conspire" },
   { id: "pleasure-treasure-gold", title: "Pleasure\n&\nTreasure", element: "Warded Earth", desire: "Hedonism", symbol: "♀", colorBg: "#0d2b0f", colorTop: "#cc8c37", colorTitle: "#f0a925", routeId: "pleasure-treasure" },
-  { id: "death", title: "Death", element: "", desire: "must claim us all", symbol: "", colorBg: "#000000", colorTop: "#FFA6D9", colorTitle: "#D4ECE3", routeId: "death", cardClass: "concord-card--death" }
+  { id: "death", title: "Death", element: "Mortality", desire: "must claim us all", symbol: "", colorBg: "#000000", colorTop: "#FFA6D9", colorTitle: "#D4ECE3", routeId: "death", cardClass: "concord-card--death" }
 ];
 
 const EXTRA_CONCORD_DETAILS = [
@@ -233,7 +233,7 @@ const EXTRA_CONCORD_DETAILS = [
     id: "death",
     label: "Death",
     paletteId: null,
-    element: "",
+    element: "Mortality",
     earthlyDesire: "Inevitability",
     lede: "must claim us all",
     bodyParagraphs: [],
@@ -924,6 +924,7 @@ export default function App() {
 
   useEffect(() => {
     const onPopState = () => {
+      if (ominousHumRef.current) stopOminousHum();
       setRoute(getRouteFromPath(window.location.pathname));
       setNavigationState(window.history.state ?? {});
       setMenuOpen(false);
@@ -990,6 +991,7 @@ export default function App() {
     }
     if (route.page === "player-detail" && route.characterId) {
       const profileChar = allCharacters.find((c) => c.id === route.characterId) ?? null;
+      if (profileChar?.excludedFromCount) return CONCORDS_BY_ID.get("death") ?? null;
       return profileChar?.concordId ? (CONCORDS_BY_ID.get(profileChar.concordId) ?? null) : null;
     }
     return null;
@@ -1030,6 +1032,7 @@ export default function App() {
 
   const navigate = (nextRoute) => (event) => {
     event.preventDefault();
+    stopOminousHum();
     const nextPath = getPathFromRoute(nextRoute);
     const nextState = { route: nextRoute, fromRoute: route };
     if (window.location.pathname !== nextPath) {

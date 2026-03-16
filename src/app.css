@@ -278,6 +278,10 @@ html.fonts-ready #root {
   --concord-nav: #FFA6D9;
 }
 
+.page-shell[data-concord="death"] .concord-detail-name {
+  padding-bottom: 40px;
+}
+
 .top-bar {
   position: sticky;
   top: 0;
@@ -854,6 +858,12 @@ html.fonts-ready #root {
   min-width: 230px;
   padding: 12px 14px;
   border: 1px solid color-mix(in srgb, var(--concord-tertiary, currentColor) 22%, transparent 78%);
+  display: flex;
+  flex-direction: column;
+}
+
+.concord-player-card-stats {
+  flex: 1;
 }
 
 .concord-player-card-link-overlay {
@@ -1620,16 +1630,16 @@ html.fonts-ready #root {
   position: relative;
   z-index: 3;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   margin-bottom: 10px;
+  margin-top: auto;
 }
 
 .concord-player-card-deaths-label {
-  position: relative;
-  top: 2px;
   font-size: 10px !important;
   color: var(--concord-tertiary) !important;
+  padding-top: 3px;
 }
 
 .concord-player-card-deaths-stepper {
@@ -1658,6 +1668,18 @@ html.fonts-ready #root {
   text-align: center;
   line-height: 1;
   color: var(--concord-tertiary);
+}
+
+.concord-player-card-location {
+  font-size: 18px;
+  text-align: left;
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.public-character-location {
+  font-size: 2rem !important;
+  padding-left: 20px;
 }
 
 .concord-player-card-hollow-badge {

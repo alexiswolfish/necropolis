@@ -34,13 +34,11 @@ function renderClassLore(text) {
 }
 
 function CharacterClassSection({ character, characterClass, getPathFromRoute, onNavigate }) {
-  const isNpc = Boolean(character?.excludedFromCount);
-  if (!isNpc && !characterClass) return null;
+  if (!characterClass) return null;
 
-  const displayClass = isNpc ? NPC_CLASS : characterClass;
-  const displayClassName = displayClass.tag ?? displayClass.label;
-  const classAnchor = displayClass.tag ?? displayClass.label.toLowerCase();
-  const classLore = isNpc ? NPC_CLASS_LORE : CLASS_LORE_BY_ID[characterClass.id];
+  const displayClassName = characterClass.tag ?? characterClass.label;
+  const classAnchor = characterClass.tag ?? characterClass.label.toLowerCase();
+  const classLore = CLASS_LORE_BY_ID[characterClass.id];
 
   const classHeadingContent = (
     <>
@@ -49,7 +47,7 @@ function CharacterClassSection({ character, characterClass, getPathFromRoute, on
     </>
   );
 
-  const classHeading = !isNpc && characterClass && getPathFromRoute && onNavigate
+  const classHeading = getPathFromRoute && onNavigate
     ? (
       <a
         href={getPathFromRoute({ page: "manual-classes", anchor: classAnchor })}
@@ -159,6 +157,29 @@ const PLAYERS_CONCORD_MEMBER_COLORS = {
   "laurels-quarrels": "#d8a37b",
   "wit-spit": "#c0a9b3"
 };
+
+const NPC_LOCATIONS_BY_ID = {
+  "c8d102ac-2ce5-453b-884f-a545e4163b2e": "Resurrection Shrine",       // Kate Laux
+  "e11f3182-9032-408f-b0ec-087862993a29": "Minions of Death",           // Conor Doyle
+  "7489374e-cc5f-4087-8284-6eb42a1e5f27": "Minions of Death",           // Ross Fischer
+  "0bb97f08-c5bd-43d1-9934-99bbfcae3a21": "Game Master",                // Jordan F Morris
+  "29450a65-8925-4b85-b4ef-c1b0870653cf": "Game Master",                // Alexandra K Wolfe
+  "447ef375-c082-45ae-a05c-180e0b1b83f2": "The Hall of Final Passage",  // Geri W
+  "4c31f8e3-5c1c-4406-9ba7-91f88ab2848f": "The Hall of Final Passage",  // Shane
+  "5bd37ecd-5853-42d6-b8b9-bb96518d9269": "DEATH HERSELF",              // Em King
+  "66833433-6685-4472-8e5e-fad404ad3df6": "The Potion Witch",           // Simi
+  "1f87e602-cdea-4bc8-b4b3-6a1ce8592e53": "The Garden of Conditional Rites", // Kavya
+  "d33631a4-e194-412e-b0b2-ec842765f394": "The Garden of Conditional Rites", // Jess
+  "ccfa1543-2912-4282-a15f-4702fa82708a": "The Tribunal of Shattered Oaths", // Nancy
+  "399891b4-52d8-4183-8213-c18c9af7c7c2": "The Gate of Names That Should Not Be", // Vina
+  "bb7faac4-bc1b-4205-9632-f20a922d95a5": "The Ossuary of Unspoken Grief", // John Shen
+  "5ab07127-7235-40b8-951c-9b80caf556b4": "The Ossuary of Unspoken Grief"  // Ken Bongort
+};
+
+export function getNpcLocation(id) {
+  if (!id) return null;
+  return NPC_LOCATIONS_BY_ID[id] ?? null;
+}
 
 const ADMIN_IDS = new Set([
   "29450a65-8925-4b85-b4ef-c1b0870653cf",
@@ -531,7 +552,14 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
         onOpenConcord={(concordId) => onNavigate({ page: "concord-detail", concordId, detailTab: "players" })}
       />
       <CharacterClassSection character={character} characterClass={characterClass} getPathFromRoute={getPathFromRoute} onNavigate={onNavigate} />
-      <DeathsDisplay character={character} />
+      {character.excludedFromCount ? (
+        <div className="public-character-deaths">
+          <span className="type-caps public-character-deaths-label">Location:</span>
+          <span className="public-character-deaths-count public-character-location">{getNpcLocation(character.id) ?? "The Hollows"}</span>
+        </div>
+      ) : (
+        <DeathsDisplay character={character} />
+      )}
       <StatsList character={character} />
       <CharacterPerksSection character={character} characterClass={characterClass} />
     </main>
