@@ -173,7 +173,8 @@ const NPC_LOCATIONS_BY_ID = {
   "ccfa1543-2912-4282-a15f-4702fa82708a": "The Tribunal of Shattered Oaths", // Nancy
   "399891b4-52d8-4183-8213-c18c9af7c7c2": "The Gate of Names That Should Not Be", // Vina
   "bb7faac4-bc1b-4205-9632-f20a922d95a5": "The Ossuary of Unspoken Grief", // John Shen
-  "5ab07127-7235-40b8-951c-9b80caf556b4": "The Ossuary of Unspoken Grief"  // Ken Bongort
+  "5ab07127-7235-40b8-951c-9b80caf556b4": "The Ossuary of Unspoken Grief", // Ken Bongort
+  "a7c35178-4a4a-4bf1-8407-9c93d44ba9fb": "Ingress & Potion Station"      // Theresa Cheng
 };
 
 export function getNpcLocation(id) {
@@ -300,7 +301,7 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
     realNameColor: "#FFA6D9",
     members: npcMembers,
     officialCount: 0,
-    showClass: false
+    showClass: true
   } : null;
 
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {
