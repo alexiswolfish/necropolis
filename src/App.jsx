@@ -357,6 +357,13 @@ const TEAM_BLUEPRINT = {
     ambition: "Leverage",
     earthlyDesire: "Cunning",
     palette: { id: 329, background: "#f7f7f7", accent: "#f3b1bc", title: "#4a1e8d" }
+  },
+  "death": {
+    id: "death",
+    concordName: "Death",
+    element: "mortality",
+    planet: "Pluto ♇",
+    earthlyDesire: "Inevitability"
   }
 };
 
@@ -1309,7 +1316,7 @@ export default function App() {
         character={profileCharacter}
         charactersLoaded={charactersLoaded}
         teamBlueprint={TEAM_BLUEPRINT}
-        concord={profileCharacter?.concordId ? (CONCORDS_BY_ID.get(profileCharacter.concordId) ?? null) : null}
+        concord={profileCharacter?.excludedFromCount ? (CONCORDS_BY_ID.get("death") ?? null) : (profileCharacter?.concordId ? (CONCORDS_BY_ID.get(profileCharacter.concordId) ?? null) : null)}
         characterClass={profileCharacter ? (characterClassMap.get(profileCharacter.id) ?? null) : null}
         getPathFromRoute={getPathFromRoute}
         onNavigate={navigate}

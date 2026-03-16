@@ -655,7 +655,7 @@ html.fonts-ready #root {
 .concord-detail-layout {
   display: grid;
   grid-template-columns: minmax(260px, 320px) minmax(420px, 880px);
-  gap: 40px;
+  gap: 0 80px;
   align-items: start;
   max-width: 1320px;
 }
@@ -917,9 +917,9 @@ html.fonts-ready #root {
 }
 
 .concord-player-card-origin {
-  font-size: 10px;
+  font-size: 10px !important;
   opacity: 0.6;
-  margin-top: 0.15rem;
+  margin-top: -4px;
   letter-spacing: 0.08em;
 }
 
@@ -1391,10 +1391,12 @@ html.fonts-ready #root {
 }
 
 .public-character-layout > .public-character-back,
+.public-character-layout > .character-player-label,
 .public-character-layout > .public-character-name,
 .public-character-layout > .public-character-bio,
 .public-character-layout > .mobile-concord-heading,
 .public-character-layout > .character-class-section,
+.public-character-layout > .public-character-deaths,
 .public-character-layout > .character-stats,
 .public-character-layout > .public-character-perks {
   grid-column: 2;
@@ -1402,7 +1404,7 @@ html.fonts-ready #root {
 
 .public-character-layout > .concord-detail-left {
   grid-column: 1;
-  grid-row: 1 / span 6;
+  grid-row: 1 / span 8;
 }
 
 .character-concord-link {
@@ -1693,7 +1695,7 @@ html.fonts-ready #root {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 20px 0 16px;
+  margin: 0;
 }
 
 .public-character-deaths-stepper {
@@ -1775,29 +1777,18 @@ html.fonts-ready #root {
 
 .public-character-name {
   grid-row: 2;
-  margin-bottom: 4px;
+  margin-bottom: 0;
 }
 
-.public-character-layout > .character-player-label {
-  margin-bottom: 8px;
-}
-
-.public-character-layout > .public-character-bio {
-  margin-top: 8px;
-  margin-bottom: 16px;
-}
-
-.public-character-layout > .character-class-section {
-  margin-top: 0;
-}
-
-.public-character-layout > .character-stats {
-  margin-top: 20px;
-}
-
-.public-character-layout > .public-character-perks {
-  margin-top: 20px;
-}
+/* All spacing between elements in the public player layout lives here */
+.public-character-layout > .character-player-label  { margin-top: 0;    margin-bottom: 4px; }
+.public-character-layout > .public-character-name   { margin-top: 0;    margin-bottom: 0; }
+.public-character-layout > .public-character-bio    { margin-top: 12px; margin-bottom: 0; }
+.public-character-layout > .character-class-section { margin-top: 20px; margin-bottom: 0; }
+.public-character-layout > .character-class-section .character-class-lore { white-space: normal; margin-bottom: 0; }
+.public-character-layout > .public-character-deaths { margin-top: 4px; margin-bottom: 0; }
+.public-character-layout > .character-stats         { margin-top: 20px; }
+.public-character-layout > .public-character-perks  { margin-top: 20px; }
 
 @media (min-width: 981px) {
   .character-name-hero-input-private,
@@ -2105,11 +2096,13 @@ html.fonts-ready #root {
   }
 
   .public-character-layout > .public-character-back,
+  .public-character-layout > .character-player-label,
   .public-character-layout > .public-character-name,
   .public-character-layout > .public-character-bio,
   .public-character-layout > .mobile-concord-heading,
   .public-character-layout > .concord-detail-left,
   .public-character-layout > .character-class-section,
+  .public-character-layout > .public-character-deaths,
   .public-character-layout > .character-stats,
   .public-character-layout > .public-character-perks {
     grid-column: 1;

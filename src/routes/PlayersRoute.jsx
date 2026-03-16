@@ -160,8 +160,8 @@ const PLAYERS_CONCORD_MEMBER_COLORS = {
 
 const NPC_LOCATIONS_BY_ID = {
   "c8d102ac-2ce5-453b-884f-a545e4163b2e": "Resurrection Shrine",       // Kate Laux
-  "e11f3182-9032-408f-b0ec-087862993a29": "Minions of Death",           // Conor Doyle
-  "7489374e-cc5f-4087-8284-6eb42a1e5f27": "Minions of Death",           // Ross Fischer
+  "e11f3182-9032-408f-b0ec-087862993a29": "Minion of Death",           // Conor Doyle
+  "7489374e-cc5f-4087-8284-6eb42a1e5f27": "Minion of Death",           // Ross Fischer
   "0bb97f08-c5bd-43d1-9934-99bbfcae3a21": "Game Master",                // Jordan F Morris
   "29450a65-8925-4b85-b4ef-c1b0870653cf": "Game Master",                // Alexandra K Wolfe
   "447ef375-c082-45ae-a05c-180e0b1b83f2": "The Hall of Final Passage",  // Geri W
@@ -535,7 +535,9 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
     );
   }
 
-  const teamData = teamBlueprint[character.concordId] ?? null;
+  const effectiveConcordId = character.excludedFromCount ? "death" : character.concordId;
+  const teamData = teamBlueprint[effectiveConcordId] ?? null;
+  const sidebarCharacter = character.excludedFromCount ? { ...character, concordId: "death" } : character;
   return (
     <main className="concord-detail-layout character-detail-layout public-character-layout">
       <p className="character-player-label type-caps">Player Name: {character.realName}</p>
@@ -545,7 +547,7 @@ export function PublicCharacterPage({ character, charactersLoaded, characterClas
       {character.characterBio ? <p className="type-body-large public-character-bio">{character.characterBio}</p> : null}
       <p className="type-caps mobile-concord-heading">Concord</p>
       <ConcordSidebar
-        character={character}
+        character={sidebarCharacter}
         concord={concord}
         teamData={teamData}
         getPathFromRoute={getPathFromRoute}

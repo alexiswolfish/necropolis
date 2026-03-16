@@ -25,8 +25,9 @@ function ConcordPlayerCard({ entry, originalConcordLabel, isDeathConcord, getPat
   }));
   const deaths = entry.deaths ?? 0;
   const isHollow = deaths >= 7;
-  const hoverState = deaths > 1 ? "hollow" : "blessed";
-  const hoverSrc = `${import.meta.env.BASE_URL}${deaths > 1 ? "hollow.png" : "blessed.svg"}`;
+  const showHollow = deaths > 1 || isDeathConcord;
+  const hoverState = showHollow ? "hollow" : "blessed";
+  const hoverSrc = `${import.meta.env.BASE_URL}${showHollow ? "hollow.png" : "blessed.svg"}`;
   const location = isDeathConcord ? getNpcLocation(entry.id) : null;
 
   return (
@@ -49,7 +50,7 @@ function ConcordPlayerCard({ entry, originalConcordLabel, isDeathConcord, getPat
           ? <span className="concord-player-card-class">{entry.className}</span>
           : null}
         {originalConcordLabel
-          ? <span className="concord-player-card-origin type-caps">{originalConcordLabel}</span>
+          ? <span className="type-caps concord-player-card-origin">({originalConcordLabel})</span>
           : null}
       </div>
       <div className="concord-player-card-stats">
