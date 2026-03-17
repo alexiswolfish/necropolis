@@ -25,6 +25,7 @@ import { createCharacter, fetchAllCharacters, findCharacterByIdentity, updateCha
 import { fetchAllMemories, createMemory, approveMemory } from "./data/memoriesApi";
 import { SignInRoute } from "./routes/SignInRoute";
 import { AdminMemoriesRoute } from "./routes/AdminMemoriesRoute";
+import { MemoryFixturesRoute } from "./routes/MemoryFixturesRoute";
 import NECROPOLIS_CLASSES from "./data/necropolisClasses.json";
 
 const CONCORDS = [
@@ -56,7 +57,7 @@ const CONCORDS = [
       "Members of the Concord carry themselves with charm and danger in equal measure. They flirt, provoke, and linger where secrets are being traded. Laughter comes easily, but their eyes are always searching the room for the next opportunity.",
       "At any gathering they can be found close to the center of intrigue-wine in hand, velvet draped over their shoulders, smiling as if they already know how the night will end."
     ],
-    preview: { start: "#b32200", end: "#ad2000", border: "#f5dc74", text: "#f5dc74" }
+    preview: { start: "#b32200", end: "#ad2000", border: "#f58e84", text: "#f5dc74" }
   },
   {
     id: "mercy-malice",
@@ -121,7 +122,7 @@ const CONCORDS = [
 ];
 
 const EXTRA_CONCORD_CARDS = [
-  { id: "brood-feud", title: "Brood\n&\nFeud", element: "Wakened Fire", desire: "Conquest", symbol: "♂", colorBg: "#9e001f", colorTop: "#c1c494", colorTitle: "#0b25e4", routeId: "brood-feud" },
+  { id: "brood-feud", title: "Brood\n&\nFeud", element: "Wakened Fire", desire: "Conquest", symbol: "♂", colorBg: "#9e001f", colorTop: "#F59994", colorTitle: "#0b25e4", routeId: "brood-feud" },
   { id: "zeal-steel", title: "Zeal\n&\nSteel", element: "Wakened Earth", desire: "Legacy", symbol: "♄", colorBg: "#e596c9", colorTop: "#cc5920", colorTitle: "#7d1532", routeId: "zeal-steel" },
   { id: "tears-spears", title: "Tears\n&\nSpears", element: "Wakened Water", desire: "Devotion", symbol: "☽", colorBg: "#3b1138", colorTop: "#96a8ba", colorTitle: "#df7a91", routeId: "tears-spears" },
   { id: "veils-sails", title: "Veils\n&\nSails", element: "Wandering Water", desire: "Rapture", symbol: "♆", colorBg: "#1d4255", colorTop: "#cc8c37", colorTitle: "#e6a4dc", routeId: "veils-sails" },
@@ -306,7 +307,7 @@ const TEAM_BLUEPRINT = {
     planet: "Mars ♂",
     ambition: "Dominance",
     earthlyDesire: "Conquest",
-    palette: { id: 51, background: "#9e001f", accent: "#c1c494", title: "#0b25e4" }
+    palette: { id: 51, background: "#9e001f", accent: "#F59994", title: "#0b25e4" }
   },
   "zeal-steel": {
     id: "zeal-steel",
@@ -832,6 +833,7 @@ function getRouteFromPath(pathname) {
   if (appPath === "/lore") return { page: "lore" };
   if (appPath === "/signin") return { page: "sign-in" };
   if (appPath === "/admin/memories") return { page: "admin-memories" };
+  if (appPath === "/memory-fixtures") return { page: "memory-fixtures" };
   if (appPath === "/curses") return { page: "curses" };
   if (appPath === "/blessings") return { page: "blessings" };
   if (appPath === "/hint-cards") return { page: "hint-cards" };
@@ -870,6 +872,7 @@ function getPathFromRoute(route) {
   if (route.page === "lore") return withBase("/lore");
   if (route.page === "sign-in") return withBase("/signin");
   if (route.page === "admin-memories") return withBase("/admin/memories");
+  if (route.page === "memory-fixtures") return withBase("/memory-fixtures");
   if (route.page === "curses") return withBase("/curses");
   if (route.page === "blessings") return withBase("/blessings");
   if (route.page === "hint-cards") return withBase("/hint-cards");
@@ -1271,6 +1274,9 @@ export default function App() {
         onApproveMemory={handleApproveMemory}
       />
     );
+  }
+  if (route.page === "memory-fixtures") {
+    pageContent = <MemoryFixturesRoute />;
   }
   if (route.page === "concords") {
     pageContent = <ConcordsPage cards={MAIN_CONCORD_CARDS} onOpenConcord={(id) => navigate({ page: "concord-detail", concordId: id, detailTab: "players" })} onHoverConcord={handleConcordHover} onHoverDeathStart={startOminousHum} onHoverDeathEnd={stopOminousHum} />;

@@ -40,25 +40,25 @@ function MemoryCard({ memory, getPathFromRoute, onNavigate }) {
 
   return (
     <article className="memory-card" data-concord={memory.concordId ?? undefined}>
-      <header className="memory-card-header">
+      <p className="memory-card-author">
+        {memory.characterId && getPathFromRoute ? (
+          <a
+            href={getPathFromRoute({ page: "player-detail", characterId: memory.characterId })}
+            onClick={onNavigate && onNavigate({ page: "player-detail", characterId: memory.characterId })}
+            className="memory-card-author-link"
+          >
+            {authorLabel}
+          </a>
+        ) : (
+          authorLabel
+        )}
+      </p>
+      <div className="memory-card-meta">
         {memory.concordId && (
           <span className="memory-concord-tag">{CONCORD_LABELS[memory.concordId] ?? memory.concordId}</span>
         )}
-        <span className="memory-card-author">
-          {memory.characterId && getPathFromRoute ? (
-            <a
-              href={getPathFromRoute({ page: "player-detail", characterId: memory.characterId })}
-              onClick={onNavigate && onNavigate({ page: "player-detail", characterId: memory.characterId })}
-              className="memory-card-author-link"
-            >
-              {authorLabel}
-            </a>
-          ) : (
-            authorLabel
-          )}
-        </span>
         <span className="memory-card-date">{formatRelativeDate(memory.createdAt)}</span>
-      </header>
+      </div>
       <div className="memory-content">
         <EditorContent editor={editor} />
       </div>
@@ -66,12 +66,23 @@ function MemoryCard({ memory, getPathFromRoute, onNavigate }) {
   );
 }
 
+function extractText(node) {
+  if (!node) return "";
+  if (node.type === "text") return node.text ?? "";
+  if (node.content) return node.content.map(extractText).join(" ");
+  return "";
+}
+
+const URL_RE = /https?:\/\/|www\./i;
+const REPEAT_RE = /(.)\1{9,}/;
+
 function MemoryEditor({ character, onCreateMemory }) {
   const [concordId, setConcordId] = useState(character?.concordId ?? "");
   const [authorName, setAuthorName] = useState("");
   const [botTrap, setBotTrap] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [spamError, setSpamError] = useState("");
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -83,11 +94,27 @@ function MemoryEditor({ character, onCreateMemory }) {
     if (botTrap.trim()) return;
     if (!editor || editor.isEmpty) return;
 
+    const text = extractText(editor.getJSON()).trim();
+    if (text.length < 8) return;
+    if (text.length > 2000) {
+      setSpamError("Please keep memories under 2,000 characters.");
+      return;
+    }
+    if (URL_RE.test(text)) {
+      setSpamError("Links aren't allowed in memories.");
+      return;
+    }
+    if (REPEAT_RE.test(text)) {
+      setSpamError("Looks like that might be spam — please write something real.");
+      return;
+    }
+    setSpamError("");
+
     setSubmitting(true);
     try {
       await onCreateMemory({
         content: editor.getJSON(),
-        concordId: character ? character.concordId : concordId || null,
+        concordId: character ? (character.excludedFromCount ? "death" : character.concordId) : concordId || null,
         characterId: character?.id ?? null,
         authorDisplayName: character ? (character.characterName ?? character.realName) : (authorName.trim() || null)
       });
@@ -108,12 +135,11 @@ function MemoryEditor({ character, onCreateMemory }) {
 
   return (
     <div className="memory-editor-wrap">
-      <h2 className="type-caps memory-editor-heading">Share a Memory</h2>
       <form className="memory-editor-form" onSubmit={handleSubmit}>
         {character ? (
           <div className="memory-author-locked">
-            <span className="memory-concord-tag" data-concord={character.concordId ?? undefined}>
-              {CONCORD_LABELS[character.concordId] ?? character.concordId}
+            <span className="memory-concord-tag" data-concord={character.excludedFromCount ? "death" : (character.concordId ?? undefined)}>
+              {character.excludedFromCount ? "Death" : (CONCORD_LABELS[character.concordId] ?? character.concordId)}
             </span>
             <span className="type-body memory-author-name">{character.characterName ?? character.realName}</span>
           </div>
@@ -189,12 +215,13 @@ function MemoryEditor({ character, onCreateMemory }) {
           <EditorContent editor={editor} />
         </div>
 
+        {spamError && <p className="memory-spam-error">{spamError}</p>}
         <button
           type="submit"
           className="memory-submit-btn type-caps"
           disabled={submitting || !editor || editor.isEmpty}
         >
-          {submitting ? "Submitting…" : "Submit Memory"}
+          {submitting ? "Inscribing…" : "Inscribe"}
         </button>
       </form>
     </div>
@@ -208,11 +235,15 @@ export function HomeRoute({
   getPathFromRoute,
   onNavigate
 }) {
-  const approvedMemories = (memories ?? []).filter((m) => m.approved);
+  const approvedMemories = memories ?? [];
 
   return (
     <main className="memories-layout">
       <div className="memories-editor-top">
+        <div className="memories-intro">
+          <h2 className="memories-intro-heading">May you be both Cursed and Blessed.</h2>
+          <p className="type-body memories-intro-body">Thank you for coming! We're so hyped &amp; grateful you brought this game to life. We'd love to hear any recollections, hot takes, or mementos below.</p>
+        </div>
         <MemoryEditor character={character} onCreateMemory={onCreateMemory} />
       </div>
       <div className="memories-feed">

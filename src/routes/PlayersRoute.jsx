@@ -287,9 +287,19 @@ function PlayerMemberRow({ member, adminMode, concordId, memberColor, realNameCo
 export function PlayersPage({ characters, teamBlueprint, currentCharacter, characterClassMap, getPathFromRoute, onNavigate, onUpdateDeaths }) {
   const adminMode = isAdmin(currentCharacter);
 
+  const NPC_PRIORITY = {
+    "0bb97f08-c5bd-43d1-9934-99bbfcae3a21": 0, // Jordan
+    "29450a65-8925-4b85-b4ef-c1b0870653cf": 1, // Alexandra
+  };
+
   const npcMembers = characters
     .filter((c) => c.excludedFromCount)
-    .sort((a, b) => (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? ""));
+    .sort((a, b) => {
+      const pa = NPC_PRIORITY[a.id] ?? 99;
+      const pb = NPC_PRIORITY[b.id] ?? 99;
+      if (pa !== pb) return pa - pb;
+      return (a.characterName ?? a.realName ?? "").localeCompare(b.characterName ?? b.realName ?? "");
+    });
 
   const npcIds = new Set(npcMembers.map((c) => c.id));
 

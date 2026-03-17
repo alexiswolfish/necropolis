@@ -4033,6 +4033,27 @@ html.fonts-ready #root {
   width: min(100%, 640px);
 }
 
+.memories-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.memories-intro-heading {
+  font-family: "Lohengrin", serif;
+  font-size: clamp(2.4rem, 7vw, 4.5rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: #D4ECE3;
+  margin: 20px 0 0.75rem;
+}
+
+.memories-intro-body {
+  opacity: 0.7;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .memories-feed {
   display: flex;
   flex-direction: column;
@@ -4041,12 +4062,7 @@ html.fonts-ready #root {
 }
 
 .memories-feed-heading {
-  font-family: var(--font-caps);
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--color-text-caps);
-  margin: 0 0 1rem;
-  text-transform: uppercase;
+  margin: 0 0 1.5rem;
 }
 
 .memories-feed-empty {
@@ -4060,18 +4076,17 @@ html.fonts-ready #root {
 /* ─── Memory card ──────────────────────────────────────────────────── */
 
 .memory-card {
-  border: 1px solid var(--color-border-subtle);
   border-radius: 2px;
   padding: 1.25rem 1.4rem;
-  background: color-mix(in srgb, var(--color-bg-soft) 80%, transparent);
+  background: var(--concord-primary, var(--color-bg-soft));
 }
 
-.memory-card-header {
+.memory-card-meta {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin-bottom: 0.75rem;
+  gap: 0.4rem 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .memory-concord-tag {
@@ -4087,54 +4102,41 @@ html.fonts-ready #root {
   border-radius: 2px;
 }
 
-/* Make concord tags inside cards pick up local concord vars */
-.memory-card[data-concord="desire-conspire"] {
-  --concord-primary: #b32200;
-  --concord-title: #f5dc74;
-}
-.memory-card[data-concord="pleasure-treasure"] {
-  --concord-primary: #0d2b0f;
-  --concord-title: #f0a925;
-}
-.memory-card[data-concord="brood-feud"] {
-  --concord-primary: #9e001f;
-  --concord-title: #c1c494;
-}
-.memory-card[data-concord="zeal-steel"] {
-  --concord-primary: #e596c9;
-  --concord-title: #7d1532;
-}
-.memory-card[data-concord="tears-spears"] {
-  --concord-primary: #3b1138;
-  --concord-title: #df7a91;
-}
-.memory-card[data-concord="veils-sails"] {
-  --concord-primary: #1d4255;
-  --concord-title: #e6a4dc;
-}
-.memory-card[data-concord="laurels-quarrels"] {
-  --concord-primary: #cc5918;
-  --concord-title: #4a1e8d;
-}
-.memory-card[data-concord="wit-spit"] {
-  --concord-primary: #f7f7f7;
-  --concord-title: #4a1e8d;
-}
-.memory-card[data-concord="death"] {
-  --concord-primary: #000000;
-  --concord-title: #D4ECE3;
+/* On colored cards the tag uses the nav accent color */
+.memory-card[data-concord] .memory-concord-tag {
+  background: transparent;
+  color: var(--concord-nav);
+  border-color: var(--concord-nav);
 }
 
+/* Per-concord vars for memory cards */
+.memory-card[data-concord="desire-conspire"]  { --concord-primary: #b32200; --concord-title: #f5dc74; --concord-nav: #f58e84; }
+.memory-card[data-concord="pleasure-treasure"] { --concord-primary: #0d2b0f; --concord-title: #f0a925; --concord-nav: #f8b6ba; }
+.memory-card[data-concord="brood-feud"]        { --concord-primary: #9e001f; --concord-title: #0b25e4; --concord-nav: #8D85FF; }
+.memory-card[data-concord="zeal-steel"]        { --concord-primary: #e596c9; --concord-title: #7d1532; --concord-nav: #f5ecc2; }
+.memory-card[data-concord="tears-spears"]      { --concord-primary: #3b1138; --concord-title: #df7a91; --concord-nav: #b73f74; }
+.memory-card[data-concord="veils-sails"]       { --concord-primary: #1d4255; --concord-title: #e6a4dc; --concord-nav: #F5F5B8; }
+.memory-card[data-concord="laurels-quarrels"]  { --concord-primary: #cc5918; --concord-title: #4a1e8d; --concord-nav: #fdd4bd; }
+.memory-card[data-concord="wit-spit"]          { --concord-primary: #f7f7f7; --concord-title: #4a1e8d; --concord-nav: #f37f94; }
+.memory-card[data-concord="death"]             { --concord-primary: #000000; --concord-title: #D4ECE3; --concord-nav: #FFA6D9; }
+
+/* Body text: white 80% for all colored cards, dark for wit-spit's light bg */
+.memory-card[data-concord]:not([data-concord="wit-spit"]) { --concord-tertiary: rgba(255, 255, 255, 0.8); }
+.memory-card[data-concord="wit-spit"]                     { --concord-tertiary: #111314; }
+
 .memory-card-author {
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--color-text-primary);
+  font-family: "Lohengrin", serif;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0;
+  color: var(--concord-title, var(--color-text-primary));
+  margin: 0 0 0.5rem;
 }
 
 .memory-card-author-link {
   color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
 }
 
 .memory-card-date {
@@ -4142,16 +4144,14 @@ html.fonts-ready #root {
   font-size: 9px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--color-text-caps);
-  opacity: 0.6;
-  margin-left: auto;
+  color: var(--concord-nav, var(--color-text-caps));
 }
 
 .memory-content .ProseMirror {
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--color-text-primary);
+  font-size: 20px;
+  line-height: 1.4;
+  color: var(--concord-tertiary, var(--color-text-primary));
   outline: none;
   padding: 0;
 }
@@ -4187,12 +4187,14 @@ html.fonts-ready #root {
 }
 
 .memory-editor-heading {
-  font-family: var(--font-caps);
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--color-text-caps);
+  font-family: "Lohengrin", serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: 0;
+  color: var(--color-text-primary);
   margin: 0 0 1.2rem;
+  text-align: center;
 }
 
 .memory-editor-form {
@@ -4288,8 +4290,8 @@ html.fonts-ready #root {
 
 .memory-editor-content .ProseMirror {
   font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 20px;
+  line-height: 1.4;
   color: var(--color-text-primary);
   outline: none;
   min-height: 90px;
@@ -4319,13 +4321,21 @@ html.fonts-ready #root {
   border-radius: 2px;
   padding: 0.6rem 1.2rem;
   cursor: pointer;
-  align-self: flex-start;
+  align-self: center;
   transition: opacity 160ms ease;
 }
 
 .memory-submit-btn:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+.memory-spam-error {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: #c0392b;
+  margin: 0;
+  text-align: center;
 }
 
 /* ─── Sign-in layout ───────────────────────────────────────────────── */
@@ -4576,7 +4586,7 @@ html.fonts-ready #root {
 /* Apply concord vars to admin cards too */
 .admin-memory-card[data-concord="desire-conspire"] { --concord-primary: #b32200; --concord-title: #f5dc74; }
 .admin-memory-card[data-concord="pleasure-treasure"] { --concord-primary: #0d2b0f; --concord-title: #f0a925; }
-.admin-memory-card[data-concord="brood-feud"] { --concord-primary: #9e001f; --concord-title: #c1c494; }
+.admin-memory-card[data-concord="brood-feud"] { --concord-primary: #9e001f; --concord-title: #0b25e4; }
 .admin-memory-card[data-concord="zeal-steel"] { --concord-primary: #e596c9; --concord-title: #7d1532; }
 .admin-memory-card[data-concord="tears-spears"] { --concord-primary: #3b1138; --concord-title: #df7a91; }
 .admin-memory-card[data-concord="veils-sails"] { --concord-primary: #1d4255; --concord-title: #e6a4dc; }
