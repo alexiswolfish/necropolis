@@ -63,8 +63,14 @@ function MemoryCard({ memory, characterById, getPathFromRoute, onNavigate }) {
         {className && <span className="memory-card-class">{className}</span>}
       </div>
       <div className="memory-card-meta">
-        {memory.concordId && (
-          <span className="memory-concord-tag">{CONCORD_LABELS[memory.concordId] ?? memory.concordId}</span>
+        {memory.concordId && getPathFromRoute && (
+          <a
+            href={getPathFromRoute({ page: "concord-detail", concordId: memory.concordId })}
+            onClick={onNavigate && onNavigate({ page: "concord-detail", concordId: memory.concordId })}
+            className="memory-concord-tag"
+          >
+            {CONCORD_LABELS[memory.concordId] ?? memory.concordId}
+          </a>
         )}
         <span className="memory-card-date">{formatRelativeDate(memory.createdAt)}</span>
       </div>
@@ -261,6 +267,8 @@ export function HomeRoute({
         <MemoryEditor character={character} onCreateMemory={onCreateMemory} />
       </div>
       <div className="memories-feed">
+        <img src={`${import.meta.env.BASE_URL}blessed.svg`} alt="" aria-hidden="true" className="memories-feed-deco memories-feed-deco-left" />
+        <img src={`${import.meta.env.BASE_URL}hollow.png`} alt="" aria-hidden="true" className="memories-feed-deco memories-feed-deco-right" />
         <h2 className="type-caps memories-feed-heading">Memories from the Hollows</h2>
         {approvedMemories.length === 0 ? (
           <p className="type-body memories-feed-empty">No memories yet. Be the first to share one.</p>

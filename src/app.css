@@ -4059,6 +4059,30 @@ html.fonts-ready #root {
   flex-direction: column;
   gap: 1.5rem;
   width: min(100%, 640px);
+  position: relative;
+}
+
+.memories-feed-deco {
+  position: fixed;
+  top: 150px;
+  height: 400px;
+  object-fit: contain;
+  object-position: top center;
+  pointer-events: none;
+  display: none;
+}
+
+.memories-feed-deco-left {
+  display: none !important;
+}
+
+.memories-feed-deco-right {
+  left: calc(50% + 320px + 60px);
+  opacity: 0.8;
+}
+
+@media (min-width: 1000px) {
+  .memories-feed-deco { display: block; }
 }
 
 .memories-feed-heading {
@@ -4109,6 +4133,7 @@ html.fonts-ready #root {
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+  text-decoration: none;
   color: var(--concord-title, var(--color-text-caps));
   background: var(--concord-primary, transparent);
   border: 1px solid var(--concord-title, var(--color-border-subtle));
