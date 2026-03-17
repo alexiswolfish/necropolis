@@ -22,7 +22,7 @@
   },
   {
     "id": "ossuary-monk",
-    "label": "Ossuary Monk",
+    "label": "Druid",
     "tag": "druid",
     "primaryStat": "grit",
     "secondaryStats": ["mystery"]

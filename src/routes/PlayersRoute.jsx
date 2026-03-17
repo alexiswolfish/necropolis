@@ -278,7 +278,7 @@ function PlayerMemberRow({ member, adminMode, concordId, memberColor, realNameCo
           {member.characterName ?? member.realName}
         </a>
         {member.characterName && member.characterName !== member.realName ? <span className="players-real-name type-caps" style={realNameColor ? { color: realNameColor } : undefined}> ({member.realName})</span> : null}
-{classLabel ? <span className="players-class-label type-caps"> {classLabel}</span> : null}
+        {classLabel ? <span className="players-class-label type-caps"> {classLabel}</span> : null}
       </p>
     </div>
   );
@@ -311,7 +311,7 @@ export function PlayersPage({ characters, teamBlueprint, currentCharacter, chara
     realNameColor: "#FFA6D9",
     members: npcMembers,
     officialCount: 0,
-    showClass: true
+    showClass: false
   } : null;
 
   const groupedByConcord = Object.keys(teamBlueprint).map((concordId) => {

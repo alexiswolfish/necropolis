@@ -29,7 +29,7 @@ function formatRelativeDate(iso) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function MemoryCard({ memory, getPathFromRoute, onNavigate }) {
+function MemoryCard({ memory, characterById, getPathFromRoute, onNavigate }) {
   const editor = useEditor({
     extensions: [StarterKit],
     content: memory.content,
@@ -37,22 +37,31 @@ function MemoryCard({ memory, getPathFromRoute, onNavigate }) {
   });
 
   const authorLabel = memory.authorDisplayName ?? "Anonymous";
+  const character = memory.characterId ? (characterById?.[memory.characterId] ?? null) : null;
+  const realName = character?.realName ?? null;
+  const className = character?.className ?? null;
 
   return (
     <article className="memory-card" data-concord={memory.concordId ?? undefined}>
-      <p className="memory-card-author">
-        {memory.characterId && getPathFromRoute ? (
-          <a
-            href={getPathFromRoute({ page: "player-detail", characterId: memory.characterId })}
-            onClick={onNavigate && onNavigate({ page: "player-detail", characterId: memory.characterId })}
-            className="memory-card-author-link"
-          >
-            {authorLabel}
-          </a>
-        ) : (
-          authorLabel
-        )}
-      </p>
+      <div className="memory-card-header">
+        <div className="memory-card-byline">
+          {realName && <span className="memory-card-realname type-caps">{realName}</span>}
+          <p className="memory-card-author">
+            {memory.characterId && getPathFromRoute ? (
+              <a
+                href={getPathFromRoute({ page: "player-detail", characterId: memory.characterId })}
+                onClick={onNavigate && onNavigate({ page: "player-detail", characterId: memory.characterId })}
+                className="memory-card-author-link"
+              >
+                {authorLabel}
+              </a>
+            ) : (
+              authorLabel
+            )}
+          </p>
+        </div>
+        {className && <span className="memory-card-class">{className}</span>}
+      </div>
       <div className="memory-card-meta">
         {memory.concordId && (
           <span className="memory-concord-tag">{CONCORD_LABELS[memory.concordId] ?? memory.concordId}</span>
@@ -231,11 +240,16 @@ function MemoryEditor({ character, onCreateMemory }) {
 export function HomeRoute({
   memories,
   character,
+  allCharacters,
   onCreateMemory,
   getPathFromRoute,
   onNavigate
 }) {
   const approvedMemories = memories ?? [];
+  const characterById = React.useMemo(
+    () => Object.fromEntries((allCharacters ?? []).map((c) => [c.id, c])),
+    [allCharacters]
+  );
 
   return (
     <main className="memories-layout">
@@ -255,6 +269,7 @@ export function HomeRoute({
             <MemoryCard
               key={memory.id}
               memory={memory}
+              characterById={characterById}
               getPathFromRoute={getPathFromRoute}
               onNavigate={onNavigate}
             />

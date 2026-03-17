@@ -1248,6 +1248,7 @@ export default function App() {
     <HomeRoute
       memories={memories}
       character={character}
+      allCharacters={allCharacters}
       onCreateMemory={handleCreateMemory}
       getPathFromRoute={getPathFromRoute}
       onNavigate={navigate}
